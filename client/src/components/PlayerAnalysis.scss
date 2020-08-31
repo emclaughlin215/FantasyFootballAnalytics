@@ -1,0 +1,41 @@
+@import "~@blueprintjs/core";
+
+.dropdown-container {
+  display: flex;
+  width: 90vw;
+  justify-content: flex-start;
+  margin: 2vw;
+}
+
+.dropdown {
+  padding-top: 2vh;
+  padding-right: 4vh;}
+
+.tab-title {
+  display: flex;
+  width: 15vw;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+.stats-card {
+  display: flex;
+  width: 15vw;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 1vw;
+  margin-right: 1vw;
+}
+
+.stats-container {
+  display: flex;
+}
+
+.body-container {
+  flex: 1;
+}
+
+.player-analysis-tabs {
+  display: flex;
+  flex-direction: row;
+}

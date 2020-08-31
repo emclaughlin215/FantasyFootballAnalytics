@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="fantasyPremierLeagueApp" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/react-ts" />
+  </component>
+  <component name="ProjectId" id="1g9MW33GOwZngYynhEQIyHSL3Id" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\eddym\Documents\_Coding\fantasyPremierLeagueApp\server\mySql" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.getData">
+    <configuration name="StoreFplData" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="fantasyPremierLeagueApp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server/dbmysql" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\eddym\Documents\_Coding\fantasyPremierLeagueApp\server\dbmysql\StoreFplData.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="getData" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="fantasyPremierLeagueApp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/getData.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="storeData" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="fantasyPremierLeagueApp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\eddym\Documents\_Coding\fantasyPremierLeagueApp\server\mySql\storeData.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.storeData" />
+        <item itemvalue="Python.getData" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="" />
+      <created>1597522382801</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597522382801</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/react-ts" />
+    </ignored-roots>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2808" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1597580363150">
+      <screen x="1798" y="-1440" width="2560" height="1400" />
+    </state>
+    <state x="2808" y="-993" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597580363150" />
+    <state x="2608" y="-1085" key="DBNavigator.ProjectSettingsDialog" timestamp="1597532554583">
+      <screen x="1798" y="-1440" width="2560" height="1400" />
+    </state>
+    <state x="2608" y="-1085" key="DBNavigator.ProjectSettingsDialog/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597532554583" />
+    <state width="1515" height="261" key="GridCell.Tab.0.bottom" timestamp="1598530819823">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598530819823" />
+    <state width="2539" height="401" key="GridCell.Tab.0.bottom/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597583062847" />
+    <state width="1515" height="261" key="GridCell.Tab.0.center" timestamp="1598530819823">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598530819823" />
+    <state width="2539" height="401" key="GridCell.Tab.0.center/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597583062847" />
+    <state width="1515" height="261" key="GridCell.Tab.0.left" timestamp="1598530819821">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598530819821" />
+    <state width="2539" height="401" key="GridCell.Tab.0.left/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597583062847" />
+    <state width="1515" height="261" key="GridCell.Tab.0.right" timestamp="1598530819823">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598530819823" />
+    <state width="2539" height="401" key="GridCell.Tab.0.right/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597583062847" />
+    <state width="1515" height="261" key="GridCell.Tab.1.bottom" timestamp="1598530819825">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598530819825" />
+    <state width="2539" height="492" key="GridCell.Tab.1.bottom/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597534223043" />
+    <state width="1515" height="261" key="GridCell.Tab.1.center" timestamp="1598530819823">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1598530819823" />
+    <state width="2539" height="492" key="GridCell.Tab.1.center/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597534223042" />
+    <state width="1515" height="261" key="GridCell.Tab.1.left" timestamp="1598530819823">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1598530819823" />
+    <state width="2539" height="492" key="GridCell.Tab.1.left/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597534223042" />
+    <state width="1515" height="261" key="GridCell.Tab.1.right" timestamp="1598530819824">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1598530819824" />
+    <state width="2539" height="492" key="GridCell.Tab.1.right/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597534223043" />
+    <state x="2579" y="-1098" key="SettingsEditor" timestamp="1597576518811">
+      <screen x="1798" y="-1440" width="2560" height="1400" />
+    </state>
+    <state x="2579" y="-1098" key="SettingsEditor/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597576518811" />
+    <state x="586" y="308" key="com.intellij.ide.util.TipDialog" timestamp="1598180909190">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="586" y="308" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1598180909190" />
+    <state x="2774" y="-916" key="com.intellij.ide.util.TipDialog/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597532301586" />
+    <state x="341" y="148" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1598183340285">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="341" y="148" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1536.824@0.0.1536.824" timestamp="1598183340285" />
+    <state x="566" y="185" width="672" height="400" key="search.everywhere.popup" timestamp="1598253580264">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="566" y="185" width="672" height="400" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1598253580264" />
+    <state x="2741" y="-1125" width="672" height="678" key="search.everywhere.popup/0.0.1638.882/1798.-1440.2560.1400@1798.-1440.2560.1400" timestamp="1597531124457" />
+  </component>
+</project>

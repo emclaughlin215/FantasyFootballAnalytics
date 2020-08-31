@@ -1,0 +1,25 @@
+@import "~@blueprintjs/core";
+@import '~@blueprintjs/table';
+
+.tab-title {
+  display: flex;
+  width:20vw;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+.body-container {
+  flex: 1;
+}
+
+.dropdown-container {
+  display: flex;
+  width: 30vw;
+  align-content: space-between;
+  justify-content: space-around;
+  margin: 2vw;
+}
+
+.dropdown {
+  height: 10vh
+}

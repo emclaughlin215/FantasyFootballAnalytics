@@ -1,0 +1,41 @@
+@import "~@blueprintjs/core";
+
+.app {
+  height: 100vh;
+}
+
+.app-header {
+  font-size: larger;
+  font-family: sans-serif;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.tabs-header {
+  font-size: calc(10px + 2vmin);
+  height: 100vh;
+}
+
+.nav-bar {
+  display: flex;
+  align-self: flex-start;
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
+.main-container {
+  background-color: #394B59;
+  color: #E1E8ED;
+  min-height: 100vh;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  padding-top: 10vh;
+  padding-bottom: 10vh;
+}
