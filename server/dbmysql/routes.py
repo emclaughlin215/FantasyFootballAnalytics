@@ -39,6 +39,21 @@ async def playersAll(db: Session = Depends(get_db)):
     return crud.get_all_players(db)
 
 
+@app.get("/players/player/{player_code}", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def playersAll(player_code, db: Session = Depends(get_db)):
+    return crud.get_player(db, player_code)
+
+
+@app.get("/players/latest/all", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def playersLatestAll(db: Session = Depends(get_db)):
+    return crud.get_all_players_latest(db)
+
+
+@app.get("/players/latest/player/{player_code}", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def player(player_code, db: Session = Depends(get_db)):
+    return crud.get_player_latest(db, player_code)
+
+
 @app.get("/players/types", response_model=List[schemas.PlayerType], status_code=status.HTTP_200_OK)
 async def playersTypesAll(db: Session = Depends(get_db)):
     return crud.get_all_player_types(db)

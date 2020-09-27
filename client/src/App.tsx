@@ -5,7 +5,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getPlayerList, getPlayerTypeList, getTeamList } from './actions/GlobalActions';
+import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
+import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
 import PerformanceAnalysis from './components/PerformanceAnalysis';
 import PlayerAnalysis from './components/PlayerAnalysis';
 import { IStringElementMap } from './index.d';
@@ -19,9 +20,10 @@ export interface IAppState {
 }
 
 export interface IAppProps {
-  getPlayerList: typeof getPlayerList,
+  getPlayerLatestList: typeof getPlayerLatestList,
   getPlayerTypeList: typeof getPlayerTypeList,
   getTeamList: typeof getTeamList,
+  getPlayerList: typeof getPlayerList,
  }
 
 export class App extends React.PureComponent<IAppProps, IAppState> {
@@ -36,7 +38,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   }
 
   componentWillMount() {
-    const { getPlayerList, getPlayerTypeList, getTeamList} = this.props;
+    const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
+    getPlayerLatestList("http://localhost:8000/players/latest/all");
     getPlayerList("http://localhost:8000/players/all");
     getPlayerTypeList("http://localhost:8000/players/types");
     getTeamList("http://localhost:8000/teams/all");
@@ -92,8 +95,9 @@ const mapStateToProps = (globalState: IGlobalReducer) => {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
-      getPlayerList,
+      getPlayerLatestList,
       getPlayerTypeList,
+      getPlayerList,
       getTeamList,
     },
     dispatch,

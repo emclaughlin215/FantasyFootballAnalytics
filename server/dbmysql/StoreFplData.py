@@ -21,6 +21,9 @@ class StoreFplData:
         self.df['form_to_cost'] = self.df['form'] / self.df['now_cost']
         self.df['bonus_to_cost'] = self.df['form'] / self.df['now_cost']
 
+        primary_key_cols = ['id', 'timestamp']
+        self.df['primary_key'] = self.df[primary_key_cols].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
+
         return
 
     def handleElementTypes(self):
@@ -30,6 +33,7 @@ class StoreFplData:
 
     def handleEvents(self):
         self.df.drop(["chip_plays"], axis=1, inplace=True)
+        self.df.drop(["top_element_info"], axis=1, inplace=True)
 
         return
 
@@ -37,25 +41,23 @@ class StoreFplData:
 
         return
 
-    def storeData(self):
+    def storeData(self, typeOfStoring, tableName):
 
-        tableNames = [("element_types", self.handleElementTypes),
-                      ("elements", self.handleElements),
-                      ("events", self.handleEvents),
-                      ("phases", self.handleGeneric),
-                      ("teams", self.handleGeneric)]
+        tableNames = {"element_types": self.handleElementTypes,
+                      "elements": self.handleElements,
+                      "events": self.handleEvents,
+                      "phases": self.handleGeneric,
+                      "teams": self.handleGeneric}
 
-        for tableName in tableNames:
+        self.df = pd.DataFrame(self.dataJson[tableName])
+        self.df['timestamp'] = pd.to_datetime('now')
+        tableNames[tableName]()
 
-            self.df = pd.DataFrame(self.dataJson[tableName[0]])
-            self.df['timestamp'] = pd.to_datetime('now')
-            tableName[1]()
-
-            try:
-                self.df.to_sql(name=tableName[0], con=cnx, if_exists='replace', index=True)
-            except ValueError as vx:
-                print(vx)
-            except Exception as ex:
-                print(ex)
-            else:
-                print("Table created successfully.")
+        try:
+            self.df.to_sql(name=tableName, con=cnx, if_exists=typeOfStoring, index=True)
+        except ValueError as vx:
+            print(vx)
+        except Exception as ex:
+            print(ex)
+        else:
+            print("Table created successfully.")

@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 import { IPlayer, IPlayerType, ITeam } from '../index.d';
 import { IGlobalReducer } from '../reducers/GlobalReducers';
+import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { ICombinedReducers } from '../reducers/Reducers';
 import { loaded, loading, LoadState } from '../utils/LoadState';
 import {
@@ -22,7 +23,8 @@ import { ISortableColumn, NumberSortableColumn, StringSortableColumn } from '../
 import { prop } from '../utils/TypeScript';
 
 export interface IPerformanceAnalysisProps { 
-  state: IGlobalReducer
+  globalState: IGlobalReducer,
+  playerState: IPlayerReducer,
 }
 export interface IPerformanceAnalysisState { 
   filteredPlayerList: LoadState<IPlayer[]>
@@ -65,8 +67,8 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
 
   filterPlayers(team?: ITeam, playerType?: IPlayerType) {
     this.setState({ filteredPlayerList: loading() });
-    const { playerList } = this.props.state;
-    let filteredPlayers: IPlayer[] = playerList.type === 'loaded' ? playerList.value : [];
+    const { playerListLatest } = this.props.playerState;
+    let filteredPlayers: IPlayer[] = playerListLatest.type === 'loaded' ? playerListLatest.value : [];
     filteredPlayers = playerType !== undefined
       ? filteredPlayers.filter((player: IPlayer) => player.element_type === playerType.id)
       : filteredPlayers;
@@ -77,7 +79,7 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
   }
 
   getLoadingOptions = (): TableLoadingOption[] => {
-    if (this.props.state.playerList.type === "loading") {
+    if (this.props.playerState.playerListLatest.type === "loading") {
       return [TableLoadingOption.CELLS];
     }
     return [];
@@ -96,24 +98,27 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
   }
 
   private getCellData = (rowIndex: number, stat: (keyof IPlayer)[]) => {
-    const { filteredPlayerList, sortedPlayerIndex} = this.state;
+    const { filteredPlayerList, sortedPlayerIndex } = this.state;
     if (filteredPlayerList.type !== "loaded") {
       return undefined;
     }
     const sortedRowIndex = sortedPlayerIndex[rowIndex];
-    if (sortedRowIndex != null) {
+    if ((sortedRowIndex !== null) && (sortedRowIndex !== undefined)) {
         rowIndex = sortedRowIndex;
     }
-    return stat.map(s => { return prop(filteredPlayerList.value[rowIndex], s) })
-        .reduce((a, b) => [a, b].join(" "));
+    return stat.map(s => {
+      return prop(filteredPlayerList.value[rowIndex], s)
+    })
+      .reduce((a, b) => [a, b].join(" "));
   };
   
   render() {
-    const { playerList, playerTypeList, teamList } = this.props.state;
+    const { playerListLatest } = this.props.playerState;
+    const { teamList, playerTypeList } = this.props.globalState;
     const { columns } = this.state;
     const PlayerTypeSuggest = Suggest.ofType<IPlayerType>();
     const TeamSuggest = Suggest.ofType<ITeam>();
-    const columnsList = playerList.type === "loading"
+    const columnsList = playerListLatest.type === "loading"
       ? []
       : columns.map(col => col.getColumn(this.getCellData, this.sortColumn));
     return (
@@ -160,7 +165,8 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
 
 const mapStateToProps = (state: ICombinedReducers) => {
   return {
-    state: state.GlobalReducer,
+    globalState: state.GlobalReducer,
+    playerState: state.PlayerReducer,
   };
 }
 

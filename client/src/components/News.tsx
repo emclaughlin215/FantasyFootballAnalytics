@@ -1,13 +1,15 @@
 import './News.scss';
 
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { IGlobalReducer } from '../reducers/GlobalReducers';
+import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { ICombinedReducers } from '../reducers/Reducers';
 
+
 interface INewsProps {
-  state: IGlobalReducer
+  playerState: IPlayerReducer,
 }
 
 export class News extends React.PureComponent<INewsProps> {
@@ -15,15 +17,26 @@ export class News extends React.PureComponent<INewsProps> {
     super(props);
   }
 
+  private NewsItem(first_name: string, second_name: string, news: string, news_added: string) {
+    const date_added = moment(news_added.trim(), "YYYY-MM-DDTHH:mm:ss.ssssssZ").format("Do MMM YYYY");
+    return (
+      <div>
+        <h3> {first_name + " " + second_name} </h3>
+        <h4> {date_added + " " + news_added} </h4>
+        {news} 
+      </div>
+    )
+  }
+
   render() {
-    const { playerList } = this.props.state;
+    const { filteredPlayerLatest } = this.props.playerState;
     return (
       <div className="news-container">
-        {playerList.type === 'loaded' ?
-          playerList.value.map(player => {
+        {filteredPlayerLatest.type === 'loaded' ?
+          filteredPlayerLatest.value.map(player => {
             return player.news && player.news_added ?
               <div className='news-element'>
-                {player.first_name + " " + player.second_name + ": " + player.news + " " + player.news_added.toString()}
+                {this.NewsItem(player.first_name, player.second_name, player.news, player.news_added)}
               </div> :
               undefined
           })
@@ -36,7 +49,7 @@ export class News extends React.PureComponent<INewsProps> {
 
 const mapStateToProps = (state: ICombinedReducers) => {
   return {
-    state: state.GlobalReducer,
+    playerState: state.PlayerReducer,
   }
 }
 

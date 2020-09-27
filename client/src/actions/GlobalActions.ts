@@ -1,23 +1,6 @@
 import { constants } from '../constants';
+import { IPlayerType, ITeam } from '../index.d';
 import { IGlobalAction } from '../reducers/GlobalReducers';
-import { IPlayer, IPlayerType, ITeam } from './../index.d';
-
-export const getPlayerList = (
-  query: string,
-) => {
-  return async (dispatch: Function) => {
-    const res: Response = await fetch(query);
-    const resJson: IPlayer[] = await res.json();
-    dispatch(getPlayer(resJson));
-  };
-};
-
-function getPlayer(players: IPlayer[]): IGlobalAction {
-  return {
-    type: constants.loadPlayers,
-    payload: players,
-  }
-}
 
 export const getPlayerTypeList = (
   query: string,

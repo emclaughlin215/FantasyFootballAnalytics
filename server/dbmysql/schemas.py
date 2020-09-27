@@ -31,10 +31,11 @@ class PlayerBase(BaseModel):
 
 
 class Player(PlayerBase):
+    primary_key: Optional[str]
     first_name: Optional[str]
     second_name: Optional[str]
-    chance_of_playing_this_round: Optional[int]
-    chance_of_playing_next_round: Optional[int]
+    chance_of_playing_this_round: Optional[float]
+    chance_of_playing_next_round: Optional[float]
     code: Optional[int]
     cost_change_event: Optional[int]
     cost_change_event_fall: Optional[int]
@@ -43,7 +44,7 @@ class Player(PlayerBase):
     dreamteam_count: Optional[int]
     element_type: Optional[int]
     ep_next: Optional[float]
-    ep_this: Optional[int]
+    ep_this: Optional[float]
     event_points: Optional[int]
     form: Optional[float]
     in_dreamteam: Optional[bool]
@@ -91,8 +92,15 @@ class Player(PlayerBase):
     threat_rank_type: Optional[int]
     ict_index_rank: Optional[int]
     ict_index_rank_type: Optional[int]
+    corners_and_indirect_freekicks_order: Optional[int]
+    corners_and_indirect_freekicks_text: Optional[str]
+    direct_freekicks_order: Optional[int]
+    direct_freekicks_text: Optional[str]
+    penalties_order: Optional[int]
+    penalties_text: Optional[str]
     form_to_cost: Optional[int]
     bonus_to_cost: Optional[int]
+    timestamp: Optional[datetime]
 
     class Config:
         orm_mode = True

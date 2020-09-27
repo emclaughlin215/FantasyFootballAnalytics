@@ -1,20 +1,25 @@
 import { constants } from '../constants';
+import { IPlayerType, ITeam } from '../index.d';
 import { loaded, loading, LoadState } from '../utils/LoadState';
-import { IPlayer, IPlayerType, ITeam } from './../index.d';
 
 export interface IGlobalReducer {
-  playerList: LoadState<IPlayer[]>,
   teamList: LoadState<ITeam[]>,
   playerTypeList: LoadState<IPlayerType[]>,
 }
 
-export interface IGlobalAction {
+export interface ITeamAction {
   type: string,
-  payload: IPlayer[] | IPlayerType[] | ITeam[],
+  payload: ITeam[],
 }
 
+export interface IPlayerTypeAction {
+  type: string,
+  payload: IPlayerType[],
+}
+
+export type IGlobalAction = ITeamAction | IPlayerTypeAction;
+
 const defaultState: IGlobalReducer = {
-  playerList: loading(),
   playerTypeList: loading(),
   teamList: loading(),
 }
@@ -22,11 +27,6 @@ const defaultState: IGlobalReducer = {
 export const GlobalReducer = (state = defaultState, action: IGlobalAction) => {
 
   switch (action.type) {
-    case constants.loadPlayers:
-      return {
-        ...state,
-        playerList: loaded(action.payload),
-      }
     case constants.loadPlayerTypes:
       return {
         ...state,

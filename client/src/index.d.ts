@@ -23,7 +23,8 @@ export interface IPlayerType {
 
 
 export interface IPlayer {
-  id: number;
+  primary_key: string
+  id: number
   chance_of_playing_this_round: number
   chance_of_playing_next_round: number
   code: number
@@ -40,7 +41,7 @@ export interface IPlayer {
   form: number
   in_dreamteam: boolean
   news: string
-  news_added: number
+  news_added: string
   now_cost: number
   photo: string
   points_per_game: number
@@ -84,8 +85,15 @@ export interface IPlayer {
   threat_rank_type: number
   ict_index_rank: number
   ict_index_rank_type: number
+  corners_and_indirect_freekicks_order: number
+  corners_and_indirect_freekicks_text: string
+  direct_freekicks_order: number
+  direct_freekicks_text: string
+  penalties_order: number
+  penalties_text: string
   form_to_cost: number
   bonus_to_cost: number
+  timestamp: Date
 }
 
 
@@ -99,15 +107,15 @@ export interface ITeam {
   points: number
   position: number
   short_name: string
-  stringength: number
+  strength: number
   team_division: string
   unavailable: boolean
   win: number
-  stringength_overall_home: number
-  stringength_overall_away: number
-  stringength_attack_home: number
-  stringength_attack_away: number
-  stringength_defence_home: number
-  stringength_defence_away: number
+  strength_overall_home: number
+  strength_overall_away: number
+  strength_attack_home: number
+  strength_attack_away: number
+  strength_defence_home: number
+  strength_defence_away: number
   pulse_id: number
 }

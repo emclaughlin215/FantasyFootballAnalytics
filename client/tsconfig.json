@@ -11,6 +11,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "plugins": [
+      { "transform": "ts-transformer-keys/transformer" }
+    ],
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
