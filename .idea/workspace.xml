@@ -2,40 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/build/asset-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/build/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/precache-manifest.0375ec183f65a737e1a87ea2253cd58d.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/service-worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/build/service-worker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/css/main.bddb5f1b.chunk.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/css/main.bddb5f1b.chunk.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/js/2.5b09f83a.chunk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/js/2.5b09f83a.chunk.js.LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/js/2.5b09f83a.chunk.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/js/main.abfac467.chunk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build/static/js/main.abfac467.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/client/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/App.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.test.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/actions/GlobalActions.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/News.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/News.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerGraphs.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/constants.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/reducers/GlobalReducers.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/reducers/Reducers.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/PlayerAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/PlayerAnalysis.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/TypeScript.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/TypeScript.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/utils/PlayerAnalysis.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/utils/Tables.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Tables.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/crud.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/dbmysql/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/dbmysql/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/schemas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

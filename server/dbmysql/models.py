@@ -34,6 +34,8 @@ class PlayerLatest(Base):
     cost_change_start_fall = Column(Integer, nullable=True)
     dreamteam_count = Column(Integer, nullable=True)
     element_type = Column(Integer, nullable=True)
+    element_type_singular_name = Column(String, nullable=True)
+    element_type_singular_name_short = Column(String, nullable=True)
     ep_next = Column(Integer, nullable=True)
     ep_this = Column(Integer, nullable=True)
     event_points = Column(Integer, nullable=True)
