@@ -6,7 +6,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { addPropertiesToGraph, setFilteredPlayerList } from '../actions/PlayerActions';
+import { setFilteredPlayerList } from '../actions/PlayerActions';
 import { IPlayer, IPlayerType, IStringElementMap, ITeam } from '../index.d';
 import { IGlobalReducer } from '../reducers/GlobalReducers';
 import { IPlayerReducer } from '../reducers/PlayerReducers';
@@ -14,29 +14,29 @@ import { ICombinedReducers } from '../reducers/Reducers';
 import {
   filterPlayer,
   filterPlayerType,
-  filterProperty,
   filterTeam,
   renderPlayer,
   renderPlayerInputValue,
   renderPlayerType,
   renderPlayerTypeInputValue,
-  renderProperty,
-  renderPropertyInputValue,
   renderTeam,
   renderTeamInputValue,
-} from '../utils/PlayerAnalysis';
+} from '../utils/Suggest';
 import News from './News';
+import PerformanceAnalysis from './PerformanceAnalysis';
 import PlayerGraphs from './PlayerGraphs';
 
 export interface IPlayerAnalysisProps {
   globalState: IGlobalReducer,
   playerState: IPlayerReducer,
   setFilteredPlayerList: typeof setFilteredPlayerList,
-  addPropertiesToGraph: typeof addPropertiesToGraph,
 }
  
 export interface IPlayerAnalysisState { 
   navbarTabId: TabId;
+  teamAlreadySelected?: ITeam;
+  playerTypeAlreadySelected?: IPlayerType;
+  playersForDropdown?: IPlayer[];
  }
 
 export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IPlayerAnalysisState> {
@@ -46,20 +46,34 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
       navbarTabId: 'playerGraphs',
     }
   }
- 
-  private filterPlayersByTeam(team: ITeam) {
-    let filteredPlayersLatest: IPlayer[] = this.props.playerState.playerListLatest.type === 'loaded' ? this.props.playerState.playerListLatest.value : [];
-    filteredPlayersLatest = filteredPlayersLatest.filter((player: IPlayer) => player.team === team.id);
-    let filteredPlayers: IPlayer[] = this.props.playerState.playerList.type === 'loaded' ? this.props.playerState.playerList.value : [];
-    filteredPlayers = filteredPlayers.filter((player: IPlayer) => player.team === team.id);
-    this.props.setFilteredPlayerList(filteredPlayersLatest, filteredPlayers);
-  }
 
-  private filterPlayersByType(playerType: IPlayerType) {
+  private filterPlayers(playerTypeSelected?: IPlayerType, teamSelected?: ITeam) {
+
+    const { playerTypeAlreadySelected, teamAlreadySelected } = this.state;
+
     let filteredPlayersLatest: IPlayer[] = this.props.playerState.playerListLatest.type === 'loaded' ? this.props.playerState.playerListLatest.value : [];
-    filteredPlayersLatest = filteredPlayersLatest.filter((player: IPlayer) => player.element_type === playerType.id);
     let filteredPlayers: IPlayer[] = this.props.playerState.playerList.type === 'loaded' ? this.props.playerState.playerList.value : [];
-    filteredPlayers = filteredPlayers.filter((player: IPlayer) => player.element_type === playerType.id);
+
+    const playerType = playerTypeSelected ? playerTypeSelected : playerTypeAlreadySelected ? playerTypeAlreadySelected : undefined;
+    const team = teamSelected ? teamSelected : teamAlreadySelected ? teamAlreadySelected : undefined;
+
+    if (team === undefined && playerType === undefined) {
+      return;
+    }
+
+    if (playerType !== undefined) {
+      filteredPlayersLatest = filteredPlayersLatest.filter((player: IPlayer) => player.element_type === playerType.id);
+      filteredPlayers = filteredPlayers.filter((player: IPlayer) => player.element_type === playerType.id);
+      this.setState({ playerTypeAlreadySelected: playerType });
+    }
+
+    if (team !== undefined) {
+      filteredPlayersLatest = filteredPlayersLatest.filter((player: IPlayer) => player.team === team.id);
+      filteredPlayers = filteredPlayers.filter((player: IPlayer) => player.team === team.id);
+      this.setState({ teamAlreadySelected: team });
+    }
+
+    this.setState({ playersForDropdown: filteredPlayersLatest });
     this.props.setFilteredPlayerList(filteredPlayersLatest, filteredPlayers);
   }
 
@@ -76,19 +90,21 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
   render() { 
     const { teamList, playerTypeList } = this.props.globalState;
     const { playerListLatest, filteredPlayerLatest } = this.props.playerState;
+    const { playersForDropdown } = this.state;
 
     const PlayerSuggest = Suggest.ofType<IPlayer>();
     const TeamSuggest = Suggest.ofType<ITeam>();
     const PlayerTypeSuggest = Suggest.ofType<IPlayerType>();
-    const PropertySuggest = Suggest.ofType<string>();
 
-    const latestPlayers: IPlayer[] = filteredPlayerLatest.type === 'loaded' ? filteredPlayerLatest.value : playerListLatest.type === 'loaded' ? playerListLatest.value : [];
-    const propertiesOfPlayer: string[] = playerListLatest.type === 'loaded' ? Object.keys(playerListLatest.value[0]) : [];
+    let latestPlayers: IPlayer[] = playersForDropdown ? playersForDropdown :
+      playerListLatest.type === 'loaded' ? playerListLatest.value : [];
+    latestPlayers = latestPlayers.sort((a, b) => a.second_name.toString().localeCompare(b.second_name.toString()));
     const teamListDisplay: ITeam[] = teamList.type === 'loaded' ? teamList.value : [];
     const playerTypeListDisplay: IPlayerType[] = playerTypeList.type === 'loaded' ? playerTypeList.value : [];
     const tabIdToComponentMap: IStringElementMap = {
         "playerNews": <News />,
-        "playerGraphs": <PlayerGraphs />
+        "playerGraphs": <PlayerGraphs />,
+        "playerRanking": <PerformanceAnalysis />
       }
     return (
       <div className='body-container'>
@@ -103,7 +119,7 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               className={teamList.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
               itemPredicate={filterTeam}
               inputValueRenderer={renderTeamInputValue}
-              onItemSelect={(team: ITeam) => this.filterPlayersByTeam(team)}
+              onItemSelect={(team: ITeam) => this.filterPlayers(undefined, team)}
               items={teamListDisplay}
               itemRenderer={renderTeam}
               noResults={<MenuItem disabled={true} text="No results." />}
@@ -115,7 +131,7 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               itemPredicate={filterPlayerType}
               disabled={filteredPlayerLatest.type === 'loading'}
               inputValueRenderer={renderPlayerTypeInputValue}
-              onItemSelect={(playerType: IPlayerType) => { this.filterPlayersByType(playerType) }}
+              onItemSelect={(playerType: IPlayerType) => { this.filterPlayers(playerType, undefined) }}
               items={playerTypeListDisplay}
               itemRenderer={renderPlayerType}
               noResults={<MenuItem disabled={true} text="No results." />}
@@ -131,17 +147,6 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               itemRenderer={renderPlayer}
               noResults={<MenuItem disabled={true} text="No results." />}
             />
-            <Divider />
-            <p className='dropdown'>Attribute</p>
-            <PropertySuggest
-              className={playerListLatest.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
-              itemPredicate={filterProperty}
-              inputValueRenderer={renderPropertyInputValue}
-              onItemSelect={(property: string) => this.props.addPropertiesToGraph(property as keyof IPlayer)}
-              items={propertiesOfPlayer}
-              itemRenderer={renderProperty}
-              noResults={<MenuItem disabled={true} text="No results." />}
-            />
           </div>
           <div className='player-analysis-tabs'>
             <Tabs
@@ -153,7 +158,8 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               selectedTabId={this.state.navbarTabId}
               vertical={true}>
               <Tab id="playerNews" title="News" />
-              <Tab id="playerGraphs" title="Analysis" />
+              <Tab id="playerGraphs" title="Trends" />
+              <Tab id="playerRanking" title="Discovery" />
               <Tabs.Expander />
             </Tabs>
             <div>
@@ -177,7 +183,6 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       setFilteredPlayerList,
-      addPropertiesToGraph,
     },
     dispatch,
   );

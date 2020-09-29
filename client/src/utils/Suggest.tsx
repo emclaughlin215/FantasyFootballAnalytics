@@ -29,7 +29,7 @@ export const renderPlayer: ItemRenderer<IPlayer> = (player, { handleClick, modif
   if (!modifiers.matchesPredicate) {
       return null;
   }
-  const text = `${player.first_name} ${player.second_name}`;
+  const text = `${player.second_name}, ${player.first_name} (${player.element_type_singular_name_short})`;
   return (
       <MenuItem 
         active={modifiers.active}
@@ -56,7 +56,6 @@ export const renderTeam: ItemRenderer<ITeam> = (team, { handleClick, modifiers, 
     />
   );
 };
-
 
 export const renderProperty: ItemRenderer<string> = (property, { handleClick, modifiers, query}) => {
   if (!modifiers.matchesPredicate) {
@@ -110,7 +109,7 @@ function highlightText(text: string, query: string) {
 }
 
 export const filterPlayerType: ItemPredicate<IPlayerType> = (query, playerType, _index, exactMatch) => {
-  const normalizedName = playerType.plural_name.toLowerCase() + ' ' + playerType.plural_name.toLowerCase();
+  const normalizedName = playerType.plural_name.toLowerCase();
   const normalizedQuery = query.toLowerCase();
 
   if (exactMatch) {

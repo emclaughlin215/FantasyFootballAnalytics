@@ -1,3 +1,23 @@
+# Fantasy Football Analytics Platform
+
+### To run it.
+
+- Run `npm install` from `./client/`.
+- Run `uvicorn routes:app --reload` from `/server/dbmsql/`.
+- Run `npm run start` from `./client/`.
+- Go to `localhost:3000`.
+
+### Testing
+
+- To test `.ts` and `.tsx` files, run `npm t`.
+
+
+
+
+
+
+----------------------------------------------------------------------------------------
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -11,11 +11,12 @@
 
 .body-container {
   flex: 1;
+  width: 80vw;
 }
 
 .dropdown-container {
   display: flex;
-  width: 30vw;
+  width: 60vw;
   align-content: space-between;
   justify-content: space-around;
   margin: 2vw;

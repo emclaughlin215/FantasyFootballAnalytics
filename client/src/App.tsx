@@ -7,7 +7,6 @@ import { bindActionCreators } from 'redux';
 
 import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
 import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
-import PerformanceAnalysis from './components/PerformanceAnalysis';
 import PlayerAnalysis from './components/PlayerAnalysis';
 import { IStringElementMap } from './index.d';
 import { IGlobalReducer } from './reducers/GlobalReducers';
@@ -47,7 +46,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
  
   private tabIdToComponentMap: IStringElementMap = {
     "playerAnalysis": <PlayerAnalysis />,
-    "PerformanceAnalysis": <PerformanceAnalysis />
   }
 
   private handleNavbarTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
@@ -73,7 +71,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               selectedTabId={this.state.navbarTabId}
               vertical={false}>
               <Tab id="playerAnalysis" title="Player Analysis"/>
-              <Tab id="PerformanceAnalysis" title="Performance Analysis" />
               <Tabs.Expander />
             </Tabs>
           </Navbar.Group>

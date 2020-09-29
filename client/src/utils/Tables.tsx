@@ -5,7 +5,7 @@ import React from 'react';
 import { IPlayer } from './../index.d';
 import { prop } from './TypeScript';
 
-export type ICellLookup = (rowIndex: number, stat: (keyof IPlayer)[]) => any;
+export type ICellLookup = (rowIndex: number, stat: keyof IPlayer) => any;
 export type ISortCallback = (comparator: (a: IPlayer, b: IPlayer) => number) => void;
 
 export interface ISortableColumn<T> {
@@ -13,7 +13,7 @@ export interface ISortableColumn<T> {
 }
 
 abstract class AbstractSortableColumn implements ISortableColumn<IPlayer> {
-  constructor(protected name: string, protected stat: (keyof IPlayer)[]) {}
+  constructor(protected name: string, protected stat: keyof IPlayer) {}
 
   public getColumn(getCellData: ICellLookup, sortColumn: ISortCallback) {
     const cellRenderer = (rowIndex: number) => (
@@ -45,10 +45,10 @@ export class StringSortableColumn extends AbstractSortableColumn {
   }
 
   private compare(a: IPlayer, b: IPlayer) {
-    if (typeof this.stat[0] !== 'string') {
+    if (typeof this.stat !== 'string') {
       return 0;
     }
-    return prop(a, this.stat[0]).toString().localeCompare(prop(b, this.stat[0]).toString());
+    return prop(a, this.stat).toString().localeCompare(prop(b, this.stat).toString());
   }
 }
 
@@ -65,9 +65,6 @@ export class NumberSortableColumn extends AbstractSortableColumn {
     }
 
   private compare(a: IPlayer, b: IPlayer) {
-    if ((typeof this.stat[0] !== 'number') || (typeof this.stat[0] !== 'bigint')) {
-      return 0;
-    }
-      return prop(a, this.stat[0]) - prop(b, this.stat[0]);
-    }
+      return (prop(a, this.stat) as number) - (prop(b, this.stat) as number);
+  }
 }
