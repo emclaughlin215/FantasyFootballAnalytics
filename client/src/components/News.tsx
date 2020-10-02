@@ -31,11 +31,11 @@ export class News extends React.PureComponent<INewsProps> {
   render() {
     const { filteredPlayerLatest } = this.props.playerState;
     return (
-      <div className="news-container">
+      <div className="list-container">
         {filteredPlayerLatest.type === 'loaded' ?
           filteredPlayerLatest.value.map(player => {
             return player.news && player.news_added ?
-              <div className='news-element'>
+              <div className='list-element'>
                 {this.NewsItem(player.first_name, player.second_name, player.news, player.news_added)}
               </div> :
               undefined

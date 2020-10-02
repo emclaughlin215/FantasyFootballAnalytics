@@ -67,3 +67,18 @@ async def playersTeam(team_id: int, db: Session = Depends(get_db)):
 @app.get("/teams/all", response_model=List[schemas.Team], status_code=status.HTTP_200_OK)
 async def teamsAll(db: Session = Depends(get_db)):
     return crud.get_all_teams(db)
+
+
+@app.get("/transfers/topTenIn", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def transfersTopTenIn(db: Session = Depends(get_db)):
+    return crud.get_most_transferred_in(db)
+
+
+@app.get("/transfers/topTenOut", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def transfersTopTenOut(db: Session = Depends(get_db)):
+    return crud.get_most_transferred_out(db)
+
+
+@app.get("/players/topTenSelected", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def playersTopTenSelected(db: Session = Depends(get_db)):
+    return crud.get_most_selected(db)

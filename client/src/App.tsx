@@ -7,15 +7,20 @@ import { bindActionCreators } from 'redux';
 
 import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
 import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
+import { Overview } from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
-import { IStringElementMap } from './index.d';
+import { IPlayer, IStringElementMap } from './index.d';
 import { IGlobalReducer } from './reducers/GlobalReducers';
+import { loaded, loading, LoadState } from './utils/LoadState';
 
 export interface IAppState {
   activePanelOnly: boolean;
   animate: boolean;
   navbarTabId: TabId;
   vertical: boolean;
+  topTenIn: LoadState<IPlayer[]>;
+  topTenOut: LoadState<IPlayer[]>;
+  topTenSelected: LoadState<IPlayer[]>;
 }
 
 export interface IAppProps {
@@ -31,28 +36,41 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     this.state = {
       activePanelOnly: true,
       animate: true,
-      navbarTabId: "playerAnalysis",
+      navbarTabId: "overview",
       vertical: false,
+      topTenIn: loading(),
+      topTenOut: loading(),
+      topTenSelected: loading(),
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
     getPlayerLatestList("http://localhost:8000/players/latest/all");
     getPlayerList("http://localhost:8000/players/all");
     getPlayerTypeList("http://localhost:8000/players/types");
     getTeamList("http://localhost:8000/teams/all");
-  }
- 
-  private tabIdToComponentMap: IStringElementMap = {
-    "playerAnalysis": <PlayerAnalysis />,
+
+    const resIn: Response = await fetch("http://localhost:8000/transfers/topTenIn");
+    const resInJson: IPlayer[] = await resIn.json();
+    const resOut: Response = await fetch("http://localhost:8000/transfers/topTenOut");
+    const resOutJson: IPlayer[] = await resOut.json();
+    const resSelected: Response = await fetch("http://localhost:8000/players/topTenSelected");
+    const resSelectedJson: IPlayer[] = await resSelected.json();
+    this.setState({ topTenIn: loaded(resInJson), topTenOut: loaded(resOutJson), topTenSelected: loaded(resSelectedJson)})
   }
 
   private handleNavbarTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
 
-  private displayActiveTab = (tabId: string) => this.tabIdToComponentMap[tabId];
-
   public render() {
+
+    const tabIdToComponentMap: IStringElementMap = {
+      "overview": <Overview topTenIn={this.state.topTenIn} topTenOut={this.state.topTenOut} topTenSelected={this.state.topTenSelected}/>,
+      "playerAnalysis": <PlayerAnalysis />,
+    }
+    
+    const displayActiveTab = (tabId: string) => tabIdToComponentMap[tabId];
+  
     return (
       <div className="bp3-dark">
         <Navbar>
@@ -70,13 +88,14 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               onChange={this.handleNavbarTabChange}
               selectedTabId={this.state.navbarTabId}
               vertical={false}>
-              <Tab id="playerAnalysis" title="Player Analysis"/>
+              <Tab id="overview" title="Overview" />
+              <Tab id="playerAnalysis" title="Player Analysis" />
               <Tabs.Expander />
             </Tabs>
           </Navbar.Group>
         </Navbar>
         <div className='main-container'>
-          {this.displayActiveTab(this.state.navbarTabId.toString())}
+          {displayActiveTab(this.state.navbarTabId.toString())}
         </div>
       </div>
     )

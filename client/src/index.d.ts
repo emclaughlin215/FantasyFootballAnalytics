@@ -5,20 +5,19 @@ export interface IStringElementMap {
   [key: string]: JSX.Element;
 }
 
-
 export interface IPlayerType {
-  index: number
-  id: number
+  index?: number
+  id?: number
   plural_name: string
-  plural_name_short: string
-  singular_name: string
-  singular_name_short: string
-  squad_select: number
-  squad_min_play: number
-  squad_max_play: number
-  ui_shirt_specific: boolean
-  element_count: number
-  timestamp: Date
+  plural_name_short?: string
+  singular_name?: string
+  singular_name_short?: string
+  squad_select?: number
+  squad_min_play?: number
+  squad_max_play?: number
+  ui_shirt_specific?: boolean
+  element_count?: number
+  timestamp?: Date
 }
 
 
@@ -45,6 +44,7 @@ export interface IPlayer {
   news: string
   news_added: string
   now_cost: number
+  cost: number
   photo: string
   points_per_game: number
   second_name: string
@@ -100,24 +100,24 @@ export interface IPlayer {
 
 
 export interface ITeam {
-  draw: number
-  form: number
-  id: number
-  loss: number
+  draw?: number
+  form?: number
+  id?: number
+  loss?: number
   name: string
-  played: number
-  points: number
-  position: number
-  short_name: string
-  strength: number
-  team_division: string
-  unavailable: boolean
-  win: number
-  strength_overall_home: number
-  strength_overall_away: number
-  strength_attack_home: number
-  strength_attack_away: number
-  strength_defence_home: number
-  strength_defence_away: number
-  pulse_id: number
+  played?: number
+  points?: number
+  position?: number
+  short_name?: string
+  strength?: number
+  team_division?: string
+  unavailable?: boolean
+  win?: number
+  strength_overall_home?: number
+  strength_overall_away?: number
+  strength_attack_home?: number
+  strength_attack_away?: number
+  strength_defence_home?: number
+  strength_defence_away?: number
+  pulse_id?: number
 }

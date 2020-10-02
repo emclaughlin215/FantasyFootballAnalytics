@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="" />
+    <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/News.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/News.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/dbmysql/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/dbmysql/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/dbmysql/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/dbmysql/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/schemas.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

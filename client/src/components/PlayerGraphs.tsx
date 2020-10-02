@@ -55,7 +55,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
   render() {
     const { filteredPlayer, propertyToGraph, playerListLatest } = this.props.playerState;
     const filterPlayerValue: IPlayer[] = filteredPlayer.type === 'loaded' ? filteredPlayer.value : []
-    const propertyBeingGraphed: keyof IPlayer = propertyToGraph ? propertyToGraph : '' as keyof IPlayer;
+    const propertyBeingGraphed: keyof IPlayer = propertyToGraph ? propertyToGraph : 'total_points' as keyof IPlayer;
     
     const PropertySuggest = Suggest.ofType<string>();
     const propertiesOfPlayer: string[] = playerListLatest.type === 'loaded'
@@ -67,12 +67,10 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
       : [];
     const plottingData: PlottingData = {}
     filterPlayerValue.forEach((player) => {
-      if (player.timestamp.toString() in plottingData) {
-        plottingData[player.timestamp.toString()][player.second_name] = player[propertyBeingGraphed];
-      } else {
+      if (!(player.timestamp.toString() in plottingData)) {
         plottingData[player.timestamp.toString()] = {};
-        plottingData[player.timestamp.toString()][player.second_name] = player[propertyBeingGraphed];
       }
+      plottingData[player.timestamp.toString()][player.second_name] = player[propertyBeingGraphed];
     })
     const data: GraphPoint[] = [];
     Object.entries(plottingData)
@@ -97,10 +95,10 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
             onItemSelect={(property: string) => this.props.addPropertiesToGraph(property as keyof IPlayer)}
             items={propertiesOfPlayer}
             itemRenderer={renderProperty}
-            defaultSelectedItem={'total_points'}
+            defaultSelectedItem={propertyBeingGraphed}
             noResults={<MenuItem disabled={true} text="No results." />}
           />
-        </div>
+        </div> 
         <LineChart width={1100} height={500} data={data}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />s

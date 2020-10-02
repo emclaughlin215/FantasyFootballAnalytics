@@ -28,9 +28,9 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
       columns: [
         new StringSortableColumn('First Name', "first_name"),
         new StringSortableColumn('Second Name', "second_name"),
-        new NumberSortableColumn('Price', "now_cost"),
+        new NumberSortableColumn('Price', "cost"),
         new NumberSortableColumn('Points', "total_points"),
-        new NumberSortableColumn('Form', "form"),
+        new NumberSortableColumn('Form', "form"), 
         new NumberSortableColumn('Goals Scored', "goals_scored"),
         new NumberSortableColumn('Assists', "assists"),
         new NumberSortableColumn('Clean Sheets', "clean_sheets"),
@@ -81,7 +81,7 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
       <div className='body-container'> 
         <div>
           <Table
-            numRows={filteredPlayerLatest.type === "loading" ? 0 : filteredPlayerLatest.value.length > 20 ? 20 : filteredPlayerLatest.value.length}
+            numRows={filteredPlayerLatest.type === "loading" ? 0 : filteredPlayerLatest.value.length > 30 ? 30 : filteredPlayerLatest.value.length}
             enableColumnReordering={true}
             numFrozenColumns={2}
             loadingOptions={this.getLoadingOptions()}>

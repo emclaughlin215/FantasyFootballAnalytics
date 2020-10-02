@@ -18,8 +18,9 @@ class StoreFplData:
 
     def handleElements(self):
         self.df['form'] = pd.to_numeric(self.df['form'])
+        self.df['cost'] = self.df['now_cost'] / 10
         self.df['form_to_cost'] = self.df['form'] / self.df['now_cost']
-        self.df['bonus_to_cost'] = self.df['form'] / self.df['now_cost']
+        self.df['bonus_to_cost'] = self.df['bonus'] / self.df['now_cost']
 
         primary_key_cols = ['id', 'timestamp']
         self.df['primary_key'] = self.df[primary_key_cols].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)

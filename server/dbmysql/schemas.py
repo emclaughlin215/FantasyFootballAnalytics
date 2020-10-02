@@ -53,6 +53,7 @@ class Player(PlayerBase):
     news: Optional[str]
     news_added: Optional[str]
     now_cost: Optional[int]
+    cost: Optional[float]
     photo: Optional[str]
     points_per_game: Optional[float]
     selected_by_percent: Optional[float]
@@ -100,8 +101,8 @@ class Player(PlayerBase):
     direct_freekicks_text: Optional[str]
     penalties_order: Optional[int]
     penalties_text: Optional[str]
-    form_to_cost: Optional[int]
-    bonus_to_cost: Optional[int]
+    form_to_cost: Optional[float]
+    bonus_to_cost: Optional[float]
     timestamp: Optional[datetime]
 
     class Config:

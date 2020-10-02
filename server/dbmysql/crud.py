@@ -1,4 +1,3 @@
-from sqlalchemy import select, Table, func, desc
 from sqlalchemy.orm import Session
 
 import models
@@ -30,3 +29,15 @@ def get_team_players(db: Session, team_id: int):
 
 def get_all_teams(db: Session):
     return db.query(models.Team).all()
+
+
+def get_most_transferred_in(db: Session):
+    return db.query(models.PlayerLatest).order_by(models.PlayerLatest.transfers_in_event.desc()).limit(10).all()
+
+
+def get_most_transferred_out(db: Session):
+    return db.query(models.PlayerLatest).order_by(models.PlayerLatest.transfers_out_event.desc()).limit(10).all()
+
+
+def get_most_selected(db: Session):
+    return db.query(models.PlayerLatest).order_by(models.PlayerLatest.selected_by_percent.desc()).limit(10).all()
