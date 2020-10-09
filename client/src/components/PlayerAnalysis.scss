@@ -16,9 +16,14 @@
 
 .tab-title {
   display: flex;
-  width: 15vw;
-  justify-content: space-evenly;
-  align-content: center;
+  width: 25vw;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.title-control {
+  display: flex;
+  flex-direction: row;
 }
 
 .stats-card {
@@ -36,6 +41,10 @@
 
 .body-container {
   flex: 1;
+}
+
+.tab-container {
+  padding: 20px;
 }
 
 .player-analysis-tabs {

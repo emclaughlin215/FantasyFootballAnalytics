@@ -41,3 +41,7 @@ def get_most_transferred_out(db: Session):
 
 def get_most_selected(db: Session):
     return db.query(models.PlayerLatest).order_by(models.PlayerLatest.selected_by_percent.desc()).limit(10).all()
+
+
+def get_picked_team(db: Session):
+    return db.query(models.PickedTeam).all()

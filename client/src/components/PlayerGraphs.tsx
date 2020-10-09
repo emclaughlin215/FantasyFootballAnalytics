@@ -1,4 +1,4 @@
-import { Colors, MenuItem, Tooltip } from '@blueprintjs/core';
+import { Checkbox, Colors, MenuItem, Tooltip } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import moment from 'moment';
 import React from 'react';
@@ -19,8 +19,8 @@ export interface PlayerGraphProps {
   addPropertiesToGraph: typeof addPropertiesToGraph;
 }
 
-export  interface PlayerGraphState {
-  player: IPlayer
+export interface PlayerGraphState {
+  thisSeasonOnly: boolean
 }
 
 export interface TemporalData {
@@ -38,6 +38,9 @@ export interface GraphPoint {
 export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGraphState> {
   constructor(props: PlayerGraphProps) {
     super(props);
+    this.state = {
+      thisSeasonOnly: true,
+    }
   }
 
   private _drawLines(data: GraphPoint[]){
@@ -72,21 +75,21 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
       }
       plottingData[player.timestamp.toString()][player.second_name] = player[propertyBeingGraphed];
     })
-    const data: GraphPoint[] = [];
+    let data: GraphPoint[] = [];
     Object.entries(plottingData)
       .sort((a, b) => moment(a[0]).unix() - moment(b[0]).unix())
       .forEach((keyValue, index) => {
-        if (index === 0) {
-        } else {
-          let currentData: GraphPoint = {};
-          currentData = keyValue[1];
-          currentData["timestamp"] = "GW" + (index).toString() + " " + moment(keyValue[0]).format("DD MMM YY");
-          data.push(currentData);
-        }
+        let currentData: GraphPoint = {};
+        currentData = keyValue[1];
+        currentData["timestamp"] = "GW" + (index).toString() + " " + moment(keyValue[0]).format("DD MMM YY");
+        data.push(currentData); 
       })
+    if (this.state.thisSeasonOnly) {
+      data = data.slice(1);
+    }
     return (
       <div>
-        <div className='dropdown-container'>
+        <div className='tab-dropdown-container'>
           <p className='dropdown'>Attribute</p>
           <PropertySuggest
             className={playerListLatest.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
@@ -98,14 +101,17 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
             defaultSelectedItem={propertyBeingGraphed}
             noResults={<MenuItem disabled={true} text="No results." />}
           />
+          <Checkbox className='dropdown' checked={this.state.thisSeasonOnly} onChange={() => this.setState({thisSeasonOnly: !this.state.thisSeasonOnly})}>
+            This season only
+          </Checkbox>
         </div> 
-        <LineChart width={1100} height={500} data={data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        {filteredPlayer.type === 'loaded' ? <LineChart width={1100} height={500} data={data}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />s
           <XAxis
             dataKey="timestamp"
             tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
-            padding={{ left: 30, right: 30 }} />
+          />
           <YAxis
             tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
             tickLine={false}
@@ -113,7 +119,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
           <Tooltip />
           <Legend />
           {this._drawLines(data)}
-        </LineChart>
+        </LineChart> : <div></div>}
       </div>
     )
   }

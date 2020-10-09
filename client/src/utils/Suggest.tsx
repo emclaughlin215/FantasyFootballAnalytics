@@ -8,7 +8,7 @@ import { capitaliseSentence } from './String';
 export const renderPlayerTypeInputValue = (player: IPlayerType) => player.plural_name;
 export const renderPlayerInputValue = (player: IPlayer) => player.first_name + ' ' + player.second_name;
 export const renderTeamInputValue = (team: ITeam) => team.name;
-export const renderPropertyInputValue = (property: string) => capitaliseSentence(property.split('_').join(' '));
+export const renderPropertyInputValue = (property: string) => capitaliseSentence(property.toString(), '_');
 
 export const renderPlayerType: ItemRenderer<IPlayerType> = (team, { handleClick, modifiers, query}) => {
   if (!modifiers.matchesPredicate) {
@@ -62,7 +62,7 @@ export const renderProperty: ItemRenderer<string> = (property, { handleClick, mo
   if (!modifiers.matchesPredicate) {
       return null;
   }
-  const text = `${capitaliseSentence(property.split('_').join(' '))}`;
+  const text = `${capitaliseSentence(property.toString(), '_')}`;
   return (
       <MenuItem
         active={modifiers.active}

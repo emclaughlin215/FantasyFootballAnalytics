@@ -174,6 +174,23 @@ class Player(Base):
     bonus_to_cost = Column(Integer, nullable=True)
     timestamp = Column(DateTime, nullable=True)
 
+
+class PickedTeam(Base):
+    __tablename__ = "picked_team"
+
+    primary_key = Column(String, primary_key=True)
+    element = Column(Integer)
+    event = Column(Integer)
+    position = Column(Integer)
+    multiplier = Column(Integer)
+    is_captain = Column(Boolean)
+    is_vice_captain = Column(Boolean)
+    first_name = Column(String)
+    second_name = Column(String)
+    element_name = Column(String)
+    cost = Column(Float)
+    gameweek_points = Column(Integer)
+
     
 class Team(Base):
     __tablename__ = "teams"

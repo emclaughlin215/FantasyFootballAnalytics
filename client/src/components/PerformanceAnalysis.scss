@@ -4,24 +4,13 @@
 
 .tab-title {
   display: flex;
-  width:20vw;
-  justify-content: space-evenly;
-  align-content: center;
+  width: 20vw;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.body-container {
-  flex: 1;
-  width: 80vw;
-}
-
-.dropdown-container {
+.tab-dropdown-container {
   display: flex;
   width: 60vw;
-  align-content: space-between;
-  justify-content: space-around;
-  margin: 2vw;
-}
-
-.dropdown {
-  height: 10vh
+  align-content: flex-start;
 }

@@ -2,14 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/App.test.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/News.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/News.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/Overview.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Overview.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/Overview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Overview.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/test/utils/string.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/test/utils/string.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/utils/String.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/String.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/dbmysql/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/crud.py" afterDir="false" />
@@ -152,6 +159,9 @@
         <item itemvalue="Python.getData" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="showServicesTree" value="false" />
   </component>
   <component name="SvnConfiguration">
     <configuration />

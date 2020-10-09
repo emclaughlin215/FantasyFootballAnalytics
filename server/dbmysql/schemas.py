@@ -109,6 +109,27 @@ class Player(PlayerBase):
         orm_mode = True
 
 
+class PickedTeamBase(BaseModel):
+    primary_key = str
+
+
+class PickedTeam(PickedTeamBase):
+    element: Optional[int]
+    event: Optional[int]
+    position: Optional[int]
+    multiplier: Optional[int]
+    is_captain: Optional[bool]
+    is_vice_captain: Optional[bool]
+    first_name: Optional[str]
+    second_name: Optional[str]
+    element_name: Optional[str]
+    cost: Optional[float]
+    gameweek_points: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
 class TeamBase(BaseModel):
     id: int
     code: int

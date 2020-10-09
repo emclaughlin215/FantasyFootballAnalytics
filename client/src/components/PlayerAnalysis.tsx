@@ -130,11 +130,11 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
 
     return (
       <div className='body-container'>
-        <div className='tab-title'>
-          <Icon icon={'person'} iconSize={20} />
-          <H3 className='bp3-heading'>Player Analysis</H3>
-        </div>
-        <div>
+        <div className='title-control'>
+          <div className='tab-title'>
+            <Icon className='icon-title' icon={'person'} iconSize={20} />
+            <H3 className='bp3-heading'>Player Analysis</H3>
+          </div>
           <div className='dropdown-container'>
             <p className='dropdown'>Team</p>
             <TeamSuggest
@@ -145,7 +145,7 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               items={teamListDisplay}
               itemRenderer={renderTeam}
               noResults={<MenuItem disabled={true} text="No results." />}
-            />
+            /> 
             <Divider />
             <p className='dropdown' >Position</p>
             <PlayerTypeSuggest
@@ -170,6 +170,8 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               noResults={<MenuItem disabled={true} text="No results." />}
             />
           </div>
+        </div>
+        <div>
           <div className='player-analysis-tabs'>
             <Tabs
               animate={true}
@@ -184,7 +186,7 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               <Tab id="playerRanking" title="Discovery" />
               <Tabs.Expander />
             </Tabs>
-            <div>
+            <div className='tab-container'>
               {tabIdToComponentMap[this.state.navbarTabId.toString()]}
             </div>
           </div>

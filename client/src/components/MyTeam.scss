@@ -1,0 +1,22 @@
+.team-layout {
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+  align-items: center;
+  align-content: space-evenly;
+}
+
+.position-layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: inherit;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.player-display {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

@@ -7,9 +7,10 @@ import { bindActionCreators } from 'redux';
 
 import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
 import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
+import { MyTeam } from './components/MyTeam';
 import { Overview } from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
-import { IPlayer, IStringElementMap } from './index.d';
+import { IPickedTeam, IPlayer, IStringElementMap } from './index.d';
 import { IGlobalReducer } from './reducers/GlobalReducers';
 import { loaded, loading, LoadState } from './utils/LoadState';
 
@@ -21,6 +22,7 @@ export interface IAppState {
   topTenIn: LoadState<IPlayer[]>;
   topTenOut: LoadState<IPlayer[]>;
   topTenSelected: LoadState<IPlayer[]>;
+  pickedTeam: LoadState<IPickedTeam[]>;
 }
 
 export interface IAppProps {
@@ -41,23 +43,32 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       topTenIn: loading(),
       topTenOut: loading(),
       topTenSelected: loading(),
+      pickedTeam: loading(),
     };
   }
 
   async componentWillMount() {
-    const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
-    getPlayerLatestList("http://localhost:8000/players/latest/all");
-    getPlayerList("http://localhost:8000/players/all");
-    getPlayerTypeList("http://localhost:8000/players/types");
-    getTeamList("http://localhost:8000/teams/all");
-
     const resIn: Response = await fetch("http://localhost:8000/transfers/topTenIn");
     const resInJson: IPlayer[] = await resIn.json();
     const resOut: Response = await fetch("http://localhost:8000/transfers/topTenOut");
     const resOutJson: IPlayer[] = await resOut.json();
     const resSelected: Response = await fetch("http://localhost:8000/players/topTenSelected");
     const resSelectedJson: IPlayer[] = await resSelected.json();
-    this.setState({ topTenIn: loaded(resInJson), topTenOut: loaded(resOutJson), topTenSelected: loaded(resSelectedJson)})
+    const resPickedTeam: Response = await fetch("http://localhost:8000/pickedTeam/");
+    const resPickedTeamJson: IPickedTeam[] = await resPickedTeam.json();
+    this.setState({})
+    this.setState({
+      topTenIn: loaded(resInJson),
+      topTenOut: loaded(resOutJson),
+      topTenSelected: loaded(resSelectedJson),
+      pickedTeam: loaded(resPickedTeamJson),
+    })
+    
+    const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
+    getPlayerLatestList("http://localhost:8000/players/latest/all");
+    getPlayerList("http://localhost:8000/players/all");
+    getPlayerTypeList("http://localhost:8000/players/types");
+    getTeamList("http://localhost:8000/teams/all");
   }
 
   private handleNavbarTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
@@ -65,8 +76,15 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   public render() {
 
     const tabIdToComponentMap: IStringElementMap = {
-      "overview": <Overview topTenIn={this.state.topTenIn} topTenOut={this.state.topTenOut} topTenSelected={this.state.topTenSelected}/>,
+      "overview": <Overview
+        topTenIn={this.state.topTenIn}
+        topTenOut={this.state.topTenOut}
+        topTenSelected={this.state.topTenSelected}
+      />,
       "playerAnalysis": <PlayerAnalysis />,
+      "myTeam": <MyTeam
+        pickedTeam={this.state.pickedTeam}
+      />,
     }
     
     const displayActiveTab = (tabId: string) => tabIdToComponentMap[tabId];
@@ -90,6 +108,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               vertical={false}>
               <Tab id="overview" title="Overview" />
               <Tab id="playerAnalysis" title="Player Analysis" />
+              <Tab id="myTeam" title="My Team" />
               <Tabs.Expander />
             </Tabs>
           </Navbar.Group>

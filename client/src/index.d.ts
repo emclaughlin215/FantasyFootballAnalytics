@@ -121,3 +121,19 @@ export interface ITeam {
   strength_defence_away?: number
   pulse_id?: number
 }
+
+
+export interface IPickedTeam {
+  primary_key: string
+  element?: int
+  event?: int
+  position?: int
+  multiplier?: int
+  is_captain?: bool
+  is_vice_captain?: bool
+  first_name?: str
+  second_name?: str
+  element_name?: str
+  cost?: float
+  gameweek_points?: int
+}

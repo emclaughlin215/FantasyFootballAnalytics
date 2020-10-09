@@ -82,3 +82,8 @@ async def transfersTopTenOut(db: Session = Depends(get_db)):
 @app.get("/players/topTenSelected", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
 async def playersTopTenSelected(db: Session = Depends(get_db)):
     return crud.get_most_selected(db)
+
+
+@app.get("/pickedTeam", response_model=List[schemas.PickedTeam], status_code=status.HTTP_200_OK)
+async def playersTopTenSelected(db: Session = Depends(get_db)):
+    return crud.get_picked_team(db)
