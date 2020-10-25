@@ -10,7 +10,7 @@ import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
 import { MyTeam } from './components/MyTeam';
 import { Overview } from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
-import { IPickedTeam, IPlayer, IStringElementMap } from './index.d';
+import { IDisplayTeam, IPlayer, IStringElementMap } from './index.d';
 import { IGlobalReducer } from './reducers/GlobalReducers';
 import { loaded, loading, LoadState } from './utils/LoadState';
 
@@ -22,7 +22,9 @@ export interface IAppState {
   topTenIn: LoadState<IPlayer[]>;
   topTenOut: LoadState<IPlayer[]>;
   topTenSelected: LoadState<IPlayer[]>;
-  pickedTeam: LoadState<IPickedTeam[]>;
+  pickedTeam: LoadState<IDisplayTeam>;
+  selectedTeam: LoadState<IDisplayTeam>;
+  highestTeam: LoadState<IDisplayTeam>;
 }
 
 export interface IAppProps {
@@ -44,6 +46,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       topTenOut: loading(),
       topTenSelected: loading(),
       pickedTeam: loading(),
+      selectedTeam: loading(),
+      highestTeam: loading(),
     };
   }
 
@@ -54,14 +58,19 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const resOutJson: IPlayer[] = await resOut.json();
     const resSelected: Response = await fetch("http://localhost:8000/players/topTenSelected");
     const resSelectedJson: IPlayer[] = await resSelected.json();
-    const resPickedTeam: Response = await fetch("http://localhost:8000/pickedTeam/");
-    const resPickedTeamJson: IPickedTeam[] = await resPickedTeam.json();
-    this.setState({})
+    const resPickedTeam: Response = await fetch("http://localhost:8000/expectedPoints/picked");
+    const resPickedTeamJson: IDisplayTeam = await resPickedTeam.json();
+    const resSelectedTeam: Response = await fetch("http://localhost:8000/expectedPoints/selected");
+    const resSelectedTeamJson: IDisplayTeam = await resSelectedTeam.json();
+    const resHighestTeam: Response = await fetch("http://localhost:8000/expectedPoints/highest");
+    const resHighestTeamJson: IDisplayTeam = await resHighestTeam.json();
     this.setState({
       topTenIn: loaded(resInJson),
       topTenOut: loaded(resOutJson),
       topTenSelected: loaded(resSelectedJson),
       pickedTeam: loaded(resPickedTeamJson),
+      selectedTeam: loaded(resSelectedTeamJson),
+      highestTeam: loaded(resHighestTeamJson),
     })
     
     const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
@@ -83,7 +92,9 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       />,
       "playerAnalysis": <PlayerAnalysis />,
       "myTeam": <MyTeam
-        pickedTeam={this.state.pickedTeam}
+      pickedTeam={this.state.pickedTeam}
+      selectedTeam={this.state.selectedTeam}
+      highestTeam={this.state.highestTeam}
       />,
     }
     

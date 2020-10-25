@@ -96,6 +96,7 @@ export interface IPlayer {
   form_to_cost: number
   bonus_to_cost: number
   timestamp: Date
+  selected_by_percent_change: number
 }
 
 
@@ -122,8 +123,13 @@ export interface ITeam {
   pulse_id?: number
 }
 
+export interface IDisplayTeam {
+  team: IDisplayPlayer[]
+  cost: number
+  points: number
+}
 
-export interface IPickedTeam {
+export interface IDisplayPlayer {
   primary_key: string
   element?: int
   event?: int
@@ -135,5 +141,5 @@ export interface IPickedTeam {
   second_name?: str
   element_name?: str
   cost?: float
-  gameweek_points?: int
+  event_points?: int
 }

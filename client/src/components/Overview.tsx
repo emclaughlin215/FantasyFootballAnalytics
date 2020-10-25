@@ -3,7 +3,7 @@ import './Overview.scss';
 import { Colors, H3, Icon, Tab, TabId, Tabs, Tooltip } from '@blueprintjs/core';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, LabelList, Legend, XAxis, YAxis } from 'recharts';
 
 import { IPlayer, IStringElementMap } from '../index.d';
 import { LoadState } from '../utils/LoadState';
@@ -30,6 +30,7 @@ export class Overview extends React.PureComponent<OverviewProps, OverviewState> 
   private TopTens(players: LoadState<IPlayer[]>, property: keyof IPlayer, units: string) {
     const name: string = capitaliseSentence(property.toString(), '_');
     const playersData: IPlayer[] = players.type === 'loaded' ? players.value : [];
+    
     return (
         <BarChart className={players.type === 'loading' ? 'bp3-skeleton' : ''} width={1200} height={500} data={playersData} layout='horizontal'>
           <CartesianGrid strokeDasharray="3 3" />
@@ -45,7 +46,11 @@ export class Overview extends React.PureComponent<OverviewProps, OverviewState> 
           />
           <Tooltip />
           <Legend />
-          <Bar name={name} label dataKey={property} fill="#8884d8" />
+        <Bar name={name} dataKey={property} fill="#8884d8" >
+          <LabelList
+            position="center"
+            valueAccessor={(player: IPlayer) => { return player[property]}} />
+        </Bar>
         </BarChart>
     )
   } 

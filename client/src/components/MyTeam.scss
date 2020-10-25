@@ -1,22 +1,51 @@
+@import "~@blueprintjs/core";
+
+
+.pitches_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
 .team-layout {
   display: flex;
   flex-direction: column;
-  width: 50vw;
+  width: 40vw;
+  justify-content: space-evenly;
   align-items: center;
-  align-content: space-evenly;
+  height: 72vh;
+  border-radius: 10px;
+  position: relative;
+}
+
+.team-layout::before {    
+  content: "";
+  background-image: url('./../resources/football-pitch-hire-bristol-min.jpg');
+  background-size: cover;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  opacity: 0.45;
 }
 
 .position-layout {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  width: inherit;
+  width: 40vw;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
 .player-display {
+  position: relative;
+  font-size: medium;
   display: flex;
   flex-direction: row;
   align-items: center;
+  font-weight: bolder;
+  color: rgb(210, 211, 210);
+  padding: 3px;
 }

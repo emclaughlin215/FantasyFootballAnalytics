@@ -2,30 +2,28 @@ import './MyTeam.scss';
 
 import React from 'react';
 
-import { IPickedTeam } from '../index.d';
-import { loading, LoadState } from '../utils/LoadState';
+import { IDisplayTeam } from '../index.d';
+import { LoadState } from '../utils/LoadState';
 
 
 export interface MyTeamState {
 }
 
 export interface MyTeamProps {
-  pickedTeam: LoadState<IPickedTeam[]>
+  pickedTeam: LoadState<IDisplayTeam>
+  selectedTeam: LoadState<IDisplayTeam>
+  highestTeam: LoadState<IDisplayTeam>
 }
 
 export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
   constructor(props: MyTeamProps) {
     super(props)
-    this.state = {
-      pickedTeam: loading(),
-    }
   }
 
-  private team() {
-    const { pickedTeam } = this.props;
+  private team(displayTeam: IDisplayTeam) {
     let current_position: string = ''; let team_positions: any[] = []; let team_row: any[] = [];
     let count = 0;
-    pickedTeam.type === 'loaded' && pickedTeam.value.forEach((player) => {
+    displayTeam.team.forEach((player) => {
       if (count <= 11) {
         if (player['element_name'] !== current_position) {
           team_positions.push(<div className='position-layout'>{team_row}</div>)
@@ -33,7 +31,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
         }
       }
       if (count === 11) {
-        team_row.push(<p>Subs: </p>)
+        team_row.push(<p className='player-display'>Subs: </p>)
       }
       current_position = player['element_name'];
       team_row.push(
@@ -48,13 +46,18 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
   }
 
   render() {
-
+    const { pickedTeam, selectedTeam, highestTeam } = this.props;
     return (
       <div className='body-container'>
-        <div className='team-layout'>
-          {this.team()}
+        <div className='pitches_container'>
+          {[selectedTeam, highestTeam].map((team) => {
+            return (team.type === 'loaded' &&
+            <div className='team-layout'>
+              {this.team(team.value)}
+            </div>
+          )})}
         </div>
-      </div>
+      </div> 
     )
   }
 }
