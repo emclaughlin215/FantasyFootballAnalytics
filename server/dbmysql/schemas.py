@@ -1,5 +1,4 @@
-from datetime import date
-from typing import Optional
+from typing import Optional, List
 
 from datetime import datetime
 from pydantic import BaseModel
@@ -104,6 +103,7 @@ class Player(PlayerBase):
     form_to_cost: Optional[float]
     bonus_to_cost: Optional[float]
     timestamp: Optional[datetime]
+    selected_by_percent_change: Optional[float]
 
     class Config:
         orm_mode = True
@@ -114,7 +114,6 @@ class PickedTeamBase(BaseModel):
 
 
 class PickedTeam(PickedTeamBase):
-    element: Optional[int]
     event: Optional[int]
     position: Optional[int]
     multiplier: Optional[int]
@@ -124,7 +123,8 @@ class PickedTeam(PickedTeamBase):
     second_name: Optional[str]
     element_name: Optional[str]
     cost: Optional[float]
-    gameweek_points: Optional[int]
+    event_points: Optional[int]
+    timestamp: Optional[datetime]
 
     class Config:
         orm_mode = True
@@ -155,6 +155,16 @@ class Team(TeamBase):
     strength_defence_home: Optional[int]
     strength_defence_away: Optional[int]
     pulse_id: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
+class TeamExpectedPoints(BaseModel):
+
+    expected_points: int
+    cost: int
+    team: List[PickedTeam]
 
     class Config:
         orm_mode = True

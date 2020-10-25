@@ -1,13 +1,11 @@
-from fastapi import FastAPI, status, Depends
 from typing import List
 
-from sqlalchemy.orm import Session
+from fastapi import FastAPI, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
-import crud
-import models
-import schemas
-from database import cnx, SessionLocal
+from server.dbmysql import crud, schemas, models
+from server.dbmysql.database import cnx, SessionLocal
 
 models.Base.metadata.create_all(bind=cnx)
 app = FastAPI()
@@ -34,24 +32,17 @@ def get_db():
         db.close()
 
 
+# ------------ GET PLAYERS AND TEAMS -----------
+
+
 @app.get("/players/all", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
 async def playersAll(db: Session = Depends(get_db)):
     return crud.get_all_players(db)
 
 
-@app.get("/players/player/{player_code}", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
-async def playersAll(player_code, db: Session = Depends(get_db)):
-    return crud.get_player(db, player_code)
-
-
 @app.get("/players/latest/all", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
 async def playersLatestAll(db: Session = Depends(get_db)):
     return crud.get_all_players_latest(db)
-
-
-@app.get("/players/latest/player/{player_code}", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
-async def player(player_code, db: Session = Depends(get_db)):
-    return crud.get_player_latest(db, player_code)
 
 
 @app.get("/players/types", response_model=List[schemas.PlayerType], status_code=status.HTTP_200_OK)
@@ -69,6 +60,9 @@ async def teamsAll(db: Session = Depends(get_db)):
     return crud.get_all_teams(db)
 
 
+# ------------- GET STATS ----------------
+
+
 @app.get("/transfers/topTenIn", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
 async def transfersTopTenIn(db: Session = Depends(get_db)):
     return crud.get_most_transferred_in(db)
@@ -84,6 +78,27 @@ async def playersTopTenSelected(db: Session = Depends(get_db)):
     return crud.get_most_selected(db)
 
 
-@app.get("/pickedTeam", response_model=List[schemas.PickedTeam], status_code=status.HTTP_200_OK)
-async def playersTopTenSelected(db: Session = Depends(get_db)):
-    return crud.get_picked_team(db)
+# ---------- GET TEAMS AND POINTS ----------
+
+
+@app.get("/expectedPoints/picked", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
+async def expectedPointsPicked(db: Session = Depends(get_db)):
+    return crud.get_picked_expected_points(db)
+
+
+@app.get("/expectedPoints/selected", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
+async def expectedPointsSelected(db: Session = Depends(get_db)):
+    return crud.get_selected_expected_points(db)
+
+
+@app.get("/expectedPoints/highest", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
+async def expectedPointsSelected(db: Session = Depends(get_db)):
+    return crud.get_highest_expected_points(db)
+
+
+# -------- UPDATE PLAYERS AND TEAMS ---------
+
+
+@app.post("/updatePlayersAndTeams", response_model=str, status_code=status.HTTP_200_OK)
+async def expectedPointsHighest():
+    return crud.update_players_set_teams()
