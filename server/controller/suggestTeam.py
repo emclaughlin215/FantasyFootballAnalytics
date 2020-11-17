@@ -85,7 +85,7 @@ def getHighestExpectedPoints(all_players_latest, max_players_one_team=3):
 
 
 def getRecommendedChanges(proposed_changes, number_of_changes_needed, player, next_best_player):
-    expected_loss = player['ep_next'] - next_best_player['ep_next']
+    expected_loss = float(player['ep_next']) - float(next_best_player['ep_next'])
 
     if len(proposed_changes) == number_of_changes_needed:
         proposed_changes.sort(key=lambda x: x[2], reverse=True)
