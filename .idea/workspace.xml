@@ -19,55 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/fantasyPremierLeagueApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fantasyPremierLeagueApp.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/actions/GlobalActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/actions/GlobalActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/actions/PlayerActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/actions/PlayerActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/MyTeam.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MyTeam.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/MyTeam.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MyTeam.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/News.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/News.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Overview.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Overview.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Overview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Overview.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PerformanceAnalysis.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/react-app-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/react-app-env.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/reducers/GlobalReducers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/reducers/GlobalReducers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/reducers/PlayerReducers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/reducers/PlayerReducers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/reducers/Reducers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/reducers/Reducers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/test/utils/string.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/LoadState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/LoadState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/String.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/String.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/Stubs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Stubs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/Tables.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Tables.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/TypeScript.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/TypeScript.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/server/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controller/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controller/suggestTeam.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/controller/suggestTeam.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/StoreFplData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/dbmysql/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/dbmysql/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/server/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/tableSchemas.sql" beforeDir="false" afterPath="$PROJECT_DIR$/server/tableSchemas.sql" afterDir="false" />
-    </list>
+    <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
