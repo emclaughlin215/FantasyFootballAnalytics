@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 import pandas as pd
 from datetime import datetime as dt
-from server.dbmysql import models, database
+from server.api import models, database
 from server.controller.suggestTeam import getExpectedPoints, getHighestExpectedPoints
 
 

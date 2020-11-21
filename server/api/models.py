@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Boolean, Integer, DateTime, Float
 
-from server.dbmysql.database import Base
+from server.api.database import Base
 
 
 class PlayerType(Base):

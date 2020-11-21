@@ -4,8 +4,8 @@ from fastapi import FastAPI, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from server.dbmysql import schemas, models, crud
-from server.dbmysql.database import cnx, SessionLocal
+from server.api import schemas, models, crud
+from server.api.database import cnx, SessionLocal
 
 models.Base.metadata.create_all(bind=cnx)
 app = FastAPI()
