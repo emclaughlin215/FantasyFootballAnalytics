@@ -88,7 +88,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
       data = data.slice(1);
     }
     return (
-      <div>
+      <div className='graph-container'>
         <div className='tab-dropdown-container'>
           <p className='dropdown'>Attribute</p>
           <PropertySuggest

@@ -102,3 +102,15 @@ async def expectedPointsSelected(db: Session = Depends(get_db)):
 @app.post("/updatePlayersAndTeams", response_model=str, status_code=status.HTTP_200_OK)
 async def expectedPointsHighest():
     return crud.update_players_set_teams()
+
+
+# ---------- EVENTS AND GAMEWEEK ------------
+
+@app.get("/gameweek/", response_model=schemas.EventInfo, status_code=status.HTTP_200_OK)
+async def getGameWeek(db: Session = Depends(get_db)):
+    return crud.get_game_week_info(db)
+
+
+@app.post('/update/events', response_model=str, status_code=status.HTTP_200_OK)
+async def updateEvents():
+    return crud.update_events()

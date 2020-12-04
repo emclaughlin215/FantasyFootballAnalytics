@@ -83,7 +83,7 @@ export class Overview extends React.PureComponent<OverviewProps, OverviewState> 
             <Tab id="topTenSelected" title="Selected By" />
             <Tabs.Expander />
           </Tabs>
-          <div>
+          <div className='graph-container'>
             {tabIdToComponentMap[this.state.navbarTabId.toString()]}
           </div>
         </div>

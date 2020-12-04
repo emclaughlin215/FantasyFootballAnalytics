@@ -1,5 +1,5 @@
 @import "~@blueprintjs/core";
-
+@import "~@blueprintjs/core/lib/scss/variables";
 
 .pitches_container {
   display: flex;
@@ -42,10 +42,104 @@
 .player-display {
   position: relative;
   font-size: medium;
+  font-weight: bolder;
+  text-align: center;
+  color: rgb(210, 211, 210);
+  padding: 1%;
+  width: fit-content;
+  min-width: 15%;
+}
+
+.player-display-background {
+  opacity: 0.7;
+  background-color: $gray5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 10%;
+  border: 4ex;
+}
+
+.player-display-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  color: $dark-gray1;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%; 
+}
+
+.player-display-name {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
   align-items: center;
-  font-weight: bolder;
-  color: rgb(210, 211, 210);
-  padding: 3px;
+  position: relative;
+  color: $dark-gray1;
+  height: 100%;
+  width: 100%; 
 }
+
+.display_captain {
+  border-radius: 25%;
+  background-color: $cobalt1;
+  color: $light-gray1;
+  width: 20%;
+}
+
+.display_vice_captain {
+  border-radius: 50%;
+}
+
+.player-display-divider {
+  width: 80%;
+}
+
+.subs-divider-background {
+  opacity: 0.4;
+  background-color: $gray5;
+  position: relative;
+  width: 95%;
+  border-radius: 10%;
+}
+
+.subs-divider {
+  width: 80%;
+}
+
+.team-stats {
+  display: flex;
+  flex-direction: row;
+  height: 10%;
+}
+
+.stat-box {
+  display: inherit;
+  justify-content: space-evenly;
+  width: 50%;
+  height: 100%;
+  align-items: center;
+  margin-top: 3%;
+  margin-bottom: 3%;
+  margin-left: 5%;
+  margin-right: 5%;
+  background-color: $gray1;
+  border-radius: 5ex;
+}
+
+.stat-element {
+  font-weight: bolder;
+  width: 50%;
+  font-size: large;
+  text-align: center;
+}
+
+.stat-divider {
+  height: 60%;
+}
+

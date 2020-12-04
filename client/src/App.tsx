@@ -10,9 +10,10 @@ import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
 import { MyTeam } from './components/MyTeam';
 import { Overview } from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
-import { IDisplayTeam, IPlayer, IStringElementMap } from './index.d';
+import { IDisplayTeam, IGameweekInfo, IPlayer, IStringElementMap } from './index.d';
 import { IGlobalReducer } from './reducers/GlobalReducers';
 import { loaded, loading, LoadState } from './utils/LoadState';
+import { getDateDiffUnix, formatDateDiffFromUnix, getCountdownIntent } from './utils/Date';
 
 export interface IAppState {
   activePanelOnly: boolean;
@@ -25,6 +26,7 @@ export interface IAppState {
   pickedTeam: LoadState<IDisplayTeam>;
   selectedTeam: LoadState<IDisplayTeam>;
   highestTeam: LoadState<IDisplayTeam>;
+  gameweekInfo: LoadState<IGameweekInfo>;
 }
 
 export interface IAppProps {
@@ -48,6 +50,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       pickedTeam: loading(),
       selectedTeam: loading(),
       highestTeam: loading(),
+      gameweekInfo: loading(),
     };
   }
 
@@ -64,6 +67,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const resSelectedTeamJson: IDisplayTeam = await resSelectedTeam.json();
     const resHighestTeam: Response = await fetch("http://localhost:8000/expectedPoints/highest");
     const resHighestTeamJson: IDisplayTeam = await resHighestTeam.json();
+    const gameweekInfo: Response = await fetch("http://localhost:8000/gameweek");
+    const gameweekInfoJson: IGameweekInfo = await gameweekInfo.json();
     this.setState({
       topTenIn: loaded(resInJson),
       topTenOut: loaded(resOutJson),
@@ -71,6 +76,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       pickedTeam: loaded(resPickedTeamJson),
       selectedTeam: loaded(resSelectedTeamJson),
       highestTeam: loaded(resHighestTeamJson),
+      gameweekInfo: loaded(gameweekInfoJson),
     })
     
     const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
@@ -92,20 +98,33 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       />,
       "playerAnalysis": <PlayerAnalysis />,
       "myTeam": <MyTeam
-      pickedTeam={this.state.pickedTeam}
-      selectedTeam={this.state.selectedTeam}
-      highestTeam={this.state.highestTeam}
+        pickedTeam={this.state.pickedTeam}
+        selectedTeam={this.state.selectedTeam}
+        highestTeam={this.state.highestTeam}
       />,
     }
     
     const displayActiveTab = (tabId: string) => tabIdToComponentMap[tabId];
-  
+
+    const getCurrentGameweek = () => {
+      if (this.state.gameweekInfo.type !== 'loaded') {
+        return '';
+      }
+      return this.state.gameweekInfo.value.current ? this.state.gameweekInfo.value.current.name : 'Inactive';
+    }
+
+    const currentGameweek = getCurrentGameweek()
+    const deadline = this.state.gameweekInfo.type === 'loaded' ? new Date(this.state.gameweekInfo.value.next.deadline_time_epoch * 1000) : new Date();
+    const distance = getDateDiffUnix(deadline);
+    const nextGameweekCountdown = formatDateDiffFromUnix(distance);
+    const nextGameweekCountdownIntent = getCountdownIntent(distance);
+
     return (
       <div className="bp3-dark">
         <Navbar>
           <Navbar.Group>
               <Navbar.Heading className='app-header'>
-                  Fantasy Premier League Analytics
+                <div>Fantasy Premier League Analytics</div>
               </Navbar.Heading>
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
@@ -125,6 +144,10 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
           </Navbar.Group>
         </Navbar>
         <div className='main-container'>
+          <div className='gameweek'>
+              <div className='render-intent-primary'>{currentGameweek}</div>
+              <div className={nextGameweekCountdownIntent}>{'Next Gameweek Deadline: ' + nextGameweekCountdown}</div>
+          </div>
           {displayActiveTab(this.state.navbarTabId.toString())}
         </div>
       </div>

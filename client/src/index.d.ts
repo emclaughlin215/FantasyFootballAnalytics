@@ -5,6 +5,10 @@ export interface IStringElementMap {
   [key: string]: JSX.Element;
 }
 
+export interface IStringFunctionMap {
+  [key: string]: Function;
+}
+
 export interface IPlayerType {
   index?: number
   id?: number
@@ -33,8 +37,8 @@ export interface IPlayer {
   cost_change_start_fall: number
   dreamteam_count: number
   element_type: number
-  element_type_singular_name: string
-  element_type_singular_name_short: string
+  element_name: string
+  element_name_short: string
   ep_next: number
   ep_this: number
   event_points: number
@@ -126,7 +130,8 @@ export interface ITeam {
 export interface IDisplayTeam {
   team: IDisplayPlayer[]
   cost: number
-  points: number
+  expected_points: number
+  actual_points: number
 }
 
 export interface IDisplayPlayer {
@@ -142,4 +147,33 @@ export interface IDisplayPlayer {
   element_name?: str
   cost?: float
   event_points?: int
+}
+
+export interface IGameweek {
+  index: int
+  id?: int
+  name?: str
+  deadline_time?: str
+  average_entry_score?: int
+  finished?: bool
+  data_checked?: bool
+  highest_scoring_entry?: int
+  deadline_time_epoch?: int
+  deadline_time_game_offset?: int
+  highest_score?: int
+  is_previous?: bool
+  is_current?: bool
+  is_next?: bool
+  most_selected?: int
+  most_transferred_in?: int
+  top_element?: int
+  transfers_made?: int
+  most_captained?: int
+  most_vice_captained?: int
+}
+
+export interface IGameweekInfo {
+  previous: IGameweek
+  current: IGameweek
+  next: IGameweek
 }

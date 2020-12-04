@@ -4,6 +4,46 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class EventsBase(BaseModel):
+    index: int
+
+
+class Events(EventsBase):
+
+    id: Optional[int]
+    name: Optional[str]
+    deadline_time: Optional[str]
+    average_entry_score: Optional[int]
+    finished: Optional[bool]
+    data_checked: Optional[bool]
+    highest_scoring_entry: Optional[int]
+    deadline_time_epoch: Optional[int]
+    deadline_time_game_offset: Optional[int]
+    highest_score: Optional[int]
+    is_previous: Optional[bool]
+    is_current: Optional[bool]
+    is_next: Optional[bool]
+    most_selected: Optional[int]
+    most_transferred_in: Optional[int]
+    top_element: Optional[int]
+    transfers_made: Optional[int]
+    most_captained: Optional[int]
+    most_vice_captained: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
+class EventInfo(BaseModel):
+
+    previous: Events
+    current: Events
+    next: Events
+
+    class Config:
+        orm_mode = True
+
+
 class PlayerTypeBase(BaseModel):
     id: int
 
@@ -162,8 +202,9 @@ class Team(TeamBase):
 
 class TeamExpectedPoints(BaseModel):
 
-    expected_points: int
-    cost: int
+    expected_points: float
+    actual_points: float
+    cost: float
     team: List[PickedTeam]
 
     class Config:

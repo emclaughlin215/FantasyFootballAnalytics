@@ -4,7 +4,7 @@
 .dropdown-container {
   display: flex;
   width: 90vw;
-  justify-content: flex-start;
+  justify-content: flex-end;
   margin: 2vw;
 }
 
@@ -40,12 +40,14 @@
 }
 
 .body-container {
-  width: 80vw;
-  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .tab-container {
   padding: 20px;
+  width: 100%;
 }
 
 .player-analysis-tabs {

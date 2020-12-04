@@ -1,4 +1,6 @@
 @import "~@blueprintjs/core";
+@import "~@blueprintjs/core/lib/scss/variables";
+
 
 .app {
   height: 100vh;
@@ -12,7 +14,7 @@
 }
 
 .tabs-header {
-  font-size: calc(10px + 2vmin);
+  font-size: large;
   height: 100vh;
 }
 
@@ -31,9 +33,47 @@
 }
 
 .main-container {
-  background-color: #394B59;
-  color: #E1E8ED;
+  background-color: $pt-dark-app-background-color;
+  color: $light-gray3;
   min-height: 100vh;
   padding: 2.5vw;
   display: flex;
+  flex-direction: column;
+}
+
+.gameweek {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2%;
+}
+
+
+.render-intent-primary, .render-intent-success, .render-intent-warning, .render-intent-danger {
+  border-radius: 3em;
+  padding: 2ex;
+  border: 2ex;
+  border-style: groove;
+  font-size: large;
+}
+
+.render-intent-primary {
+  background-color: $pt-intent-primary;
+  border-color: $blue1;
+}
+
+.render-intent-success {
+  background-color: $pt-intent-success;
+  border-color: $green1;
+}
+
+.render-intent-warning {
+  background-color: $pt-intent-warning;
+  border-color: $orange1;
+}
+
+.render-intent-danger {
+  background-color: $pt-intent-danger;
+  border-color: $red1;
 }

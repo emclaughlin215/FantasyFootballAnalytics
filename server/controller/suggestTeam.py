@@ -3,11 +3,14 @@ import functools
 
 def getExpectedPoints(team, all_players_latest):
 
-    elements = list(map(lambda x: x['element'], team))
-    latest_elements = list(filter(lambda x: x['id'] in elements, all_players_latest))
-    points = list(map(lambda x: x['ep_next'], latest_elements))
-    cost = list(map(lambda x: x['cost'], latest_elements))
-    return functools.reduce(lambda a, b: a + b, cost), functools.reduce(lambda a, b: a + b, points)
+    keys_to_keep = ['element', 'multiplier']
+    keys_to_ignore = ['_sa_instance_state']
+    elements = {x['element']: {k: v for (k, v) in x.items() if k in keys_to_keep and k not in keys_to_ignore} for x in team}
+    latest_elements = {x['id']: {k: v for (k, v) in x.items() if k not in keys_to_ignore} for x in all_players_latest if x['id'] in elements}
+    latest_elements = {kv[0]: dict(kv[1], **elements[kv[0]]) for kv in latest_elements.items()}
+    return sum(player['cost'] for player in latest_elements.values()), \
+        sum(player['event_points'] * player['multiplier'] for player in latest_elements.values()), \
+        sum(player['ep_this'] for player in latest_elements.values())
 
 
 def getPositionHighestExpected(players, position):

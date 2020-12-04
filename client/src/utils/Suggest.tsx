@@ -30,7 +30,7 @@ export const renderPlayer: ItemRenderer<IPlayer> = (player, { handleClick, modif
   if (!modifiers.matchesPredicate) {
       return null;
   }
-  const text = `${player.second_name}, ${player.first_name} (${player.element_type_singular_name_short})`;
+  const text = `${player.second_name}, ${player.first_name} (${player.element_name_short})`;
   return (
       <MenuItem 
         active={modifiers.active}
