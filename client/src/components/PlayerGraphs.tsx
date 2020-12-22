@@ -1,9 +1,9 @@
-import { Checkbox, Colors, MenuItem, Tooltip } from '@blueprintjs/core';
+import { Checkbox, Colors, MenuItem, NonIdealState } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
-import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { bindActionCreators } from 'redux';
 
 import { addPropertiesToGraph } from '../actions/PlayerActions';
@@ -48,18 +48,18 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
     let count = 0;
     for(let i in dataSet){
         if(dataSet.hasOwnProperty(i) && i !== 'timestamp'){
-          lineArr.push(<Line type='monotone' strokeWidth={3} stroke={COLOURS[count]} dataKey={i} key={`area-chart-${count}`}/>)               
+          lineArr.push(<Line type='monotone' strokeWidth={3} stroke={COLOURS[count]} dataKey={i} key={`area-chart-${count}`} activeDot={{ r: 8 }}/>)               
             count++;
         } 
     }
     return lineArr;
-}
+  }
 
   render() {
     const { filteredPlayer, propertyToGraph, playerListLatest } = this.props.playerState;
     const filterPlayerValue: IPlayer[] = filteredPlayer.type === 'loaded' ? filteredPlayer.value : []
-    const propertyBeingGraphed: keyof IPlayer = propertyToGraph ? propertyToGraph : 'total_points' as keyof IPlayer;
-    
+    const propertyBeingGraphed: keyof IPlayer = propertyToGraph ? propertyToGraph : 'total_points' as keyof IPlayer;  
+  
     const PropertySuggest = Suggest.ofType<string>();
     const propertiesOfPlayer: string[] = playerListLatest.type === 'loaded'
       ? Object.keys(playerListLatest.value[0])
@@ -68,6 +68,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
                  typeof prop(playerListLatest.value[0], k as keyof IPlayer) === 'bigint'
         })
       : [];
+
     const plottingData: PlottingData = {}
     filterPlayerValue.forEach((player) => {
       if (!(player.timestamp.toString() in plottingData)) {
@@ -75,6 +76,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
       }
       plottingData[player.timestamp.toString()][player.second_name] = player[propertyBeingGraphed];
     })
+
     let data: GraphPoint[] = [];
     Object.entries(plottingData)
       .sort((a, b) => moment(a[0]).unix() - moment(b[0]).unix())
@@ -84,10 +86,13 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
         currentData["timestamp"] = "GW" + (index).toString() + " " + moment(keyValue[0]).format("DD MMM YY");
         data.push(currentData); 
       })
+
     if (this.state.thisSeasonOnly) {
       data = data.slice(1);
     }
+
     return (
+      filteredPlayer.type === 'loaded' ? 
       <div className='graph-container'>
         <div className='tab-dropdown-container'>
           <p className='dropdown'>Attribute</p>
@@ -104,23 +109,33 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
           <Checkbox className='dropdown' checked={this.state.thisSeasonOnly} onChange={() => this.setState({thisSeasonOnly: !this.state.thisSeasonOnly})}>
             This season only
           </Checkbox>
-        </div> 
-        {filteredPlayer.type === 'loaded' ? <LineChart width={1100} height={500} data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />s
-          <XAxis
-            dataKey="timestamp"
-            tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
-          />
-          <YAxis
-            tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
-            tickLine={false}
-            padding={{ top: 30, bottom: 30 }} />
-          <Tooltip />
-          <Legend />
-          {this._drawLines(data)}
-        </LineChart> : <div></div>}
-      </div>
+        </div>
+        <ResponsiveContainer width={1600} height={600}>
+          <LineChart width={1600} height={600} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <XAxis
+              dataKey="timestamp"
+              tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
+            />
+            <YAxis
+              tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
+              tickLine={false}
+              padding={{ top: 30, bottom: 30 }} />
+            <CartesianGrid horizontal={false} vertical={false}/>
+            <Tooltip
+              labelStyle={{ color: Colors.LIGHT_GRAY3}}
+              cursor={false}
+              contentStyle={{backgroundColor: Colors.DARK_GRAY3, height: '40vh', overflow: 'scroll'}}
+            />
+            <Legend />
+            {this._drawLines(data)}
+          </LineChart>
+        </ResponsiveContainer>
+      </div> :
+      <NonIdealState
+        className="graph-non-ideal-state"
+        title="No Filters Defined"
+        description="Please filter the players to view Graphs"
+      />
     )
   }
 }

@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Boolean, Integer, DateTime, Float
+from sqlalchemy import Column, String, Boolean, Integer, DateTime, Float, ARRAY
+
 
 from server.api.database import Base
 
@@ -160,6 +161,7 @@ class SelectedTeam(TeamOfPlayers, Base):
 class HighestTeam(TeamOfPlayers, Base):
     __tablename__ = "highest_expected_points"
 
+    period_qualifier = Column(String, nullable=True)
     element_type = Column(Integer, nullable=True)
     ep_next = Column(Float, nullable=True)
     ep_this = Column(Float, nullable=True)
@@ -190,3 +192,36 @@ class Team(Base):
     strength_defence_away = Column(Integer)
     pulse_id = Column(Integer)
 
+
+class Fixture(Base):
+    
+    __tablename__ = 'fixtures'
+
+    fixture_id = Column(String, primary_key=True)
+    code = Column(Integer)
+    event = Column(Integer)
+    finished = Column(Boolean)
+    finished_provisional = Column(Boolean)
+    id = Column(Integer)
+    kickoff_time = Column(DateTime)
+    minutes = Column(Integer)
+    provisional_start_time = Column(Boolean)
+    started = Column(Boolean)
+    team_a = Column(Integer)
+    team_a_score = Column(Integer)
+    team_h = Column(Integer)
+    team_h_score = Column(Integer)
+    home_team_id = Column(Integer)
+    home_team_code = Column(Integer)
+    home_team_name = Column(String)
+    home_team_position = Column(Integer)
+    home_team_strength = Column(Integer)
+    away_team_id = Column(Integer)
+    away_team_code = Column(Integer)
+    away_team_name = Column(String)
+    away_team_position = Column(Integer)
+    away_team_strength = Column(Integer)
+    # stats = Column(ARRAY(item_type=String, dimensions=1), True)
+    team_h_difficulty = Column(Integer)
+    team_a_difficulty = Column(Integer)
+    pulse_id = Column(Integer)

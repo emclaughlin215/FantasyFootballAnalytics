@@ -115,12 +115,7 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
     latestPlayers = latestPlayers.sort((a, b) => a.second_name.toString().localeCompare(b.second_name.toString()));
 
     let teamListDisplay: ITeam[] = teamList.type === 'loaded' ? teamList.value : [];
-    const allTeamStub = createTeamStub('All');
-    teamListDisplay.unshift(allTeamStub);
-
     let playerTypeListDisplay: IPlayerType[] = playerTypeList.type === 'loaded' ? playerTypeList.value : [];
-    const allPlayerTypeStub = createPlayerTypeStub('All');
-    playerTypeListDisplay.unshift(allPlayerTypeStub);
 
     const tabIdToComponentMap: IStringElementMap = {
         "playerNews": <News />,

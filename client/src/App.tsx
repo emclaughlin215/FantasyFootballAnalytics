@@ -25,7 +25,8 @@ export interface IAppState {
   topTenSelected: LoadState<IPlayer[]>;
   pickedTeam: LoadState<IDisplayTeam>;
   selectedTeam: LoadState<IDisplayTeam>;
-  highestTeam: LoadState<IDisplayTeam>;
+  highestTeamThis: LoadState<IDisplayTeam>;
+  highestTeamNext: LoadState<IDisplayTeam>;
   gameweekInfo: LoadState<IGameweekInfo>;
 }
 
@@ -49,12 +50,15 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       topTenSelected: loading(),
       pickedTeam: loading(),
       selectedTeam: loading(),
-      highestTeam: loading(),
+      highestTeamThis: loading(),
+      highestTeamNext: loading(),
       gameweekInfo: loading(),
     };
   }
 
   async componentWillMount() {
+    await fetch("http://localhost:8000/update/events");
+    await fetch("http://localhost:8000/update/PlayersAndTeams");
     const resIn: Response = await fetch("http://localhost:8000/transfers/topTenIn");
     const resInJson: IPlayer[] = await resIn.json();
     const resOut: Response = await fetch("http://localhost:8000/transfers/topTenOut");
@@ -65,8 +69,10 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const resPickedTeamJson: IDisplayTeam = await resPickedTeam.json();
     const resSelectedTeam: Response = await fetch("http://localhost:8000/expectedPoints/selected");
     const resSelectedTeamJson: IDisplayTeam = await resSelectedTeam.json();
-    const resHighestTeam: Response = await fetch("http://localhost:8000/expectedPoints/highest");
-    const resHighestTeamJson: IDisplayTeam = await resHighestTeam.json();
+    const resHighestTeamThis: Response = await fetch("http://localhost:8000/expectedPoints/highest_this");
+    const resHighestTeamThisJson: IDisplayTeam = await resHighestTeamThis.json();
+    const resHighestTeamNext: Response = await fetch("http://localhost:8000/expectedPoints/highest_next");
+    const resHighestTeamNextJson: IDisplayTeam = await resHighestTeamNext.json();
     const gameweekInfo: Response = await fetch("http://localhost:8000/gameweek");
     const gameweekInfoJson: IGameweekInfo = await gameweekInfo.json();
     this.setState({
@@ -75,7 +81,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       topTenSelected: loaded(resSelectedJson),
       pickedTeam: loaded(resPickedTeamJson),
       selectedTeam: loaded(resSelectedTeamJson),
-      highestTeam: loaded(resHighestTeamJson),
+      highestTeamThis: loaded(resHighestTeamThisJson),
+      highestTeamNext: loaded(resHighestTeamNextJson),
       gameweekInfo: loaded(gameweekInfoJson),
     })
     
@@ -100,7 +107,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       "myTeam": <MyTeam
         pickedTeam={this.state.pickedTeam}
         selectedTeam={this.state.selectedTeam}
-        highestTeam={this.state.highestTeam}
+        highestTeamThis={this.state.highestTeamThis}
+        highestTeamNext={this.state.highestTeamNext}
       />,
     }
     

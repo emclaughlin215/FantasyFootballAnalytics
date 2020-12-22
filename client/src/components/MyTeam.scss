@@ -50,9 +50,8 @@
   min-width: 15%;
 }
 
-.player-display-background {
+.player-display-background-playing, .player-display-background-maybe-playing, .player-display-background-not-playing {
   opacity: 0.7;
-  background-color: $gray5;
   position: absolute;
   top: 0;
   left: 0;
@@ -62,38 +61,51 @@
   border: 4ex;
 }
 
-.player-display-text {
+.player-display-background-playing {
+  background-color: $gray5;
+}
+
+.player-display-background-maybe-playing {
+  background-color: $orange5;
+}
+
+.player-display-background-not-playing {
+  background-color: $red5;
+}
+
+.player-display-text, .player-display-name{
   display: flex;
-  flex-direction: column;
-  align-items: center;
   position: relative;
   color: $dark-gray1;
+  height: 100%;
+  width: 100%;  
+}
+
+.player-display-text {
+  flex-direction: column;
+  align-items: center;
   top: 0;
   left: 0;
-  height: 100%;
-  width: 100%; 
 }
 
 .player-display-name {
-  display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  position: relative;
-  color: $dark-gray1;
-  height: 100%;
-  width: 100%; 
+  justify-content: center;
 }
 
-.display_captain {
-  border-radius: 25%;
+.display-captain {
   background-color: $cobalt1;
+}
+
+.display-vice-captain {
+  background-color: $blue1;
+}
+
+.display-captain, .display-vice-captain {
+  border-radius: 25%;
   color: $light-gray1;
   width: 20%;
-}
-
-.display_vice_captain {
-  border-radius: 50%;
+  margin-left: 5%;
 }
 
 .player-display-divider {
@@ -102,7 +114,6 @@
 
 .subs-divider-background {
   opacity: 0.4;
-  background-color: $gray5;
   position: relative;
   width: 95%;
   border-radius: 10%;
@@ -143,3 +154,14 @@
   height: 60%;
 }
 
+.selected-player-drawer {
+  color: $light-gray1 !important;
+}
+
+.bp3-heading {
+  color: $light-gray1 !important;
+}
+
+.bp3-drawer {
+  background-color: $dark-gray4 !important;
+}

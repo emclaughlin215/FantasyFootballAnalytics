@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { ICombinedReducers } from '../reducers/Reducers';
+import { NonIdealState } from '@blueprintjs/core';
 
 
 interface INewsProps {
@@ -31,7 +32,7 @@ export class News extends React.PureComponent<INewsProps> {
   render() {
     const { filteredPlayerLatest } = this.props.playerState;
     return (
-      <div className="list-container">
+      <div>
         {filteredPlayerLatest.type === 'loaded' ?
           filteredPlayerLatest.value.map(player => {
             return player.news && player.news_added ?
@@ -39,8 +40,12 @@ export class News extends React.PureComponent<INewsProps> {
                 {this.NewsItem(player.first_name, player.second_name, player.news, player.news_added)}
               </div> :
               undefined
-          })
-          : "No News"
+          }) :
+          <NonIdealState
+          className="graph-non-ideal-state"
+          title="No Filters Defined"
+          description="Please filter the players to view Graphs"
+      />
         }
       </div> 
     )

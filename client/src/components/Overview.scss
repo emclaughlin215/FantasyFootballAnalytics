@@ -1,3 +1,7 @@
+@import "~@blueprintjs/core";
+@import "~@blueprintjs/core/lib/scss/variables";
+
+
 .list-container {
   display: flex;
   flex-direction: column;
@@ -17,6 +21,11 @@
   flex-direction: row;
 }
 
+.overview-tabs-tab {
+  border-radius: 5%;
+  border-color: $light-gray1;
+}
+
 .icon-title {
   width: 40px;
   margin-bottom: 7px;
@@ -24,6 +33,20 @@
 
 .graph-container {
   justify-content: center;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+}
+
+.graph-non-ideal-state {
+  padding: 10vh;
+}
+
+.custom-tooltip {
+  padding: 10px;
+  background-color: $dark-gray3;
+  border: 1px solid #c3c3c3;
+  border-radius: 10px;  span {
+    font-weight: bold;
+  }
 }

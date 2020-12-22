@@ -10,6 +10,7 @@ import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { ICombinedReducers } from '../reducers/Reducers';
 import { ISortableColumn, NumberSortableColumn, StringSortableColumn } from '../utils/Tables';
 import { prop } from '../utils/TypeScript';
+import { NonIdealState } from '@blueprintjs/core';
 
 export interface IPerformanceAnalysisProps { 
   globalState: IGlobalReducer,
@@ -76,9 +77,9 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
   render() {
     const { filteredPlayerLatest } = this.props.playerState;
     const { columns } = this.state;
-    const columnsList = filteredPlayerLatest.type === "loaded" ? columns.map(col => col.getColumn(this.getCellData, this.sortColumn)) : [];
+    const columnsList = filteredPlayerLatest.type === "loaded" ? columns.map(col => col.getColumn(this.getCellData, this.sortColumn)) : undefined;
     return (
-      <div className='body-container'> 
+      columnsList ? <div className='body-container'> 
         <div>
           <Table
             numRows={filteredPlayerLatest.type === "loading" ? 0 : filteredPlayerLatest.value.length > 30 ? 30 : filteredPlayerLatest.value.length}
@@ -88,7 +89,12 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
             {columnsList}
           </Table>
         </div>
-      </div>
+      </div> :
+      <NonIdealState
+        className="graph-non-ideal-state"
+        title="No Filters Defined"
+        description="Please filter the players to view Graphs"
+      />
     )
   }
 }

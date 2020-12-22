@@ -155,6 +155,7 @@ class PickedTeamBase(BaseModel):
 
 class PickedTeam(PickedTeamBase):
     event: Optional[int]
+    element: int
     position: Optional[int]
     multiplier: Optional[int]
     is_captain: Optional[bool]
@@ -206,6 +207,18 @@ class TeamExpectedPoints(BaseModel):
     actual_points: float
     cost: float
     team: List[PickedTeam]
+
+    class Config:
+        orm_mode = True
+
+
+class TeamFixture(BaseModel):
+
+    event: Optional[int]
+    opponent_id: Optional[int]
+    opponent_name: Optional[str]
+    opponent_difficulty: Optional[int]
+    fixture_type: Optional[str]
 
     class Config:
         orm_mode = True

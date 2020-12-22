@@ -13,18 +13,18 @@ def getExpectedPoints(team, all_players_latest):
         sum(player['ep_this'] for player in latest_elements.values())
 
 
-def getPositionHighestExpected(players, position):
+def getPositionHighestExpected(players, position, period_qualifier):
 
     players_in_position = list(filter(lambda x: x['element_type'] == position, players))
-    return sorted(players_in_position, key=lambda x: x['ep_next'], reverse=True)
+    return sorted(players_in_position, key=lambda x: x[period_qualifier], reverse=True)
 
 
-def getHighestExpectedPoints(all_players_latest, max_players_one_team=3):
+def getHighestExpectedPoints(all_players_latest, period_qualifier, max_players_one_team=3):
 
-    goalkeepers_sorted = getPositionHighestExpected(all_players_latest, 1)  # GK
-    defenders_sorted = getPositionHighestExpected(all_players_latest, 2)  # Def
-    midfielders_sorted = getPositionHighestExpected(all_players_latest, 3)  # Mid
-    forwards_sorted = getPositionHighestExpected(all_players_latest, 4)  # For
+    goalkeepers_sorted = getPositionHighestExpected(all_players_latest, 1, period_qualifier)  # GK
+    defenders_sorted = getPositionHighestExpected(all_players_latest, 2, period_qualifier)  # Def
+    midfielders_sorted = getPositionHighestExpected(all_players_latest, 3, period_qualifier)  # Mid
+    forwards_sorted = getPositionHighestExpected(all_players_latest, 4, period_qualifier)  # For
 
     goalkeeper = goalkeepers_sorted[:2]
     other_goalkeepers = goalkeepers_sorted[2:]
@@ -34,7 +34,6 @@ def getHighestExpectedPoints(all_players_latest, max_players_one_team=3):
     other_midfielders = midfielders_sorted[6:]
     forwards = forwards_sorted[:3]
     other_forwards = forwards_sorted[4:]
-
     bank_of_players = {
         1: other_goalkeepers,
         2: other_defenders,
@@ -60,7 +59,8 @@ def getHighestExpectedPoints(all_players_latest, max_players_one_team=3):
                     team_proposed_changes,
                     number_of_changes_to_make,
                     team_player,
-                    next_best_player
+                    next_best_player,
+                    period_qualifier,
                 )
 
             for change in team_proposed_changes:
@@ -71,14 +71,14 @@ def getHighestExpectedPoints(all_players_latest, max_players_one_team=3):
 
     highest_points_team = functools.reduce(lambda a, b: a + b, list(zip(*list(team_count.items())))[1])
 
-    goalkeepers_sorted = getPositionHighestExpected(highest_points_team, 1)  # GK
-    defenders_sorted = getPositionHighestExpected(highest_points_team, 2)  # Def
-    midfielders_sorted = getPositionHighestExpected(highest_points_team, 3)  # Mid
-    forwards_sorted = getPositionHighestExpected(highest_points_team, 4)  # For
+    goalkeepers_sorted = getPositionHighestExpected(highest_points_team, 1, period_qualifier)  # GK
+    defenders_sorted = getPositionHighestExpected(highest_points_team, 2, period_qualifier)  # Def
+    midfielders_sorted = getPositionHighestExpected(highest_points_team, 3, period_qualifier)  # Mid
+    forwards_sorted = getPositionHighestExpected(highest_points_team, 4, period_qualifier)  # For
 
     first_team = goalkeepers_sorted[:1] + defenders_sorted[:3] + midfielders_sorted[:3] + forwards_sorted[:1]
     fringe = defenders_sorted[3:] + midfielders_sorted[3:] + forwards_sorted[1:]
-    fringe_sorted = sorted(fringe, key=lambda x: x['ep_next'], reverse=True)
+    fringe_sorted = sorted(fringe, key=lambda x: x[period_qualifier], reverse=True)
     first_team += fringe_sorted[:3]
     fringe_sorted.append(goalkeepers_sorted[1])
     formatted_team = sorted(first_team, key=lambda x: x['element_type']) + sorted(fringe_sorted[3:], key=lambda x: x['element_type'])
@@ -87,8 +87,8 @@ def getHighestExpectedPoints(all_players_latest, max_players_one_team=3):
     return highest_points_team
 
 
-def getRecommendedChanges(proposed_changes, number_of_changes_needed, player, next_best_player):
-    expected_loss = float(player['ep_next']) - float(next_best_player['ep_next'])
+def getRecommendedChanges(proposed_changes, number_of_changes_needed, player, next_best_player, period_qualifier):
+    expected_loss = float(player[period_qualifier]) - float(next_best_player[period_qualifier])
 
     if len(proposed_changes) == number_of_changes_needed:
         proposed_changes.sort(key=lambda x: x[2], reverse=True)

@@ -1,0 +1,26 @@
+@import "~@blueprintjs/core";
+@import "~@blueprintjs/core/lib/scss/variables";
+
+.player-details-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.player-details-list-element {
+    display: flex;
+    flex-direction: row;
+    padding-left: 2%;
+    padding-right: 10%;
+    margin-top: 2%;
+    width: 50%;
+    border-radius: 3em;
+    font-size: 1.2em;
+}
+
+.player-details-list-name {
+    font-weight: bold;
+}
+
+.player-details-tab-container {
+    padding: 3%;
+}

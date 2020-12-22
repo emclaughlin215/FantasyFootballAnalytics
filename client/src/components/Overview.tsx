@@ -1,13 +1,13 @@
 import './Overview.scss';
 
-import { Colors, H3, Icon, Tab, TabId, Tabs, Tooltip } from '@blueprintjs/core';
+import { Colors, H3, Icon, Tab, TabId, Tabs } from '@blueprintjs/core';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Bar, BarChart, CartesianGrid, LabelList, Legend, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, LabelList, Legend, XAxis, YAxis, Tooltip } from 'recharts';
 
 import { IPlayer, IStringElementMap } from '../index.d';
 import { LoadState } from '../utils/LoadState';
-import { capitaliseSentence, numberFormatter } from '../utils/String';
+import { capitaliseSentence, numberAbbreviator } from '../utils/String';
 
 export interface OverviewProps {
   topTenIn: LoadState<IPlayer[]>;
@@ -32,8 +32,7 @@ export class Overview extends React.PureComponent<OverviewProps, OverviewState> 
     const playersData: IPlayer[] = players.type === 'loaded' ? players.value : [];
     
     return (
-        <BarChart className={players.type === 'loading' ? 'bp3-skeleton' : ''} width={1200} height={500} data={playersData} layout='horizontal'>
-          <CartesianGrid strokeDasharray="3 3" />
+        <BarChart className={players.type === 'loading' ? 'bp3-skeleton' : ''}  width={1600} height={600} data={playersData}>
           <XAxis
             dataKey="second_name"
             tick={{ stroke: Colors.WHITE, strokeWidth: 0.5, fontSize: '12px', width: '50px', wordWrap: 'break-word' }}
@@ -41,12 +40,17 @@ export class Overview extends React.PureComponent<OverviewProps, OverviewState> 
           />
           <YAxis
             tick={{ stroke: Colors.WHITE, strokeWidth: 0.5 }}
-            tickFormatter={numberFormatter}
+            tickFormatter={numberAbbreviator}
             unit={units}
           />
-          <Tooltip />
+          <Tooltip
+            contentStyle={{backgroundColor: Colors.DARK_GRAY3}}
+            cursor={false}
+            itemStyle={{ fontWeight: 'Bold' }}
+            />
           <Legend />
-        <Bar name={name} dataKey={property} fill="#8884d8" >
+          <CartesianGrid horizontal={false} vertical={false}/>
+        <Bar name={name} dataKey={property} fill="#8884d8">
           <LabelList
             position="center"
             valueAccessor={(player: IPlayer) => { return player[property]}} />

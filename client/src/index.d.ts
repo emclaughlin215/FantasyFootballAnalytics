@@ -37,8 +37,8 @@ export interface IPlayer {
   cost_change_start_fall: number
   dreamteam_count: number
   element_type: number
-  element_name: string
-  element_name_short: string
+  element_type_singular_name: string
+  element_type_singular_name_short: string
   ep_next: number
   ep_this: number
   event_points: number
@@ -136,7 +136,7 @@ export interface IDisplayTeam {
 
 export interface IDisplayPlayer {
   primary_key: string
-  element?: int
+  element: int
   event?: int
   position?: int
   multiplier?: int

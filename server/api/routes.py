@@ -40,6 +40,11 @@ async def playersAll(db: Session = Depends(get_db)):
     return crud.get_all_players(db)
 
 
+@app.get("/players/all/{player_id}", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
+async def playersAll(player_id: int, db: Session = Depends(get_db)):
+    return crud.get_all_player(db, player_id)
+
+
 @app.get("/players/latest/all", response_model=List[schemas.Player], status_code=status.HTTP_200_OK)
 async def playersLatestAll(db: Session = Depends(get_db)):
     return crud.get_all_players_latest(db)
@@ -91,15 +96,19 @@ async def expectedPointsSelected(db: Session = Depends(get_db)):
     return crud.get_selected_expected_points(db)
 
 
-@app.get("/expectedPoints/highest", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
+@app.get("/expectedPoints/highest_this", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
 async def expectedPointsSelected(db: Session = Depends(get_db)):
-    return crud.get_highest_expected_points(db)
+    return crud.get_highest_expected_points(db, 'ep_this')
 
+
+@app.get("/expectedPoints/highest_next", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
+async def expectedPointsSelected(db: Session = Depends(get_db)):
+    return crud.get_highest_expected_points(db, 'ep_next')
 
 # -------- UPDATE PLAYERS AND TEAMS ---------
 
 
-@app.post("/updatePlayersAndTeams", response_model=str, status_code=status.HTTP_200_OK)
+@app.post("/update/PlayersAndTeams", response_model=str, status_code=status.HTTP_200_OK)
 async def expectedPointsHighest():
     return crud.update_players_set_teams()
 
@@ -114,3 +123,10 @@ async def getGameWeek(db: Session = Depends(get_db)):
 @app.post('/update/events', response_model=str, status_code=status.HTTP_200_OK)
 async def updateEvents():
     return crud.update_events()
+
+
+# ---------------- FIXTURES -------------------
+
+@app.get("/fixtures/{team_id}/{gameweek}", response_model=List[schemas.TeamFixture], status_code=status.HTTP_200_OK)
+async def getPlayerFixtures(team_id: int, gameweek: int, db: Session = Depends(get_db)):
+    return crud.get_player_fixtures(db, team_id, gameweek)

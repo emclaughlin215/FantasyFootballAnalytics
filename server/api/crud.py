@@ -1,8 +1,7 @@
 import functools
 import sys
-
 import requests
-from sqlalchemy import func, text
+from sqlalchemy import func, text, literal
 from sqlalchemy.orm import Session, aliased
 
 import pandas as pd
@@ -20,8 +19,48 @@ def get_game_week_info(db: Session):
     return event_info
 
 
+def get_player_fixtures(db: Session, team_id: int, game_week: int):
+    away_fixtures = db \
+        .query(
+            models.Fixture.home_team_id.label('opponent_id'),
+            models.Fixture.home_team_name.label('opponent_name'),
+            models.Fixture.team_h_difficulty.label('opponent_difficulty'),
+            models.Fixture.event,
+            literal('away').label('fixture_type'),
+        ) \
+        .filter(
+            models.Fixture.away_team_id == team_id,
+            models.Fixture.event > game_week,
+        )
+
+    home_fixtures = db \
+        .query(
+            models.Fixture.away_team_id.label('opponent_id'),
+            models.Fixture.away_team_name.label('opponent_name'),
+            models.Fixture.team_a_difficulty.label('opponent_difficulty'),
+            models.Fixture.event,
+            literal('home').label('fixture_type'),
+        ) \
+        .filter(
+            models.Fixture.home_team_id == team_id,
+            models.Fixture.event > game_week,
+        )
+
+    return home_fixtures \
+        .union(away_fixtures) \
+        .order_by(models.Fixture.event.asc()) \
+        .all()
+
+
 def get_all_players(db: Session):
     return db.query(models.Player).all()
+
+
+def get_all_player(db: Session, player_id: int):
+    return db.query(models.Player) \
+        .filter(models.Player.id == player_id)\
+        .order_by(models.Player.timestamp.desc()) \
+        .all()
 
 
 def get_all_players_latest(db: Session):
@@ -38,7 +77,6 @@ def get_all_players_latest(db: Session):
 
     latest = aliased(subquery)
     result = db.query(models.Player).select_entity_from(latest).all()
-    print(result)
     return result
 
 
@@ -99,9 +137,10 @@ def get_selected_team(db: Session):
         .all()
 
 
-def get_highest_team(db: Session):
+def get_highest_team(db: Session, period_qualifier: str):
     return db \
         .query(models.HighestTeam) \
+        .filter(models.HighestTeam.period_qualifier == period_qualifier) \
         .order_by(models.HighestTeam.event.desc(), models.HighestTeam.position.asc()) \
         .limit(15) \
         .all()
@@ -133,10 +172,11 @@ def get_selected_expected_points(db: Session):
     }
 
 
-def get_highest_expected_points(db: Session):
-    highest_team = [player.__dict__ for player in get_highest_team(db)]
+def get_highest_expected_points(db: Session, period_qualifier: str):
+    highest_team = [player.__dict__ for player in get_highest_team(db, period_qualifier)]
+    print(highest_team)
     cost = sum(player['cost'] for player in highest_team)
-    expected_points = sum(player['ep_this'] for player in highest_team)
+    expected_points = sum(player[period_qualifier] for player in highest_team)
     actual_points = sum(player['event_points'] for player in highest_team)
     return {
         'team': highest_team,
@@ -149,6 +189,8 @@ def get_highest_expected_points(db: Session):
 def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_week: int) -> pd.DataFrame:
     elements['form'] = pd.to_numeric(elements['form'])
     elements['cost'] = elements['now_cost'] / 10
+    elements['cost_change_start'] = elements['cost_change_start'] / 10
+    elements['cost_change_event'] = elements['cost_change_event'] / 10
     elements['form_to_cost'] = elements['form'] / elements['now_cost']
     elements['bonus_to_cost'] = elements['bonus'] / elements['now_cost']
     elements['element_name'] = elements.element_type.map(element_types.set_index('id').singular_name)
@@ -163,16 +205,29 @@ def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_we
 
 
 def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFrame, table: str, game_week):
-    hep = getHighestExpectedPoints(players)
-    highest_expected_points_df = pd.DataFrame(hep)
+    hep_this = getHighestExpectedPoints(players, 'ep_this')
+    highest_expected_points_this_df = pd.DataFrame(hep_this)
+    highest_expected_points_this_df['period_qualifier'] = 'ep_this'
+
+    hep_next = getHighestExpectedPoints(players, 'ep_next')
+    highest_expected_points_next_df = pd.DataFrame(hep_next)
+    highest_expected_points_next_df['period_qualifier'] = 'ep_next'
+
+    highest_expected_points_df = pd.concat([highest_expected_points_this_df, highest_expected_points_next_df], ignore_index=True)
 
     highest_expected_points_df = handle_elements(highest_expected_points_df, element_types_df, game_week)
     highest_expected_points_df.rename(columns={'id': 'element'}, inplace=True)
-    highest_expected_points_df['multiplier'] = 0
+    highest_expected_points_df['multiplier'] = 1
     highest_expected_points_df['is_captain'] = 0
     highest_expected_points_df['is_vice_captain'] = 0
+
+    primary_key_cols = ['primary_key', 'period_qualifier']
+    highest_expected_points_df['primary_key'] = highest_expected_points_df[primary_key_cols] \
+        .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
+
     highest_expected_points_df = highest_expected_points_df[[
         'primary_key',
+        'period_qualifier',
         'element',
         'event',
         'position',
@@ -311,7 +366,6 @@ def update_players_set_teams():
     game_week = list(filter(lambda x: dt.strptime(x['deadline_time'], "%Y-%m-%dT%H:%M:%SZ") < now, events))[-1]['id']
 
     events_df = pd.DataFrame(events)
-    print(events_df.head())
     elements_df = pd.DataFrame(data_json['elements'])
     element_types_df = pd.DataFrame(data_json['element_types'])
     elements_df = handle_elements(elements_df, element_types_df, game_week)
@@ -327,8 +381,66 @@ def update_players_set_teams():
 
     set_team(url_selected_team, headers, elements_df, 'selected_team', game_week)
     set_team(url_points_team, {}, elements_df, 'picked_team', game_week)
-    set_highest_expected_points_team(data_json['elements'], element_types_df, 'highest_expected_points', game_week)
+    set_highest_expected_points_team(
+        data_json['elements'],
+        element_types_df,
+        'highest_expected_points',
+        game_week,
+    )
     set_elements(elements_df, 'elements', 'append')
     set_events(events_df, 'events')
 
     return 'Successfully updated players and teams'
+
+
+def update_fixtures():
+
+    teams_df = pd.read_sql(
+        sql='''
+            SELECT
+                id as team_id,
+                code as team_code,
+                name as team_name,
+                position as team_position,
+                strength as team_strength
+            FROM
+                teams
+            ''',
+        con=database.cnx)
+
+    global fixtures_df
+    url_fixtures = 'https://fantasy.premierleague.com/api/fixtures/?event='
+    table_name = 'fixtures'
+
+    home_teams_df = teams_df.add_prefix('home_')
+    away_teams_df = teams_df.add_prefix('away_')
+
+    for gw in range(1, 38):
+        gw_fixtures = url_fixtures + str(gw)
+
+        try:
+            response_data = requests.get(gw_fixtures)
+        except ConnectionError:
+            sys.exit("Failed to get fixtures from the FPL API")
+        fixtures_json = response_data.json()
+
+        if gw == 1:
+            fixtures_df = pd.DataFrame(fixtures_json)
+        else:
+            fixtures_df = pd.concat([fixtures_df, pd.DataFrame(fixtures_json)], ignore_index=True)
+
+    primary_key_cols = ['code', 'event']
+    fixtures_df['fixture_id'] = fixtures_df[primary_key_cols] \
+        .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
+    fixtures_df.drop(['stats'], axis=1, inplace=True)
+
+    fixtures_df = fixtures_df.merge(home_teams_df, left_on='team_h', right_on='home_team_id', how='inner')
+    fixtures_df = fixtures_df.merge(away_teams_df, left_on='team_a', right_on='away_team_id', how='inner')
+    try:
+        fixtures_df.to_sql(name=table_name, con=database.cnx, if_exists='replace', index=True)
+    except ValueError as vx:
+        print(vx)
+    except Exception as ex:
+        print(ex)
+    else:
+        print(table_name + " table created successfully.")
