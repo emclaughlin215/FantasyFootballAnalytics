@@ -1,7 +1,6 @@
-import functools
 import sys
 import requests
-from sqlalchemy import func, text, literal
+from sqlalchemy import func, literal
 from sqlalchemy.orm import Session, aliased
 
 import pandas as pd
@@ -24,7 +23,7 @@ def get_player_fixtures(db: Session, team_id: int, game_week: int):
         .query(
             models.Fixture.home_team_id.label('opponent_id'),
             models.Fixture.home_team_name.label('opponent_name'),
-            models.Fixture.team_h_difficulty.label('opponent_difficulty'),
+            models.Fixture.team_a_difficulty.label('opponent_difficulty'),
             models.Fixture.event,
             literal('away').label('fixture_type'),
         ) \
@@ -37,7 +36,7 @@ def get_player_fixtures(db: Session, team_id: int, game_week: int):
         .query(
             models.Fixture.away_team_id.label('opponent_id'),
             models.Fixture.away_team_name.label('opponent_name'),
-            models.Fixture.team_a_difficulty.label('opponent_difficulty'),
+            models.Fixture.team_h_difficulty.label('opponent_difficulty'),
             models.Fixture.event,
             literal('home').label('fixture_type'),
         ) \
@@ -95,13 +94,13 @@ def get_all_teams(db: Session):
 def get_most_transferred_in(db: Session):
     latest_players = get_all_players_latest(db)
 
-    return sorted(latest_players, key=lambda x: x.transfers_in_event, reverse=True)[:10]
+    return sorted(latest_players, key=lambda x: x.transfers_in_event, reverse=True)
 
 
 def get_most_transferred_out(db: Session):
     latest_players = get_all_players_latest(db)
 
-    return sorted(latest_players, key=lambda x: x.transfers_out_event, reverse=True)[:10]
+    return sorted(latest_players, key=lambda x: x.transfers_out_event, reverse=True)
 
 
 def get_most_selected(db: Session):
@@ -117,7 +116,6 @@ def get_most_selected(db: Session):
     return db \
         .query(subquery) \
         .order_by(subquery.c.timestamp.desc(), subquery.c.selected_by_percent.desc()) \
-        .limit(10) \
         .all()
 
 
@@ -134,7 +132,7 @@ def get_selected_team(db: Session):
         .query(models.SelectedTeam) \
         .order_by(models.SelectedTeam.event.desc(), models.SelectedTeam.position.asc()) \
         .limit(15) \
-        .all()
+          .all()
 
 
 def get_highest_team(db: Session, period_qualifier: str):
@@ -150,9 +148,13 @@ def get_picked_expected_points(db: Session):
     picked_team = [player.__dict__ for player in get_picked_team(db)]
     all_latest = [player.__dict__ for player in get_all_players_latest(db)]
 
+    picked_team_ids = [player['element'] for player in picked_team]
+    picked_players = [player for player in all_latest if player['id'] in picked_team_ids]
+
     pt = getExpectedPoints(picked_team, all_latest)
     return {
         'team': picked_team,
+        'players': picked_players,
         'cost': round(pt[0], 2),
         'actual_points': round(pt[1], 2),
         'expected_points': round(pt[2], 2),
@@ -163,9 +165,13 @@ def get_selected_expected_points(db: Session):
     selected_team = [player.__dict__ for player in get_selected_team(db)]
     all_latest = [player.__dict__ for player in get_all_players_latest(db)]
 
+    selected_team_ids = [player['element'] for player in selected_team]
+    selected_players = [player for player in all_latest if player['id'] in selected_team_ids]
+
     st = getExpectedPoints(selected_team, all_latest)
     return {
         'team': selected_team,
+        'players': selected_players,
         'cost': round(st[0], 2),
         'actual_points': round(st[1], 2),
         'expected_points': round(st[2], 2),
@@ -174,12 +180,17 @@ def get_selected_expected_points(db: Session):
 
 def get_highest_expected_points(db: Session, period_qualifier: str):
     highest_team = [player.__dict__ for player in get_highest_team(db, period_qualifier)]
-    print(highest_team)
+    all_latest = [player.__dict__ for player in get_all_players_latest(db)]
+
+    highest_team_ids = [player['element'] for player in highest_team]
+    highest_players = [player for player in all_latest if player['id'] in highest_team_ids]
+
     cost = sum(player['cost'] for player in highest_team)
     expected_points = sum(player[period_qualifier] for player in highest_team)
     actual_points = sum(player['event_points'] for player in highest_team)
     return {
         'team': highest_team,
+        'players': highest_players,
         'cost': round(cost, 2),
         'expected_points': round(expected_points, 2),
         'actual_points': round(actual_points, 2),
@@ -191,8 +202,8 @@ def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_we
     elements['cost'] = elements['now_cost'] / 10
     elements['cost_change_start'] = elements['cost_change_start'] / 10
     elements['cost_change_event'] = elements['cost_change_event'] / 10
-    elements['form_to_cost'] = elements['form'] / elements['now_cost']
-    elements['bonus_to_cost'] = elements['bonus'] / elements['now_cost']
+    elements['form_to_cost'] = elements['form'] / elements['cost']
+    elements['bonus_to_cost'] = elements['bonus'] / elements['cost']
     elements['element_name'] = elements.element_type.map(element_types.set_index('id').singular_name)
     elements['element_name_short'] = elements.element_type.map(element_types.set_index('id').singular_name_short)
     elements['timestamp'] = pd.to_datetime('now')
@@ -200,6 +211,98 @@ def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_we
 
     primary_key_cols = ['id', 'timestamp']
     elements['primary_key'] = elements[primary_key_cols].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
+
+    float_cols = [
+        'ep_this',
+        'ep_next',
+        'points_per_game',
+        'selected_by_percent',
+        'value_form',
+        'value_season',
+        'threat',
+        'influence',
+        'creativity',
+        'ict_index',
+        'form_to_cost',
+        'bonus_to_cost',
+        'cost',
+        'now_cost',
+        'form',
+        'chance_of_playing_this_round',
+        'chance_of_playing_next_round',
+        'cost_change_event',
+        'cost_change_event_fall',
+        'cost_change_start',
+        'cost_change_start_fall',
+    ]
+
+    int_cols = [
+        'id',
+        'code',
+        'dreamteam_count',
+        'element_type',
+        'event_points',
+        'squad_number',
+        'team',
+        'team_code',
+        'total_points',
+        'transfers_in',
+        'transfers_in_event',
+        'transfers_out',
+        'transfers_out_event',
+        'minutes',
+        'goals_scored',
+        'assists',
+        'clean_sheets',
+        'goals_conceded',
+        'own_goals',
+        'penalties_saved',
+        'penalties_missed',
+        'yellow_cards',
+        'red_cards',
+        'saves',
+        'bonus',
+        'bps',
+        'influence_rank',
+        'influence_rank_type',
+        'creativity_rank',
+        'creativity_rank_type',
+        'threat_rank',
+        'threat_rank_type',
+        'ict_index_rank',
+        'ict_index_rank_type',
+        'corners_and_indirect_freekicks_order',
+        'direct_freekicks_order',
+        'penalties_order',
+    ]
+    string_cols = [
+        'primary_key',
+        'element_name',
+        'element_name_short',
+        'first_name',
+        'second_name',
+        'news',
+        'news_added',
+        'photo',
+        'status',
+        'web_name',
+        'corners_and_indirect_freekicks_text',
+        'direct_freekicks_text',
+        'penalties_text',
+    ]
+    bool_cols = [
+        'in_dreamteam',
+        'special',
+    ]
+
+    for col in float_cols:
+        elements[col] = elements[col].astype('float64')
+    for col in int_cols:
+        elements[col] = elements[col].astype('float64')  # Cast to float and cannot cast NaNs to int.
+    for col in string_cols:
+        elements[col] = elements[col].astype(str)
+    for col in bool_cols:
+        elements[col] = elements[col].astype('bool')
 
     return elements
 
@@ -269,6 +372,7 @@ def set_team(
         players: pd.DataFrame,
         table: str,
         game_week: int):
+
     try:
         team = requests.get(url, headers=headers)
     except ConnectionError:
@@ -305,10 +409,11 @@ def update_events():
         response_data = requests.get(url_data)
     except ConnectionError:
         sys.exit("Failed to get data from the FPL API")
+
     data_json = response_data.json()
     events = data_json['events']
     events_df = pd.DataFrame(events)
-    # events_df = events_df.drop(['chip_plays', 'top_element_info'], axis=1)
+
     set_events(events_df, 'events')
 
     return 'Events Table Updated!'
@@ -337,20 +442,19 @@ def pandas_latest_window(data: pd.DataFrame, partition_key: str, order_key: str)
     return data_latest.drop('row_number', axis=1, inplace=False)
 
 
-def set_elements_latest(data: pd.DataFrame, table_name: str, write_type):
-    latest_data = pandas_latest_window(data, 'id', 'timestamp')
-    set_elements(latest_data, table_name, write_type)
+def set_elements(data: pd.DataFrame, table_name: str, gameweek: int):
 
+    delete_gameweek_query = 'DELETE FROM ' + table_name + ' WHERE event = ' + str(gameweek) + ';'
+    database.cnx.execute(delete_gameweek_query)
 
-def set_elements(data: pd.DataFrame, table_name: str, write_type: str):
     try:
-        data.to_sql(name=table_name, con=database.cnx, if_exists=write_type, index=True)
+        data.to_sql(name=table_name, con=database.cnx, if_exists='append', index=True)
     except ValueError as vx:
         print(vx)
     except Exception as ex:
         print(ex)
     else:
-        print(table_name + " table created successfully.")
+        print(table_name + " table updated successfully.")
 
 
 def update_players_set_teams():
@@ -387,7 +491,7 @@ def update_players_set_teams():
         'highest_expected_points',
         game_week,
     )
-    set_elements(elements_df, 'elements', 'append')
+    set_elements(elements_df, 'elements', game_week)
     set_events(events_df, 'events')
 
     return 'Successfully updated players and teams'
@@ -409,6 +513,7 @@ def update_fixtures():
         con=database.cnx)
 
     global fixtures_df
+
     url_fixtures = 'https://fantasy.premierleague.com/api/fixtures/?event='
     table_name = 'fixtures'
 
@@ -436,6 +541,7 @@ def update_fixtures():
 
     fixtures_df = fixtures_df.merge(home_teams_df, left_on='team_h', right_on='home_team_id', how='inner')
     fixtures_df = fixtures_df.merge(away_teams_df, left_on='team_a', right_on='away_team_id', how='inner')
+
     try:
         fixtures_df.to_sql(name=table_name, con=database.cnx, if_exists='replace', index=True)
     except ValueError as vx:

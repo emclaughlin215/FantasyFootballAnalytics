@@ -1,17 +1,16 @@
 import './App.scss';
 
-import { Alignment, Navbar, Tab, TabId, Tabs } from '@blueprintjs/core';
+import { Alignment, H1, H3, Icon, IconName, Navbar, Tab, TabId, Tabs } from '@blueprintjs/core';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
 import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
-import { MyTeam } from './components/MyTeam';
+import  MyTeam  from './components/MyTeam';
 import { Overview } from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
 import { IDisplayTeam, IGameweekInfo, IPlayer, IStringElementMap } from './index.d';
-import { IGlobalReducer } from './reducers/GlobalReducers';
 import { loaded, loading, LoadState } from './utils/LoadState';
 import { getDateDiffUnix, formatDateDiffFromUnix, getCountdownIntent } from './utils/Date';
 
@@ -20,9 +19,9 @@ export interface IAppState {
   animate: boolean;
   navbarTabId: TabId;
   vertical: boolean;
-  topTenIn: LoadState<IPlayer[]>;
-  topTenOut: LoadState<IPlayer[]>;
-  topTenSelected: LoadState<IPlayer[]>;
+  topIn: LoadState<IPlayer[]>;
+  topOut: LoadState<IPlayer[]>;
+  topSelected: LoadState<IPlayer[]>;
   pickedTeam: LoadState<IDisplayTeam>;
   selectedTeam: LoadState<IDisplayTeam>;
   highestTeamThis: LoadState<IDisplayTeam>;
@@ -45,9 +44,9 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       animate: true,
       navbarTabId: "overview",
       vertical: false,
-      topTenIn: loading(),
-      topTenOut: loading(),
-      topTenSelected: loading(),
+      topIn: loading(),
+      topOut: loading(),
+      topSelected: loading(),
       pickedTeam: loading(),
       selectedTeam: loading(),
       highestTeamThis: loading(),
@@ -57,8 +56,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   }
 
   async componentWillMount() {
-    await fetch("http://localhost:8000/update/events");
-    await fetch("http://localhost:8000/update/PlayersAndTeams");
+    fetch("http://localhost:8000/update/events", {method: 'PUT'});
+    fetch("http://localhost:8000/update/PlayersAndTeams", {method: 'PUT'});
     const resIn: Response = await fetch("http://localhost:8000/transfers/topTenIn");
     const resInJson: IPlayer[] = await resIn.json();
     const resOut: Response = await fetch("http://localhost:8000/transfers/topTenOut");
@@ -76,9 +75,9 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const gameweekInfo: Response = await fetch("http://localhost:8000/gameweek");
     const gameweekInfoJson: IGameweekInfo = await gameweekInfo.json();
     this.setState({
-      topTenIn: loaded(resInJson),
-      topTenOut: loaded(resOutJson),
-      topTenSelected: loaded(resSelectedJson),
+      topIn: loaded(resInJson),
+      topOut: loaded(resOutJson),
+      topSelected: loaded(resSelectedJson),
       pickedTeam: loaded(resPickedTeamJson),
       selectedTeam: loaded(resSelectedTeamJson),
       highestTeamThis: loaded(resHighestTeamThisJson),
@@ -95,13 +94,30 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
   private handleNavbarTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
 
+  private tabTitles: {[tab: string]: {icon: string, title: string}} = {
+    "overview": {
+      "icon": "doughnut-chart",
+      "title": "Overview",
+    },
+    "playerAnalysis": {
+      "icon": "predictive-analysis",
+      "title": "Player Analysis",
+    },
+    "myTeam": {
+      "icon": "comparison",
+      "title": "My Team",
+    }
+  }
+
   public render() {
+
+    const currentTab = this.tabTitles[this.state.navbarTabId];
 
     const tabIdToComponentMap: IStringElementMap = {
       "overview": <Overview
-        topTenIn={this.state.topTenIn}
-        topTenOut={this.state.topTenOut}
-        topTenSelected={this.state.topTenSelected}
+        topIn={this.state.topIn}
+        topOut={this.state.topOut}
+        topSelected={this.state.topSelected}
       />,
       "playerAnalysis": <PlayerAnalysis />,
       "myTeam": <MyTeam
@@ -109,6 +125,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         selectedTeam={this.state.selectedTeam}
         highestTeamThis={this.state.highestTeamThis}
         highestTeamNext={this.state.highestTeamNext}
+        gameweekInfo={this.state.gameweekInfo}
       />,
     }
     
@@ -134,7 +151,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               <Navbar.Heading className='app-header'>
                 <div>Fantasy Premier League Analytics</div>
               </Navbar.Heading>
-          </Navbar.Group>
+          </Navbar.Group> 
           <Navbar.Group align={Alignment.RIGHT}>
             <Tabs
               animate={this.state.animate}
@@ -144,29 +161,27 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               onChange={this.handleNavbarTabChange}
               selectedTabId={this.state.navbarTabId}
               vertical={false}>
-              <Tab id="overview" title="Overview" />
-              <Tab id="playerAnalysis" title="Player Analysis" />
-              <Tab id="myTeam" title="My Team" />
+              {Object.entries(this.tabTitles).map((t) => {
+                return <Tab id={t[0]} title={t[1]['title']} />
+              })}
               <Tabs.Expander />
             </Tabs>
           </Navbar.Group>
         </Navbar>
         <div className='main-container'>
           <div className='gameweek'>
-              <div className='render-intent-primary'>{currentGameweek}</div>
-              <div className={nextGameweekCountdownIntent}>{'Next Gameweek Deadline: ' + nextGameweekCountdown}</div>
+            <div className='render-intent-primary'>{currentGameweek}</div>
+            <div className='tab-title'>
+              <Icon className='icon-title' icon={currentTab['icon'] as IconName} iconSize={30} />
+              <H1>{currentTab['title']}</H1>
+            </div>
+            <div className={nextGameweekCountdownIntent}>{'Next Gameweek Deadline: ' + nextGameweekCountdown}</div>
           </div>
           {displayActiveTab(this.state.navbarTabId.toString())}
         </div>
       </div>
     )
   }
-}
-
-const mapStateToProps = (globalState: IGlobalReducer) => {
-  return {
-    state: globalState,
-  };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
@@ -181,4 +196,4 @@ const mapDispatchToProps = (dispatch: any) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

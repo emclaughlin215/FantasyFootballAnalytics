@@ -1,5 +1,12 @@
 @import "~@blueprintjs/core";
 @import "~@blueprintjs/core/lib/scss/variables";
+@import "~@blueprintjs/select";
+
+.compare-teams-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .pitches_container {
   display: flex;
@@ -45,7 +52,7 @@
   font-weight: bolder;
   text-align: center;
   color: rgb(210, 211, 210);
-  padding: 1%;
+  padding: 1vh;
   width: fit-content;
   min-width: 15%;
 }
@@ -164,4 +171,49 @@
 
 .bp3-drawer {
   background-color: $dark-gray4 !important;
+}
+
+.compare-players-button {
+  margin: 1%;
+  width: 20%
+}
+
+.compare-player-container {
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.compare-player-details-container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 10% auto;
+  justify-content: center;
+}
+
+.compare-player-select {
+  display: inline-grid;
+  justify-items: center;
+  align-items: center;
+  grid-row: 1 / span 1;
+  padding: 1vh;
+}
+
+.compare-player-details {
+  grid-row: 2 / span 1;
+  border-width: 2em;
+  border: #8a9ba8;
+  border-top-style: groove;
+  border-left-style: groove;
+  border-radius: 2em;
+  width: 95%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.compare-player-left {
+  grid-column: 1 / span 1;
+}
+
+.compare-player-right {
+  grid-column: 2 / span 1;
 }

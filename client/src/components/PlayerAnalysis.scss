@@ -9,21 +9,14 @@
 }
 
 .dropdown {
-  padding-top: 2vh;
   padding-right: 2vh;
   padding-left: 2vh;
-}
-
-.tab-title {
-  display: flex;
-  width: 25vw;
-  justify-content: flex-start;
-  align-items: center;
 }
 
 .title-control {
   display: flex;
   flex-direction: row;
+  padding-top: 2vh;
 }
 
 .stats-card {

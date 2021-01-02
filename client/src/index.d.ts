@@ -37,10 +37,11 @@ export interface IPlayer {
   cost_change_start_fall: number
   dreamteam_count: number
   element_type: number
-  element_type_singular_name: string
-  element_type_singular_name_short: string
+  element_name: string
+  element_name_short: string
   ep_next: number
   ep_this: number
+  event: number
   event_points: number
   first_name: string
   form: number
@@ -129,13 +130,14 @@ export interface ITeam {
 
 export interface IDisplayTeam {
   team: IDisplayPlayer[]
+  players: IPlayer[]
   cost: number
   expected_points: number
   actual_points: number
 }
 
 export interface IDisplayPlayer {
-  primary_key: string
+  primary_key: str
   element: int
   event?: int
   position?: int
@@ -176,4 +178,12 @@ export interface IGameweekInfo {
   previous: IGameweek
   current: IGameweek
   next: IGameweek
+}
+
+export interface IPlayerFixture {
+  event: int
+  opponent_id: int
+  opponent_name: str
+  opponent_difficulty: int
+  fixture_type: int
 }

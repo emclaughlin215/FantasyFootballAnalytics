@@ -31,7 +31,9 @@ export const getCountdownIntent = (milliseconds: number) => {
     let days = Math.floor(milliseconds / _day);
     let hours = Math.floor((milliseconds % _day) / _hour);
 
-    if (days === 0) {
+    if (days < 0) {
+      return 'render-intent-danger';
+    } else if (days === 0) {
       if (hours <= 6) {
         return 'render-intent-danger';
       } else {

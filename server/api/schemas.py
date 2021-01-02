@@ -82,11 +82,12 @@ class Player(PlayerBase):
     cost_change_start_fall: Optional[int]
     dreamteam_count: Optional[int]
     element_type: Optional[int]
-    element_type_singular_name: Optional[str]
-    element_type_singular_name_short: Optional[str]
+    element_name: Optional[str]
+    element_name_short: Optional[str]
     ep_next: Optional[float]
     ep_this: Optional[float]
     event_points: Optional[int]
+    event: Optional[int]
     form: Optional[float]
     in_dreamteam: Optional[bool]
     news: Optional[str]
@@ -207,6 +208,7 @@ class TeamExpectedPoints(BaseModel):
     actual_points: float
     cost: float
     team: List[PickedTeam]
+    players: List[Player]
 
     class Config:
         orm_mode = True

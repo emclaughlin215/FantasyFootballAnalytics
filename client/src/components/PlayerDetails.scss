@@ -9,18 +9,88 @@
 .player-details-list-element {
     display: flex;
     flex-direction: row;
-    padding-left: 2%;
-    padding-right: 10%;
-    margin-top: 2%;
-    width: 50%;
     border-radius: 3em;
     font-size: 1.2em;
 }
 
 .player-details-list-name {
+    font-style: italic;
+}
+
+.player-details-layout {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    justify-content: center;
+}
+
+.bp3-tag {
+    color: $light-gray5 !important;
+    text-align: center !important;
+    justify-self: center !important;
+    width: 60% !important;  
+}
+
+.player-fixture-home, .player-fixture-away {
+    display: grid;
+    margin-top: 1em;
+    grid-template-columns: 40% 20% 40%;
+}
+
+.fixtures-gameweek {
+    grid-column: 2 / span 1;
+}
+
+.fixtures-opponent-home {
+    grid-column: 1 / span 1;
+}
+
+.fixtures-opponent-away {
+    grid-column: 3 / span 1;
+}
+
+.details-header {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    padding: 3vh;
+    font-size: larger;
+    font-family: sans-serif;
+    font-style: italic;
     font-weight: bold;
 }
 
-.player-details-tab-container {
-    padding: 3%;
+.player-fixtures-container, .datails-main-container {
+    padding-left: 1.5vw;
+    padding-right: 1.5vw;
+    padding-top: 1.5vh;
+    padding-bottom: 1.5vh;
+    width: 40vw;
+    height: 60vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.player-main-container {
+    grid-column: 1 / span 1;
+}
+
+.player-fixtures-container {
+    grid-column: 2 / span 1;
+}
+
+.tab-container {
+    width: 60%;
+}
+
+.details-container {
+    background-color: $dark-gray4;
+    color: #e1e8ed;
+    border-width: 2em;
+    border: #8a9ba8;
+    border-bottom-style: groove;
+    border-right-style: groove;
+    border-radius: 1em;
+    padding: 1vh;
+    margin: 3vh;
+    width: auto;
 }

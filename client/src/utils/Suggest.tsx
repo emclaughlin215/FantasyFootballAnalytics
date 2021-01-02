@@ -30,7 +30,7 @@ export const renderPlayer: ItemRenderer<IPlayer> = (player, { handleClick, modif
   if (!modifiers.matchesPredicate) {
       return null;
   }
-  const text = `${player.second_name}, ${player.first_name} (${player.element_type_singular_name})`;
+  const text = `${player.second_name}, ${player.first_name} (${player.element_name})`;
   return (
       <MenuItem 
         active={modifiers.active}
@@ -121,7 +121,7 @@ export const filterPlayerType: ItemPredicate<IPlayerType> = (query, playerType, 
 };
 
 export const filterPlayer: ItemPredicate<IPlayer> = (query, player, _index, exactMatch) => {
-  const normalizedName = player.first_name.toLowerCase() + ' ' + player.second_name.toLowerCase();
+  const normalizedName = player.first_name.toLowerCase() + ' ' + player.second_name.toLowerCase() + ' (' + player.element_name.toLowerCase() + ')';
   const normalizedQuery = query.toLowerCase();
 
   if (exactMatch) {

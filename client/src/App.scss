@@ -32,6 +32,16 @@
   min-height: 100vh;
 }
 
+.tab-title {
+  display: flex;
+  align-items: center;
+}
+
+.icon-title {
+  width: 40px;
+  margin-bottom: 7px;
+}
+
 .main-container {
   background-color: $pt-dark-app-background-color;
   color: $light-gray3;

@@ -7,11 +7,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { setFilteredPlayerList } from '../actions/PlayerActions';
-import { IPlayer, IPlayerType, IStringElementMap, ITeam } from '../index.d';
+import { IGameweekInfo, IPlayer, IPlayerType, IStringElementMap, ITeam } from '../index.d';
 import { IGlobalReducer } from '../reducers/GlobalReducers';
 import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { ICombinedReducers } from '../reducers/Reducers';
-import { createPlayerTypeStub, createTeamStub } from '../utils/Stubs';
 import {
   filterPlayer,
   filterPlayerType,
@@ -26,6 +25,7 @@ import {
 import News from './News';
 import PerformanceAnalysis from './PerformanceAnalysis';
 import PlayerGraphs from './PlayerGraphs';
+import { getIfLoadedOrElse, LoadState } from '../utils/LoadState';
 
 export interface IPlayerAnalysisProps {
   globalState: IGlobalReducer,
@@ -59,42 +59,47 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
       this.props.playerState.playerList.value :
       [];
 
-    const playerType = playerTypeSelected ? playerTypeSelected :
+    const playerType = playerTypeSelected?.plural_name === 'All' ? undefined :
+      playerTypeSelected ? playerTypeSelected :
       playerTypeAlreadySelected ? playerTypeAlreadySelected :
       undefined;
-    const team = teamSelected ? teamSelected :
+    const team = teamSelected?.name === 'All' ? undefined :
+      teamSelected ? teamSelected :
       teamAlreadySelected ? teamAlreadySelected :
       undefined;
 
-    if (team === undefined && playerType === undefined) {
-      return;
-    }
-
-    if (playerType !== undefined) {
-      if (playerType.plural_name !== 'All') {
-        playersLatest = playersLatest.filter((player: IPlayer) => player.element_type === playerType.id);
-        players = players.filter((player: IPlayer) => player.element_type === playerType.id);
-      }
-      this.setState({ playerTypeAlreadySelected: playerType });
-    }
-
-    if (team !== undefined) {
-      if (team.name !== 'All') {
+    if ((team === undefined) && (playerType === undefined)) {
+    } else if (team !== undefined && playerType === undefined) {
         playersLatest = playersLatest.filter((player: IPlayer) => player.team === team.id);
         players = players.filter((player: IPlayer) => player.team === team.id);
-      }
-      this.setState({ teamAlreadySelected: team });
+        if (playerTypeAlreadySelected) {
+          playersLatest = playersLatest.filter((player: IPlayer) => player.element_type === playerTypeAlreadySelected.id);
+          players = players.filter((player: IPlayer) => player.element_type === playerTypeAlreadySelected.id);
+        }
+    } else if (team === undefined && playerType !== undefined) {
+        playersLatest = playersLatest.filter((player: IPlayer) => player.element_type === playerType.id);
+        players = players.filter((player: IPlayer) => player.element_type === playerType.id);
+        if (teamAlreadySelected) {
+          playersLatest = playersLatest.filter((player: IPlayer) => player.team === teamAlreadySelected.id);
+          players = players.filter((player: IPlayer) => player.team === teamAlreadySelected.id);
+        }
+    } else if (team !== undefined && playerType !== undefined) {
+        playersLatest = playersLatest.filter((player: IPlayer) => player.team === team.id && player.element_type === playerType.id);
+        players = players.filter((player: IPlayer) => player.team === team.id && player.element_type === playerType.id);
     }
-    
-    this.setState({ playersForDropdown: playersLatest });
+    this.setState({
+      teamAlreadySelected: team,
+      playerTypeAlreadySelected: playerType,
+      playersForDropdown: playersLatest
+    });
     this.props.setFilteredPlayerList(playersLatest, players);
   }
 
   private handleSelectPlayer(selectedPlayer: IPlayer) {
-    let filterToPlayerLatest: IPlayer[] = this.props.playerState.playerListLatest.type === 'loaded' ? this.props.playerState.playerListLatest.value : [];
-    filterToPlayerLatest = filterToPlayerLatest.filter((player: IPlayer) => player.code === selectedPlayer.code);
-    let filterToPlayer: IPlayer[] = this.props.playerState.playerList.type === 'loaded' ? this.props.playerState.playerList.value : [];
-    filterToPlayer = filterToPlayer.filter((player: IPlayer) => player.code === selectedPlayer.code);
+    const { playerState } = this.props;
+    const playersList: IPlayer[] = getIfLoadedOrElse(playerState.playerListLatest, []);
+    const filterToPlayerLatest = playersList.filter((player: IPlayer) => player.code === selectedPlayer.code);
+    const filterToPlayer = playersList.filter((player: IPlayer) => player.code === selectedPlayer.code);
     this.props.setFilteredPlayerList(filterToPlayerLatest, filterToPlayer);
   }
       
@@ -102,34 +107,28 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
 
   render() { 
     const { teamList, playerTypeList } = this.props.globalState;
-    const { playerListLatest, filteredPlayerLatest } = this.props.playerState;
+    const { playerListLatest, filteredPlayer } = this.props.playerState;
     const { playersForDropdown } = this.state;
 
     const PlayerSuggest = Suggest.ofType<IPlayer>();
     const TeamSuggest = Suggest.ofType<ITeam>();
     const PlayerTypeSuggest = Suggest.ofType<IPlayerType>();
 
-    let latestPlayers: IPlayer[] = playersForDropdown ? playersForDropdown :
-      playerListLatest.type === 'loaded' ? playerListLatest.value :
-      [];
+    let latestPlayers: IPlayer[] = playersForDropdown ? playersForDropdown : getIfLoadedOrElse(playerListLatest, []);
     latestPlayers = latestPlayers.sort((a, b) => a.second_name.toString().localeCompare(b.second_name.toString()));
 
-    let teamListDisplay: ITeam[] = teamList.type === 'loaded' ? teamList.value : [];
-    let playerTypeListDisplay: IPlayerType[] = playerTypeList.type === 'loaded' ? playerTypeList.value : [];
+    let teamListDisplay: ITeam[] = getIfLoadedOrElse(teamList,  []);
+    let playerTypeListDisplay: IPlayerType[] = getIfLoadedOrElse(playerTypeList, []);
 
     const tabIdToComponentMap: IStringElementMap = {
         "playerNews": <News />,
-        "playerGraphs": <PlayerGraphs />,
+        "playerGraphs": <PlayerGraphs filteredPlayer={getIfLoadedOrElse(filteredPlayer, [])} playerListLatest={playerListLatest} />,
         "playerRanking": <PerformanceAnalysis />
     }
 
     return (
       <div className='body-container'>
         <div className='title-control'>
-          <div className='tab-title'>
-            <Icon className='icon-title' icon={'person'} iconSize={20} />
-            <H3 className='bp3-heading'>Player Analysis</H3>
-          </div>
           <div className='dropdown-container'>
             <p className='dropdown'>Team</p>
             <TeamSuggest
@@ -146,7 +145,6 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
             <PlayerTypeSuggest
               className={playerTypeList.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
               itemPredicate={filterPlayerType}
-              disabled={filteredPlayerLatest.type === 'loading'}
               inputValueRenderer={renderPlayerTypeInputValue}
               onItemSelect={(playerType: IPlayerType) => { this.filterPlayers(playerType, undefined) }}
               items={playerTypeListDisplay}
