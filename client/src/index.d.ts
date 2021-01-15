@@ -28,13 +28,13 @@ export interface IPlayerType {
 export interface IPlayer {
   primary_key: string
   id: number
-  chance_of_playing_this_round: number
-  chance_of_playing_next_round: number
+  chance_of_playing_this_round: float
+  chance_of_playing_next_round: float
   code: number
-  cost_change_event: number
-  cost_change_event_fall: number
-  cost_change_start: number
-  cost_change_start_fall: number
+  cost_change_event: float
+  cost_change_event_fall: float
+  cost_change_start: float
+  cost_change_start_fall: float
   dreamteam_count: number
   element_type: number
   element_name: string
@@ -186,4 +186,21 @@ export interface IPlayerFixture {
   opponent_name: str
   opponent_difficulty: int
   fixture_type: int
+}
+
+export interface ITransfer {
+  transfer_cost: float
+  points_gain: float
+  id_player_in: int
+  id_player_out: int
+  first_name_player_in: str
+  first_name_player_out: str
+  web_name_player_in: str
+  web_name_player_out: str
+  second_name_player_in: str
+  second_name_player_out: str
+  cost_player_in: float
+  cost_player_out: float
+  ep_next_player_in: float
+  ep_next_player_out: float
 }

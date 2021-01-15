@@ -2,13 +2,14 @@ import './PlayerDetails.scss';
 
 import { Divider, Tab, TabId, Tabs, Tag } from '@blueprintjs/core';
 import React from 'react';
-import { IPlayer, IPlayerFixture, IStringElementMap } from '../index.d';
+import { IGameweekInfo, IPlayer, IPlayerFixture, IStringElementMap } from '../index.d';
 import { loaded, loading, LoadState } from '../utils/LoadState';
 import { capitaliseSentence } from '../utils/String';
 
 
 interface PlayerDetailsProps {
     player_id: string;
+    gameweek: LoadState<IGameweekInfo>;
 }
 
 interface PlayerDetailsState {
@@ -28,14 +29,12 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
     }
 
     async componentDidMount() {
-
         const player: Response = await fetch('http://localhost:8000/players/all/' + this.props.player_id);
         const playerJson: IPlayer[] = await player.json();
-        const player_team: number = playerJson[0]['team'];
-        const playerFixtures: Response = await fetch('http://localhost:8000/fixtures/' + player_team.toString() + '/' + '14');
-        const playerFixtureJson: IPlayerFixture[] = await playerFixtures.json();
 
-        this.setState({player: loaded(playerJson), playerFixtures: loaded(playerFixtureJson)})
+        this.setState({
+            player: loaded(playerJson),
+        })
     }
 
     async componentDidUpdate(prevProps: PlayerDetailsProps) {
@@ -43,12 +42,21 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
         if (prevProps.player_id !== this.props.player_id) {
             const player: Response = await fetch('http://localhost:8000/players/all/' + this.props.player_id);
             const playerJson: IPlayer[] = await player.json();
-            const player_team: number = playerJson[0]['team'];
-            const playerFixtures: Response = await fetch('http://localhost:8000/fixtures/' + player_team.toString() + '/' + '14');
-            const playerFixtureJson: IPlayerFixture[] = await playerFixtures.json();
     
-            this.setState({player: loaded(playerJson), playerFixtures: loaded(playerFixtureJson)})
+            this.setState({
+                player: loaded(playerJson)
+            })
         }
+    }
+
+    async setPlayersFixtures() {
+
+        const gameweek: string = this.props.gameweek.type === 'loaded' ? this.props.gameweek.value.current.id.toString() : '';
+
+        const player_team: number = this.state.player.type === 'loaded' ?  this.state.player.value[0]['team']: -1;
+        const playerFixturesResponse: Response = await fetch('http://localhost:8000/fixtures/' + player_team.toString() + '/' + gameweek);
+        const playerFixtureJson: IPlayerFixture[] = await playerFixturesResponse.json();
+        this.setState({playerFixtures: loaded(playerFixtureJson)})
     }
 
     private playerListStaticElement(property: keyof IPlayer, name?: string) {
@@ -69,8 +77,8 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
                 <p className={this.state.player.type === 'loading' ? 'bp3-skeleton' : ''}>
                     {this.state.player.type === 'loaded' ? 
                     (
-                        // this.state.tabId === 'gameweek' ?
-                        // (this.state.player.value[0][property] as number) - (this.state.player.value[1][property] as number) :
+                        this.state.tabId === 'gameweek' ?
+                        (this.state.player.value[0][property] as number) - (this.state.player.value[1][property] as number) :
                         this.state.player.value[0][property]
                     ):
                     ''}
@@ -132,7 +140,7 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
                                 {fixture.fixture_type === 'away' && this.getFormattedFixtures(fixture)}
                             </div>
                             )
-                    }): <div></div>}
+                    }) : <div></div>}
                 </div>
             </div>
         )
@@ -141,11 +149,15 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
     private handleNavbarTabChange = (tabId: TabId) => this.setState({ tabId });
 
     render() {
+
         const tabIdToComponentMap: IStringElementMap = {
             "gameweek": this.playerList(),
             "season": this.playerList(),
         };
+
+        // this.setPlayersFixtures();
         const playerFixtures = this.playerFixtures();
+
         return (
             <div className='player-details-layout'>
                 <div className='player-details-vertical-container'>

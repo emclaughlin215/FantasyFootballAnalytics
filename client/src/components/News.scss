@@ -1,4 +1,16 @@
-.list-element {
+@import "~@blueprintjs/core/lib/scss/variables";
+
+
+.news-list-element {
   padding-top: 1vw;
   padding-left: 1vw;
+}
+
+.news-list-container {
+  border-bottom: 2px solid $blue3;
+  border-right: 2px solid $blue3;
+  border-radius: 0.5em;
+  height: 40em;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }

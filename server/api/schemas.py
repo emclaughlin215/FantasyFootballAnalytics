@@ -76,10 +76,10 @@ class Player(PlayerBase):
     chance_of_playing_this_round: Optional[float]
     chance_of_playing_next_round: Optional[float]
     code: Optional[int]
-    cost_change_event: Optional[int]
-    cost_change_event_fall: Optional[int]
-    cost_change_start: Optional[int]
-    cost_change_start_fall: Optional[int]
+    cost_change_event: Optional[float]
+    cost_change_event_fall: Optional[float]
+    cost_change_start: Optional[float]
+    cost_change_start_fall: Optional[float]
     dreamteam_count: Optional[int]
     element_type: Optional[int]
     element_name: Optional[str]
@@ -92,7 +92,7 @@ class Player(PlayerBase):
     in_dreamteam: Optional[bool]
     news: Optional[str]
     news_added: Optional[str]
-    now_cost: Optional[int]
+    now_cost: Optional[float]
     cost: Optional[float]
     photo: Optional[str]
     points_per_game: Optional[float]
@@ -221,6 +221,27 @@ class TeamFixture(BaseModel):
     opponent_name: Optional[str]
     opponent_difficulty: Optional[int]
     fixture_type: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class Transfer(BaseModel):
+
+    transfer_cost: Optional[float]
+    points_gain: Optional[float]
+    id_player_in: Optional[int]
+    id_player_out: Optional[int]
+    first_name_player_in: Optional[str]
+    first_name_player_out: Optional[str]
+    web_name_player_in: Optional[str]
+    web_name_player_out: Optional[str]
+    second_name_player_in: Optional[str]
+    second_name_player_out: Optional[str]
+    cost_player_in: Optional[float]
+    cost_player_out: Optional[float]
+    ep_next_player_in: Optional[float]
+    ep_next_player_out: Optional[float]
 
     class Config:
         orm_mode = True

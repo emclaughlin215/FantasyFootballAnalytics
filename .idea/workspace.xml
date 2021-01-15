@@ -20,26 +20,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19f4cec5-395a-4fc8-9893-1a1732b29274" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/server/controller/suggestTransfers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/public/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/MyTeam.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MyTeam.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/MyTeam.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MyTeam.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/News.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/News.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/News.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/Overview.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Overview.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/Overview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Overview.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerAnalysis.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PlayerDetails.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerDetails.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerDetails.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PlayerGraphs.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/Date.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Date.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/LoadState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/LoadState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/Suggest.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/utils/TypeScript.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/utils/TypeScript.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/api/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/api/crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/api/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/api/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/api/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/api/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/api/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/api/schemas.py" afterDir="false" />
     </list>
@@ -57,6 +56,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1g9MW33GOwZngYynhEQIyHSL3Id" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />

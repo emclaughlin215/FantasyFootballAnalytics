@@ -105,8 +105,8 @@ async def expectedPointsSelected(db: Session = Depends(get_db)):
 async def expectedPointsSelected(db: Session = Depends(get_db)):
     return crud.get_highest_expected_points(db, 'ep_next')
 
-# -------- UPDATE PLAYERS AND TEAMS ---------
 
+# -------- UPDATE PLAYERS AND TEAMS ---------
 
 @app.put("/update/PlayersAndTeams", response_model=str, status_code=status.HTTP_200_OK)
 async def expectedPointsHighest():
@@ -130,3 +130,10 @@ async def updateEvents():
 @app.get("/fixtures/{team_id}/{gameweek}", response_model=List[schemas.TeamFixture], status_code=status.HTTP_200_OK)
 async def getPlayerFixtures(team_id: int, gameweek: int, db: Session = Depends(get_db)):
     return crud.get_player_fixtures(db, team_id, gameweek)
+
+
+# --------------- TRANSFERS -------------------
+
+@app.get("/transfers/suggested", response_model=List[schemas.Transfer], status_code=status.HTTP_200_OK)
+async def getSuggestedTransfers(db: Session = Depends(get_db)):
+    return crud.get_suggested_transfers(db)

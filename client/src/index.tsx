@@ -5,7 +5,12 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 import App from './App';
 import Reducers from './reducers/Reducers';
 import * as serviceWorker from './serviceWorker';
@@ -15,7 +20,19 @@ const store = createStore(Reducers, applyMiddleware(thunk));
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <Router>
+        <Switch>
+          <Route
+            path="/"
+            exact
+            strict
+            render={(): JSX.Element => <Redirect to="/home/overview" />}
+          />
+          <Route path='/home'>
+            <App/>
+          </Route>
+        </Switch>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

@@ -1,4 +1,4 @@
-import { Checkbox, Colors, MenuItem, NonIdealState } from '@blueprintjs/core';
+import { Colors, MenuItem, NonIdealState } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import moment from 'moment';
 import React from 'react';
@@ -10,7 +10,6 @@ import { addPropertiesToGraph } from '../actions/PlayerActions';
 import { COLOURS } from '../constants';
 import { IPlayer } from '../index.d';
 import { ICombinedReducers } from '../reducers/Reducers';
-import { AxisLabel } from '../utils/Graphs';
 import { LoadState } from '../utils/LoadState';
 import { capitaliseSentence } from '../utils/String';
 import { filterProperty, renderProperty, renderPropertyInputValue } from '../utils/Suggest';
@@ -18,7 +17,7 @@ import { prop } from '../utils/TypeScript';
 
 export interface PlayerGraphProps {
   playerListLatest: LoadState<IPlayer[]>,
-  filteredPlayer: IPlayer[],
+  filteredPlayer: LoadState<IPlayer[]>,
 }
 
 export interface PlayerGraphState {
@@ -97,7 +96,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
         [];
 
     let plottingData: PlottingData = {}
-    filteredPlayer.forEach((player) => {
+    filteredPlayer.type === 'loaded' && filteredPlayer.value.forEach((player) => {
       if (!(player['event'] in plottingData)) {
         plottingData[player['event']] = {};
       }
@@ -107,7 +106,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
     let data: GraphPoint[] = [];
     Object.entries(plottingData)
       .sort((a, b) => moment(a[0]).unix() - moment(b[0]).unix())
-      .forEach((keyValue, index) => {
+      .forEach((keyValue) => {
         let currentData: GraphPoint = {};
         currentData = keyValue[1];
         currentData["gameweek"] = "GW " + keyValue[0];
@@ -131,7 +130,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
     }
 
     return (
-      filteredPlayer !== [] ?  
+      filteredPlayer.type === 'loaded' ?  
       <div className='graph-container'>
         <div className='tab-dropdown-container'>
           <p className='dropdown'>Attribute</p>

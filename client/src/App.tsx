@@ -1,14 +1,23 @@
 import './App.scss';
 
-import { Alignment, H1, H3, Icon, IconName, Navbar, Tab, TabId, Tabs } from '@blueprintjs/core';
+import { Alignment, H1, Icon, IconName, Navbar, Tab, TabId, Tabs } from '@blueprintjs/core';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  RouteComponentProps,
+  Redirect,
+  withRouter,
+} from "react-router-dom";
 
 import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
 import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
 import  MyTeam  from './components/MyTeam';
-import { Overview } from './components/Overview';
+import Overview from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
 import { IDisplayTeam, IGameweekInfo, IPlayer, IStringElementMap } from './index.d';
 import { loaded, loading, LoadState } from './utils/LoadState';
@@ -27,9 +36,11 @@ export interface IAppState {
   highestTeamThis: LoadState<IDisplayTeam>;
   highestTeamNext: LoadState<IDisplayTeam>;
   gameweekInfo: LoadState<IGameweekInfo>;
-}
+} 
 
-export interface IAppProps {
+interface RouterProps {}
+
+export interface IAppProps extends RouteComponentProps<RouterProps> {
   getPlayerLatestList: typeof getPlayerLatestList,
   getPlayerTypeList: typeof getPlayerTypeList,
   getTeamList: typeof getTeamList,
@@ -38,11 +49,11 @@ export interface IAppProps {
 
 export class App extends React.PureComponent<IAppProps, IAppState> {
   constructor(props: IAppProps) {
-    super(props) 
+    super(props)  
     this.state = {
       activePanelOnly: true,
       animate: true,
-      navbarTabId: "overview",
+      navbarTabId: '',
       vertical: false,
       topIn: loading(),
       topOut: loading(),
@@ -74,6 +85,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const resHighestTeamNextJson: IDisplayTeam = await resHighestTeamNext.json();
     const gameweekInfo: Response = await fetch("http://localhost:8000/gameweek");
     const gameweekInfoJson: IGameweekInfo = await gameweekInfo.json();
+
     this.setState({
       topIn: loaded(resInJson),
       topOut: loaded(resOutJson),
@@ -90,6 +102,11 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     getPlayerList("http://localhost:8000/players/all");
     getPlayerTypeList("http://localhost:8000/players/types");
     getTeamList("http://localhost:8000/teams/all");
+  }
+
+  componentDidMount() {
+      const navbarTabId = this.props.location.pathname.split('/').pop() as TabId
+      this.setState({navbarTabId})
   }
 
   private handleNavbarTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
@@ -111,13 +128,20 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
   public render() {
 
-    const currentTab = this.tabTitles[this.state.navbarTabId];
+    const { navbarTabId } = this.state;
+
+    if (navbarTabId === '') {
+      return <div></div>;
+    }
+
+    const currentTab = navbarTabId ? this.tabTitles[navbarTabId]: '';
 
     const tabIdToComponentMap: IStringElementMap = {
       "overview": <Overview
         topIn={this.state.topIn}
         topOut={this.state.topOut}
         topSelected={this.state.topSelected}
+        gameweekInfo={this.state.gameweekInfo}
       />,
       "playerAnalysis": <PlayerAnalysis />,
       "myTeam": <MyTeam
@@ -144,12 +168,17 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const nextGameweekCountdown = formatDateDiffFromUnix(distance);
     const nextGameweekCountdownIntent = getCountdownIntent(distance);
 
-    return (
+    return (  
+      <Router>
       <div className="bp3-dark">
-        <Navbar>
+        <Navbar className='app-nav-bar-wrapper'>
           <Navbar.Group>
               <Navbar.Heading className='app-header'>
-                <div>Fantasy Premier League Analytics</div>
+                <div className='nav-bar'>
+                  <div className='app-title'>Fantasy Premier League Analytics</div>
+                  <div className={currentGameweek === '' ? 'bp3-skeleton' : 'render-intent-primary'}>{currentGameweek}</div>
+                  <div className={currentGameweek === '' ? 'bp3-skeleton' : nextGameweekCountdownIntent}>{'Next Gameweek Deadline: ' + nextGameweekCountdown}</div>
+                </div>
               </Navbar.Heading>
           </Navbar.Group> 
           <Navbar.Group align={Alignment.RIGHT}>
@@ -159,27 +188,44 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               id="MainTabs"
               large={true}
               onChange={this.handleNavbarTabChange}
-              selectedTabId={this.state.navbarTabId}
+              selectedTabId={navbarTabId}
               vertical={false}>
-              {Object.entries(this.tabTitles).map((t) => {
-                return <Tab id={t[0]} title={t[1]['title']} />
-              })}
+                  {Object.entries(this.tabTitles).map((t) => {
+                    const urlPath: string = t[0];
+                    const tabTitle: string = t[1]['title'];
+                    return <Tab
+                      id={t[0]}
+                      title={<Link to={`/home/${urlPath}`}>{tabTitle}</Link>}
+                    />
+                  })}
               <Tabs.Expander />
-            </Tabs>
+            </Tabs> 
           </Navbar.Group>
         </Navbar>
         <div className='main-container'>
-          <div className='gameweek'>
-            <div className='render-intent-primary'>{currentGameweek}</div>
-            <div className='tab-title'>
-              <Icon className='icon-title' icon={currentTab['icon'] as IconName} iconSize={30} />
-              <H1>{currentTab['title']}</H1>
+            <div className='tab-title-wrapper'>
+                {currentTab !== "" ? <div className={ !navbarTabId ? 'bp3-skeleton' : 'tab-title'}>
+                    <Icon className={ !navbarTabId ? 'bp3-skeleton' : 'icon-title'} icon={currentTab['icon'] as IconName} iconSize={30} />
+                    <H1 className={ !navbarTabId ? 'bp3-skeleton' : ''}>{currentTab['title']}</H1>
+                  </div>: <div></div>}
             </div>
-            <div className={nextGameweekCountdownIntent}>{'Next Gameweek Deadline: ' + nextGameweekCountdown}</div>
-          </div>
-          {displayActiveTab(this.state.navbarTabId.toString())}
+          <Switch>
+            <Route
+              path='/home'
+              exact
+              strict
+              render={(): JSX.Element => <Redirect to="/home/overview/" />}
+            />
+          {Object.entries(this.tabTitles).map((t) => {
+            return (
+            <Route path={`/home/${t[0]}`}>
+              {displayActiveTab(t[0])}
+            </Route>
+          )})}
+          </Switch>
         </div>
       </div>
+      </Router>
     )
   }
 }
@@ -196,4 +242,10 @@ const mapDispatchToProps = (dispatch: any) => {
   );
 };
 
-export default connect(null, mapDispatchToProps)(App);
+const mapStateToProps = (ownProps: IAppProps) => {
+  return {
+    ...ownProps
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

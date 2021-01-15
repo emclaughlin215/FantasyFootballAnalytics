@@ -2,8 +2,13 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 
 
-.app {
-  height: 100vh;
+.app-title {
+  text-align: center;
+  line-height: 1.5;
+}
+
+.app-nav-bar-wrapper {
+  border-bottom: 2px solid $blue5;
 }
 
 .app-header {
@@ -11,6 +16,7 @@
   font-family: sans-serif;
   font-style: italic;
   font-weight: bold;
+  text-align: center;
 }
 
 .tabs-header {
@@ -20,9 +26,7 @@
 
 .nav-bar {
   display: flex;
-  align-self: flex-start;
   justify-content: flex-start;
-  min-height: 100vh;
 }
 
 .tabs {
@@ -30,6 +34,10 @@
   flex-direction: column;
   justify-content: flex-start;
   min-height: 100vh;
+}
+
+.bp3-tab-indicator, .bp3-tab-indicator-wrapper {
+  background-color: None !important;
 }
 
 .tab-title {
@@ -51,19 +59,20 @@
   flex-direction: column;
 }
 
-.gameweek {
+.tab-title-wrapper {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 2%;
+  margin-bottom: 0.5em;
 }
 
-
 .render-intent-primary, .render-intent-success, .render-intent-warning, .render-intent-danger {
-  border-radius: 3em;
-  padding: 2ex;
-  border: 2ex;
+  border-radius: 1em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  border: 2px;
+  margin-left: 20px;
   border-style: groove;
   font-size: large;
 }

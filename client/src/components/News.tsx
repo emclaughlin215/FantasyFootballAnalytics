@@ -19,11 +19,10 @@ export class News extends React.PureComponent<INewsProps> {
   }
 
   private NewsItem(first_name: string, second_name: string, news: string, news_added: string) {
-    const date_added = moment(news_added.trim(), "YYYY-MM-DDTHH:mm:ss.ssssssZ").format("Do MMM YYYY");
+    const date_added = moment(news_added.trim(), "YYYY-MM-DDTHH:mm:ss.ssssss").format("Do MMM YYYY");
     return (
       <div>
-        <h3> {first_name + " " + second_name} </h3>
-        <h4> {date_added + " " + news_added} </h4>
+        <h3> {first_name + " " + second_name + ' (' + date_added + ')'} </h3>
         {news} 
       </div>
     )
@@ -32,11 +31,17 @@ export class News extends React.PureComponent<INewsProps> {
   render() {
     const { filteredPlayerLatest } = this.props.playerState;
     return (
-      <div>
+      <div className='news-list-container'>
         {filteredPlayerLatest.type === 'loaded' ?
-          filteredPlayerLatest.value.map(player => {
+          filteredPlayerLatest.value
+          .sort((a, b) => {
+            const a_news_added = moment(a.news_added.trim(), "YYYY-MM-DDTHH:mm:ss.ssssss")
+            const b_news_added = moment(b.news_added.trim(), "YYYY-MM-DDTHH:mm:ss.ssssss");
+            return a_news_added.unix() - b_news_added.unix();
+          })
+          .map(player => {
             return player.news && player.news_added ?
-              <div className='list-element'>
+              <div className='news-list-element'>
                 {this.NewsItem(player.first_name, player.second_name, player.news, player.news_added)}
               </div> :
               undefined

@@ -1,13 +1,13 @@
 import './PlayerAnalysis.scss';
 
-import { Divider, H3, Icon, MenuItem, Tab, TabId, Tabs } from '@blueprintjs/core';
+import { Divider, MenuItem, Tab, TabId, Tabs } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { setFilteredPlayerList } from '../actions/PlayerActions';
-import { IGameweekInfo, IPlayer, IPlayerType, IStringElementMap, ITeam } from '../index.d';
+import { IPlayer, IPlayerType, IStringElementMap, ITeam } from '../index.d';
 import { IGlobalReducer } from '../reducers/GlobalReducers';
 import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { ICombinedReducers } from '../reducers/Reducers';
@@ -25,7 +25,7 @@ import {
 import News from './News';
 import PerformanceAnalysis from './PerformanceAnalysis';
 import PlayerGraphs from './PlayerGraphs';
-import { getIfLoadedOrElse, LoadState } from '../utils/LoadState';
+import { getIfLoadedOrElse } from '../utils/LoadState';
 
 export interface IPlayerAnalysisProps {
   globalState: IGlobalReducer,
@@ -122,48 +122,12 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
 
     const tabIdToComponentMap: IStringElementMap = {
         "playerNews": <News />,
-        "playerGraphs": <PlayerGraphs filteredPlayer={getIfLoadedOrElse(filteredPlayer, [])} playerListLatest={playerListLatest} />,
+        "playerGraphs": <PlayerGraphs filteredPlayer={filteredPlayer} playerListLatest={playerListLatest} />,
         "playerRanking": <PerformanceAnalysis />
     }
 
     return (
       <div className='body-container'>
-        <div className='title-control'>
-          <div className='dropdown-container'>
-            <p className='dropdown'>Team</p>
-            <TeamSuggest
-              className={teamList.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
-              itemPredicate={filterTeam}
-              inputValueRenderer={renderTeamInputValue}
-              onItemSelect={(team: ITeam) => this.filterPlayers(undefined, team)}
-              items={teamListDisplay}
-              itemRenderer={renderTeam}
-              noResults={<MenuItem disabled={true} text="No results." />}
-            /> 
-            <Divider />
-            <p className='dropdown' >Position</p>
-            <PlayerTypeSuggest
-              className={playerTypeList.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
-              itemPredicate={filterPlayerType}
-              inputValueRenderer={renderPlayerTypeInputValue}
-              onItemSelect={(playerType: IPlayerType) => { this.filterPlayers(playerType, undefined) }}
-              items={playerTypeListDisplay}
-              itemRenderer={renderPlayerType}
-              noResults={<MenuItem disabled={true} text="No results." />}
-            />
-            <Divider />
-            <p className='dropdown'>Player</p>
-            <PlayerSuggest
-              className={playerListLatest.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
-              itemPredicate={filterPlayer}
-              inputValueRenderer={renderPlayerInputValue}
-              onItemSelect={(player: IPlayer) => this.handleSelectPlayer(player)}
-              items={latestPlayers}
-              itemRenderer={renderPlayer}
-              noResults={<MenuItem disabled={true} text="No results." />}
-            />
-          </div>
-        </div>
         <div>
           <div className='player-analysis-tabs'>
             <Tabs
@@ -173,13 +137,49 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
               large={true}
               onChange={this.handleNavbarTabChange}
               selectedTabId={this.state.navbarTabId}
-              vertical={true}>
-              <Tab id="playerNews" title="News" />
-              <Tab id="playerGraphs" title="Trends" />
-              <Tab id="playerRanking" title="Discovery" />
+              vertical={false}>
               <Tabs.Expander />
+              <Tab id="playerGraphs" title="Trends" />
+              <Tab id="playerNews" title="News" />
+              <Tab id="playerRanking" title="Discovery" />
             </Tabs>
             <div className='tab-container'>
+              <div className='title-control'>
+                <div className='dropdown-container'>
+                  <p className='dropdown'>Team</p>
+                  <TeamSuggest
+                    className={teamList.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
+                    itemPredicate={filterTeam}
+                    inputValueRenderer={renderTeamInputValue}
+                    onItemSelect={(team: ITeam) => this.filterPlayers(undefined, team)}
+                    items={teamListDisplay}
+                    itemRenderer={renderTeam}
+                    noResults={<MenuItem disabled={true} text="No results." />}
+                  /> 
+                  <Divider />
+                  <p className='dropdown' >Position</p>
+                  <PlayerTypeSuggest
+                    className={playerTypeList.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
+                    itemPredicate={filterPlayerType}
+                    inputValueRenderer={renderPlayerTypeInputValue}
+                    onItemSelect={(playerType: IPlayerType) => { this.filterPlayers(playerType, undefined) }}
+                    items={playerTypeListDisplay}
+                    itemRenderer={renderPlayerType}
+                    noResults={<MenuItem disabled={true} text="No results." />}
+                  />
+                  <Divider />
+                  <p className='dropdown'>Player</p>
+                  <PlayerSuggest
+                    className={playerListLatest.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
+                    itemPredicate={filterPlayer}
+                    inputValueRenderer={renderPlayerInputValue}
+                    onItemSelect={(player: IPlayer) => this.handleSelectPlayer(player)}
+                    items={latestPlayers}
+                    itemRenderer={renderPlayer}
+                    noResults={<MenuItem disabled={true} text="No results." />}
+                  />
+                </div>
+              </div>
               {tabIdToComponentMap[this.state.navbarTabId.toString()]}
             </div>
           </div>

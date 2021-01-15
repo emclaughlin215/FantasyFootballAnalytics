@@ -1,4 +1,6 @@
 import sys
+from typing import List
+
 import requests
 from sqlalchemy import func, literal
 from sqlalchemy.orm import Session, aliased
@@ -6,7 +8,9 @@ from sqlalchemy.orm import Session, aliased
 import pandas as pd
 from datetime import datetime as dt
 from server.api import models, database
+from server.api.schemas import Transfer
 from server.controller.suggestTeam import getExpectedPoints, getHighestExpectedPoints
+from server.controller.suggestTransfers import suggestTransfers
 
 
 def get_game_week_info(db: Session):
@@ -195,6 +199,14 @@ def get_highest_expected_points(db: Session, period_qualifier: str):
         'expected_points': round(expected_points, 2),
         'actual_points': round(actual_points, 2),
     }
+
+
+def get_suggested_transfers(db: Session) -> List[Transfer]:
+
+    pickedTeam = get_selected_expected_points(db)['players']
+    suggestedTeam = get_highest_expected_points(db, 'ep_next')['players']
+
+    return suggestTransfers(pickedTeam, suggestedTeam)
 
 
 def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_week: int) -> pd.DataFrame:
