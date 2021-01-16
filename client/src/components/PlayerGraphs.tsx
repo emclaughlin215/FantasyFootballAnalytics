@@ -135,7 +135,7 @@ export class PlayerGraphs extends React.PureComponent<PlayerGraphProps, PlayerGr
         <div className='tab-dropdown-container'>
           <p className='dropdown'>Attribute</p>
           <PropertySuggest
-            className={playerListLatest.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
+            className={'bp3-dark ' + (playerListLatest.type === 'loading' ? 'bp3-skeleton' : 'dropdown')}
             itemPredicate={filterProperty}
             inputValueRenderer={renderPropertyInputValue}
             onItemSelect={(property: string) => this.addPropertyToGraph(property as keyof IPlayer)}

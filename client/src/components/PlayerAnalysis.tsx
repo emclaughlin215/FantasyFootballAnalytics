@@ -122,7 +122,7 @@ export class PlayerAnalysis extends React.PureComponent<IPlayerAnalysisProps, IP
 
     const tabIdToComponentMap: IStringElementMap = {
         "playerNews": <News />,
-        "playerGraphs": <PlayerGraphs filteredPlayer={filteredPlayer} playerListLatest={playerListLatest} />,
+        "playerGraphs": <PlayerGraphs playerListLatest={playerListLatest} filteredPlayer={filteredPlayer} />,
         "playerRanking": <PerformanceAnalysis />
     }
 

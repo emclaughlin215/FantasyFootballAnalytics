@@ -28,35 +28,35 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
         }
     }
 
-    async componentDidMount() {
-        const player: Response = await fetch('http://localhost:8000/players/all/' + this.props.player_id);
-        const playerJson: IPlayer[] = await player.json();
-
-        this.setState({
-            player: loaded(playerJson),
-        })
+    componentDidMount() {
+        this.updatePlayerAndFixtures()
     }
 
-    async componentDidUpdate(prevProps: PlayerDetailsProps) {
+    componentDidUpdate(prevProps: PlayerDetailsProps) {
 
         if (prevProps.player_id !== this.props.player_id) {
-            const player: Response = await fetch('http://localhost:8000/players/all/' + this.props.player_id);
-            const playerJson: IPlayer[] = await player.json();
-    
-            this.setState({
-                player: loaded(playerJson)
-            })
+            this.updatePlayerAndFixtures()
         }
     }
 
-    async setPlayersFixtures() {
+    async updatePlayerAndFixtures() {
+        const player: Response = await fetch('http://localhost:8000/players/all/' + this.props.player_id);
+        const playerJson: IPlayer[] = await player.json();
+        const playerFixtures: IPlayerFixture[] = await this.setPlayersFixtures(playerJson[0]);
+        this.setState({
+            player: loaded(playerJson),
+            playerFixtures: loaded(playerFixtures),
+        })
+    }
+
+    async setPlayersFixtures(player: IPlayer): Promise<IPlayerFixture[]> {
 
         const gameweek: string = this.props.gameweek.type === 'loaded' ? this.props.gameweek.value.current.id.toString() : '';
 
-        const player_team: number = this.state.player.type === 'loaded' ?  this.state.player.value[0]['team']: -1;
+        const player_team: number = player['team'];
         const playerFixturesResponse: Response = await fetch('http://localhost:8000/fixtures/' + player_team.toString() + '/' + gameweek);
         const playerFixtureJson: IPlayerFixture[] = await playerFixturesResponse.json();
-        this.setState({playerFixtures: loaded(playerFixtureJson)})
+        return playerFixtureJson
     }
 
     private playerListStaticElement(property: keyof IPlayer, name?: string) {
@@ -155,7 +155,6 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
             "season": this.playerList(),
         };
 
-        // this.setPlayersFixtures();
         const playerFixtures = this.playerFixtures();
 
         return (

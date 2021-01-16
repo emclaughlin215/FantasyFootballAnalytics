@@ -2,11 +2,11 @@ import { MenuItem } from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer } from '@blueprintjs/select';
 import React from 'react';
 
-import { IPlayer, IPlayerType, ITeam } from '../index.d';
+import { IDisplayPlayer, IPlayer, IPlayerType, ITeam } from '../index.d';
 import { capitaliseSentence } from './String';
 
 export const renderPlayerTypeInputValue = (player: IPlayerType) => player.plural_name;
-export const renderPlayerInputValue = (player: IPlayer) => player.first_name + ' ' + player.second_name;
+export const renderPlayerInputValue = (player: IPlayer | IDisplayPlayer) => player.first_name + ' ' + player.second_name;
 export const renderTeamInputValue = (team: ITeam) => team.name;
 export const renderPropertyInputValue = (property: string) => capitaliseSentence(property.toString(), '_');
 
@@ -26,7 +26,7 @@ export const renderPlayerType: ItemRenderer<IPlayerType> = (team, { handleClick,
   );
 };
 
-export const renderPlayer: ItemRenderer<IPlayer> = (player, { handleClick, modifiers, query }) => {
+export const renderPlayer: ItemRenderer<IPlayer | IDisplayPlayer> = (player, { handleClick, modifiers, query }) => {
   if (!modifiers.matchesPredicate) {
       return null;
   }
@@ -120,7 +120,7 @@ export const filterPlayerType: ItemPredicate<IPlayerType> = (query, playerType, 
   }
 };
 
-export const filterPlayer: ItemPredicate<IPlayer> = (query, player, _index, exactMatch) => {
+export const filterPlayer: ItemPredicate<IPlayer | IDisplayPlayer> = (query, player, _index, exactMatch) => {
   const normalizedName = player.first_name.toLowerCase() + ' ' + player.second_name.toLowerCase() + ' (' + player.element_name.toLowerCase() + ')';
   const normalizedQuery = query.toLowerCase();
 

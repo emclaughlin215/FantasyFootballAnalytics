@@ -1,10 +1,10 @@
 import './MyTeam.scss';
 
-import React, { DragEventHandler } from 'react';
+import React from 'react';
 
-import { IDisplayPlayer, IDisplayTeam, IGameweekInfo, IPlayer, IStringFunctionMap, ITransfer } from '../index.d';
+import { IChange, IDisplayPlayer, IDisplayTeam, IGameweekInfo, IPlayer, IStringFunctionMap } from '../index.d';
 import { getPropertyIfLoadedOrElse, loaded, loading, LoadState } from '../utils/LoadState';
-import { Button, Classes, Dialog, Divider, Drawer, Intent, MenuItem, NonIdealState, Overlay, Position, Tab, TabId, Tabs, Tag, Text } from '@blueprintjs/core';
+import { Button, Dialog, Divider, Drawer, MenuItem, NonIdealState, Position, Tab, TabId, Tabs } from '@blueprintjs/core';
 import { prop } from '../utils/TypeScript';
 import PlayerDetails from './PlayerDetails';
 import { Suggest } from '@blueprintjs/select';
@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { ICombinedReducers } from '../reducers/Reducers';
 import { IPlayerReducer } from '../reducers/PlayerReducers';
 import { DisplayTeam } from './DisplayTeam';
-import classes from '*.module.css';
+import { SuggestedChanges } from './SuggestedChanges';
 
 
 interface ProposedChange {
@@ -31,7 +31,7 @@ export interface MyTeamState {
   playerDetailsDrawIsOpen: boolean;
   playerDetailsDrawerSide: Position;
   comparePlayersDrawerIsOpen: boolean;
-  suggestedTransfers: LoadState<ITransfer[]>;
+  suggestedTransfers: LoadState<IChange[]>;
   selectedPlayerDetails?: number;
   comparePlayerSelectedLeft?: number;
   comparePlayerSelectedRight?: number;
@@ -74,7 +74,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
 
   async componentDidMount() {
     const transfers: Response = await fetch('http://localhost:8000/transfers/suggested/');
-    const transfersJson: ITransfer[] = await transfers.json();
+    const transfersJson: IChange[] = await transfers.json();
 
     this.setState({
       suggestedTransfers: loaded(transfersJson),
@@ -87,12 +87,12 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
 
     const player_a: number | undefined = (player_a_id && playerState.playerListLatest.type === 'loaded')
       ? playerState.playerListLatest.value.filter(player => player.id === player_a_id)[0].id
-      : selectedTeam.type === 'loaded' ? selectedTeam.value.players[0].id
+      : selectedTeam.type === 'loaded' ? selectedTeam.value.team[0].id
       : undefined;
 
     const player_b: number | undefined = (player_b_id && playerState.playerListLatest.type === 'loaded')
       ? playerState.playerListLatest.value.filter(player => player.id === player_b_id)[0].id
-      : highestTeamNext.type === 'loaded' ? highestTeamNext.value.players[0].id
+      : highestTeamNext.type === 'loaded' ? highestTeamNext.value.team[0].id
       : undefined;
 
     if (player_a !== undefined && player_b !== undefined) {
@@ -107,12 +107,17 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
     highestTeam: LoadState<IDisplayTeam>,
     pointsType: keyof IDisplayPlayer) => {
     
-    const PlayerSuggest = Suggest.ofType<IPlayer>();
+    const PlayerSuggest = Suggest.ofType<IDisplayPlayer>();
     const { comparePlayerSelectedLeft, comparePlayerSelectedRight } = this.state;
-    const { playerListLatest } = this.props.playerState;
-    // const playersBeingCompared: LoadState<IPlayer[]> = loaded([]);
-    // [comparePlayerSelectedLeft, comparePlayerSelectedRight].map(player => player !== undefined ? playersBeingCompared.value.push(player) : null);
-
+    const { playerListLatest, playerList } = this.props.playerState;
+    const playersToCompared: LoadState<IPlayer[][]> = loaded([]);
+    [comparePlayerSelectedLeft, comparePlayerSelectedRight].map(player_id => {
+      if (player_id !== undefined && playerList.type === 'loaded') {
+        const playerToCompare: IPlayer[] = playerList.value.filter(pl => pl.id === player_id);
+        playersToCompared.value.push(playerToCompare)
+      }
+    })
+    const playersBeingCompared: LoadState<IPlayer[]> = loaded(playersToCompared.value.flat(2))
     return (
     <div className='compare-teams-container'>
         <Drawer
@@ -128,11 +133,11 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
             <div className='compare-player-details-container'>
               <div className='compare-player-left compare-player-select'>
                 <PlayerSuggest
-                  className={this.props.pickedTeam.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
+                  className={'bp3-dark ' + (this.props.pickedTeam.type === 'loading' ? 'bp3-skeleton' : 'dropdown')}
                   itemPredicate={filterPlayer}
                   inputValueRenderer={renderPlayerInputValue}
-                  onItemSelect={(player: IPlayer) => this.handleSelectPlayer(player, Position.LEFT)}
-                  items={getPropertyIfLoadedOrElse(myTeam, 'players', []).sort((a, b) => a.element_type - b.element_type)}
+                  onItemSelect={(player: IDisplayPlayer) => this.handleSelectPlayer(player, Position.LEFT)}
+                  items={getPropertyIfLoadedOrElse(myTeam, 'team', []).sort((a, b) => a.element_type - b.element_type)}
                   itemRenderer={renderPlayer}
                   noResults={<MenuItem disabled={true} text="No results." />}
                 />
@@ -142,11 +147,11 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
               </div> : <NonIdealState className="graph-non-ideal-state" title="Select a Player from the dropdown" description="..." />}
               <div className='compare-player-right compare-player-select'>
                 <PlayerSuggest
-                  className={this.props.pickedTeam.type === 'loading' ? 'bp3-skeleton' : 'dropdown'}
+                  className={'bp3-dark ' + (this.props.pickedTeam.type === 'loading' ? 'bp3-skeleton' : 'dropdown')}
                   itemPredicate={filterPlayer}
                   inputValueRenderer={renderPlayerInputValue}
-                  onItemSelect={(player: IPlayer) => this.handleSelectPlayer(player, Position.RIGHT)}
-                  items={getPropertyIfLoadedOrElse(highestTeam, 'players', []).sort((a, b) => a.element_type - b.element_type)}
+                  onItemSelect={(player: IDisplayPlayer) => this.handleSelectPlayer(player, Position.RIGHT)}
+                  items={getPropertyIfLoadedOrElse(highestTeam, 'team', []).sort((a, b) => a.element_type - b.element_type)}
                   itemRenderer={renderPlayer}
                   noResults={<MenuItem disabled={true} text="No results." />}
                 />
@@ -155,7 +160,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
                 <PlayerDetails player_id={comparePlayerSelectedRight ? comparePlayerSelectedRight.toString() : ''} gameweek={this.props.gameweekInfo}/>
               </div>
             </div>
-            {/* <PlayerGraphs playerListLatest={playerListLatest} filteredPlayer={playersBeingCompared}/>  */}
+            <PlayerGraphs playerListLatest={playerListLatest} filteredPlayer={playersBeingCompared}/> 
           </div>
         </Drawer>
       <div className='team-config-buttons-wrapper'>
@@ -270,7 +275,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
 
   }
 
-  private handleSelectPlayer = (selectedPlayer: IPlayer, side: Position) => {
+  private handleSelectPlayer = (selectedPlayer: IDisplayPlayer, side: Position) => {
     if (side === Position.LEFT) {
       this.setState({comparePlayerSelectedLeft: selectedPlayer.id})
     } else {
@@ -310,7 +315,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
           size={Drawer.SIZE_LARGE}>
             <PlayerDetails player_id={selectedPlayerDetails ? selectedPlayerDetails.toString() : ''} gameweek={this.props.gameweekInfo}/>
         </Drawer>
-        <Tabs
+        <Tabs 
           animate={true}
           renderActiveTabPanelOnly={true}
           id="MainTabs"
@@ -325,28 +330,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
         <div className='tab-container'>
           {pickedTeam.type === 'loaded' ? tabIdToComponentMap[this.state.navbarTabId.toString()]() : <NonIdealState className="graph-non-ideal-state" title="Loading Teams..." description="Getting your teams!" />}
         </div>
-        <div className='transfer-list-container'>
-          <div className='transfer-list-header'>
-                <Text>Actions</Text>
-                <Text>Player In</Text>
-                <Text>Player Out</Text>
-                <Text>Expected Points Gain</Text>
-                <Text>Transfer Cost</Text>
-          </div>
-          <div className='transfer-list'>
-            {suggestedTransfers.type === 'loaded' && suggestedTransfers.value.map((transfer) => {
-              return (
-                <div className='transfer'>
-                  <Button className='transfer-compare-players-button' intent='primary' onClick={() => this.comparePlayersDrawerOpen(transfer.id_player_out, transfer.id_player_in)}> Compare Players </Button>
-                  <Text>{transfer.web_name_player_out}</Text>
-                  <Text>{transfer.web_name_player_in}</Text>
-                  <Tag large round intent={transfer.points_gain >= 4 ? Intent.SUCCESS : transfer.points_gain >= 0 ? Intent.PRIMARY : Intent.WARNING}>{transfer.points_gain}</Tag>
-                  <Tag large round intent={transfer.transfer_cost <= 0 ? Intent.SUCCESS : transfer.points_gain <= 0.5 ? Intent.PRIMARY : Intent.WARNING}>{transfer.transfer_cost}</Tag>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        <SuggestedChanges comparePlayersDrawerOpen={() => this.comparePlayersDrawerOpen()} suggestedChanges={suggestedTransfers}/>
       </div>
     )
   }

@@ -130,25 +130,19 @@ export interface ITeam {
 
 export interface IDisplayTeam {
   team: IDisplayPlayer[]
-  players: IPlayer[]
   cost: number
   expected_points: number
   actual_points: number
 }
 
-export interface IDisplayPlayer {
-  primary_key: str
-  element: int
+export interface IDisplayPlayer extends IPlayer {
   event?: int
   position?: int
   multiplier?: int
   is_captain?: bool
   is_vice_captain?: bool
-  first_name?: str
-  second_name?: str
   element_name?: str
-  cost?: float
-  event_points?: int
+  period_qualifier?: str
 }
 
 export interface IGameweek {
@@ -188,7 +182,7 @@ export interface IPlayerFixture {
   fixture_type: int
 }
 
-export interface ITransfer {
+export interface IChange {
   transfer_cost: float
   points_gain: float
   id_player_in: int

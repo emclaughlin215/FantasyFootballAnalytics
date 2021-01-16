@@ -1,6 +1,6 @@
 import { Divider, Position } from "@blueprintjs/core";
 import React from "react";
-import { IDisplayTeam, IDisplayPlayer, IPlayer } from "../index.d";
+import { IDisplayTeam, IDisplayPlayer } from "../index.d";
 
 
 export function DisplayTeam(
@@ -16,12 +16,11 @@ export function DisplayTeam(
     let current_position: string = ''; let team_positions: any[] = []; let team_row: any[] = [];
     let count = 0;
   
-    displayTeam.team.forEach((player) => {
-      const chance_of_playing_type = pointsType !== undefined ? 'chance_of_playing_this_round' : 'chance_of_playing_next_round';
+    displayTeam.team.sort((a, b) => a.position - b.position).forEach((player) => {
+      const chance_of_playing_type = pointsType === 'event_points' ? 'chance_of_playing_this_round' : 'chance_of_playing_next_round';
 
-      const current_player: IPlayer = displayTeam.players.filter((p) => p['id'] === player['element'])[0];
-      const current_percent_chance_playing = current_player[chance_of_playing_type];
-      const webname = current_player['web_name'];
+      const current_percent_chance_playing = player[chance_of_playing_type];
+      const webname = player['web_name'];
 
       const render_player_colour = current_percent_chance_playing === 0 ? 'player-display-background-not-playing' :
         current_percent_chance_playing > 25 && current_percent_chance_playing < 100 ? 'player-display-background-maybe-playing' :
@@ -37,10 +36,10 @@ export function DisplayTeam(
       current_position = player['element_name'];
       team_row.push(
         <div className='player-display'
-          onClick={() => setSelectedPlayerCallback(player['element'], teamSide)}
+          onClick={() => setSelectedPlayerCallback(player['id'], teamSide)}
           draggable={teamSide === Position.LEFT}
           itemID={player.position}
-          itemRef={player.element}
+          itemRef={player.id.toString()}
           onDragStart={(player) => onDragStartCallback(player)}
           onDragOver={(event) => onDragOverCallback(event)}
           onDragLeave={(event) => onDragLeaveCallback(event)}
