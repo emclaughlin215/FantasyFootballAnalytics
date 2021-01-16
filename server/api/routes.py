@@ -134,6 +134,6 @@ async def getPlayerFixtures(team_id: int, gameweek: int, db: Session = Depends(g
 
 # --------------- TRANSFERS -------------------
 
-@app.get("/transfers/suggested", response_model=List[schemas.Transfer], status_code=status.HTTP_200_OK)
+@app.get("/transfers/suggested", response_model=List[schemas.Change], status_code=status.HTTP_200_OK)
 async def getSuggestedTransfers(db: Session = Depends(get_db)):
     return crud.get_suggested_transfers(db)

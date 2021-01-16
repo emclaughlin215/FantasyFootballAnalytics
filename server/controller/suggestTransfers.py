@@ -1,10 +1,10 @@
 from typing import List, Tuple, Set, Dict
 
 from server.api.models import Player
-from server.api.schemas import Transfer
+from server.api.schemas import Change
 
 
-def suggestTransfers(currentTeam: List[Player], suggestedTeam: List[Player]) -> List[Transfer]:
+def suggestTransfers(currentTeam: List[Player], suggestedTeam: List[Player]) -> List[Change]:
 
     # Position, in current team but not in suggested team, in suggested team but not in current team
     teamPositionMapping: Dict[str, Tuple[List[Player], List[Player]]] = {
@@ -19,13 +19,13 @@ def suggestTransfers(currentTeam: List[Player], suggestedTeam: List[Player]) -> 
 
     for player in currentTeam:
         if player['id'] not in suggestedPlayerIds:
-            teamPositionMapping[str(player['element_type'])][0].append(player)
+            teamPositionMapping[str(int(player['element_type']))][0].append(player)
 
     for player in suggestedTeam:
         if player['id'] not in currentPlayerIds:
-            teamPositionMapping[str(player['element_type'])][1].append(player)
+            teamPositionMapping[str(int(player['element_type']))][1].append(player)
 
-    transfers: List[Transfer] = []
+    transfers: List[Change] = []
     for teamPosition in teamPositionMapping.values():
         teamPosition[0].sort(key=lambda x: x['ep_next'])
         teamPosition[1].sort(key=lambda x: x['ep_next'], reverse=True)
@@ -39,7 +39,7 @@ def suggestTransfers(currentTeam: List[Player], suggestedTeam: List[Player]) -> 
                 make_transfer = points_diff > 0
 
                 if make_transfer:
-                    new_transfer = Transfer()
+                    new_transfer = Change()
 
                     new_transfer.transfer_cost = cost_diff
                     new_transfer.points_gain = points_diff

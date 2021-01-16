@@ -3,9 +3,9 @@ import functools
 
 def getExpectedPoints(team, all_players_latest):
 
-    keys_to_keep = ['element', 'multiplier']
+    keys_to_keep = ['id', 'multiplier']
     keys_to_ignore = ['_sa_instance_state']
-    elements = {x['element']: {k: v for (k, v) in x.items() if k in keys_to_keep and k not in keys_to_ignore} for x in team}
+    elements = {x['id']: {k: v for (k, v) in x.items() if k in keys_to_keep and k not in keys_to_ignore} for x in team}
     latest_elements = {x['id']: {k: v for (k, v) in x.items() if k not in keys_to_ignore} for x in all_players_latest if x['id'] in elements}
     latest_elements = {kv[0]: dict(kv[1], **elements[kv[0]]) for kv in latest_elements.items()}
     return sum(player['cost'] for player in latest_elements.values()), \

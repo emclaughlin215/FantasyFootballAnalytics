@@ -150,23 +150,14 @@ class Player(PlayerBase):
         orm_mode = True
 
 
-class PickedTeamBase(BaseModel):
-    primary_key = str
-
-
-class PickedTeam(PickedTeamBase):
+class PickedTeam(Player):
+    period_qualifier: Optional[str]
     event: Optional[int]
-    element: int
     position: Optional[int]
     multiplier: Optional[int]
     is_captain: Optional[bool]
     is_vice_captain: Optional[bool]
-    first_name: Optional[str]
-    second_name: Optional[str]
     element_name: Optional[str]
-    cost: Optional[float]
-    event_points: Optional[int]
-    timestamp: Optional[datetime]
 
     class Config:
         orm_mode = True
@@ -208,7 +199,6 @@ class TeamExpectedPoints(BaseModel):
     actual_points: float
     cost: float
     team: List[PickedTeam]
-    players: List[Player]
 
     class Config:
         orm_mode = True
@@ -226,7 +216,7 @@ class TeamFixture(BaseModel):
         orm_mode = True
 
 
-class Transfer(BaseModel):
+class Change(BaseModel):
 
     transfer_cost: Optional[float]
     points_gain: Optional[float]

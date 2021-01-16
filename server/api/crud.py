@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, aliased
 import pandas as pd
 from datetime import datetime as dt
 from server.api import models, database
-from server.api.schemas import Transfer
+from server.api.schemas import Change
 from server.controller.suggestTeam import getExpectedPoints, getHighestExpectedPoints
 from server.controller.suggestTransfers import suggestTransfers
 
@@ -152,13 +152,9 @@ def get_picked_expected_points(db: Session):
     picked_team = [player.__dict__ for player in get_picked_team(db)]
     all_latest = [player.__dict__ for player in get_all_players_latest(db)]
 
-    picked_team_ids = [player['element'] for player in picked_team]
-    picked_players = [player for player in all_latest if player['id'] in picked_team_ids]
-
     pt = getExpectedPoints(picked_team, all_latest)
     return {
         'team': picked_team,
-        'players': picked_players,
         'cost': round(pt[0], 2),
         'actual_points': round(pt[1], 2),
         'expected_points': round(pt[2], 2),
@@ -169,13 +165,9 @@ def get_selected_expected_points(db: Session):
     selected_team = [player.__dict__ for player in get_selected_team(db)]
     all_latest = [player.__dict__ for player in get_all_players_latest(db)]
 
-    selected_team_ids = [player['element'] for player in selected_team]
-    selected_players = [player for player in all_latest if player['id'] in selected_team_ids]
-
     st = getExpectedPoints(selected_team, all_latest)
     return {
         'team': selected_team,
-        'players': selected_players,
         'cost': round(st[0], 2),
         'actual_points': round(st[1], 2),
         'expected_points': round(st[2], 2),
@@ -184,27 +176,22 @@ def get_selected_expected_points(db: Session):
 
 def get_highest_expected_points(db: Session, period_qualifier: str):
     highest_team = [player.__dict__ for player in get_highest_team(db, period_qualifier)]
-    all_latest = [player.__dict__ for player in get_all_players_latest(db)]
-
-    highest_team_ids = [player['element'] for player in highest_team]
-    highest_players = [player for player in all_latest if player['id'] in highest_team_ids]
 
     cost = sum(player['cost'] for player in highest_team)
     expected_points = sum(player[period_qualifier] for player in highest_team)
     actual_points = sum(player['event_points'] for player in highest_team)
     return {
         'team': highest_team,
-        'players': highest_players,
         'cost': round(cost, 2),
         'expected_points': round(expected_points, 2),
         'actual_points': round(actual_points, 2),
     }
 
 
-def get_suggested_transfers(db: Session) -> List[Transfer]:
+def get_suggested_transfers(db: Session) -> List[Change]:
 
-    pickedTeam = get_selected_expected_points(db)['players']
-    suggestedTeam = get_highest_expected_points(db, 'ep_next')['players']
+    pickedTeam = get_selected_expected_points(db)['team']
+    suggestedTeam = get_highest_expected_points(db, 'ep_next')['team']
 
     return suggestTransfers(pickedTeam, suggestedTeam)
 
@@ -223,89 +210,6 @@ def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_we
 
     primary_key_cols = ['id', 'timestamp']
     elements['primary_key'] = elements[primary_key_cols].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
-
-    float_cols = [
-        'ep_this',
-        'ep_next',
-        'points_per_game',
-        'selected_by_percent',
-        'value_form',
-        'value_season',
-        'threat',
-        'influence',
-        'creativity',
-        'ict_index',
-        'form_to_cost',
-        'bonus_to_cost',
-        'cost',
-        'now_cost',
-        'form',
-        'chance_of_playing_this_round',
-        'chance_of_playing_next_round',
-        'cost_change_event',
-        'cost_change_event_fall',
-        'cost_change_start',
-        'cost_change_start_fall',
-    ]
-
-    int_cols = [
-        'id',
-        'code',
-        'dreamteam_count',
-        'element_type',
-        'event_points',
-        'squad_number',
-        'team',
-        'team_code',
-        'total_points',
-        'transfers_in',
-        'transfers_in_event',
-        'transfers_out',
-        'transfers_out_event',
-        'minutes',
-        'goals_scored',
-        'assists',
-        'clean_sheets',
-        'goals_conceded',
-        'own_goals',
-        'penalties_saved',
-        'penalties_missed',
-        'yellow_cards',
-        'red_cards',
-        'saves',
-        'bonus',
-        'bps',
-        'influence_rank',
-        'influence_rank_type',
-        'creativity_rank',
-        'creativity_rank_type',
-        'threat_rank',
-        'threat_rank_type',
-        'ict_index_rank',
-        'ict_index_rank_type',
-        'corners_and_indirect_freekicks_order',
-        'direct_freekicks_order',
-        'penalties_order',
-    ]
-    string_cols = [
-        'primary_key',
-        'element_name',
-        'element_name_short',
-        'first_name',
-        'second_name',
-        'news',
-        'news_added',
-        'photo',
-        'status',
-        'web_name',
-        'corners_and_indirect_freekicks_text',
-        'direct_freekicks_text',
-        'penalties_text',
-    ]
-    bool_cols = [
-        'in_dreamteam',
-        'special',
-    ]
 
     for col in float_cols:
         elements[col] = elements[col].astype('float64')
@@ -328,10 +232,12 @@ def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFra
     highest_expected_points_next_df = pd.DataFrame(hep_next)
     highest_expected_points_next_df['period_qualifier'] = 'ep_next'
 
-    highest_expected_points_df = pd.concat([highest_expected_points_this_df, highest_expected_points_next_df], ignore_index=True)
+    highest_expected_points_df = pd.concat(
+        [highest_expected_points_this_df, highest_expected_points_next_df],
+        ignore_index=True
+    )
 
     highest_expected_points_df = handle_elements(highest_expected_points_df, element_types_df, game_week)
-    highest_expected_points_df.rename(columns={'id': 'element'}, inplace=True)
     highest_expected_points_df['multiplier'] = 1
     highest_expected_points_df['is_captain'] = 0
     highest_expected_points_df['is_vice_captain'] = 0
@@ -340,23 +246,14 @@ def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFra
     highest_expected_points_df['primary_key'] = highest_expected_points_df[primary_key_cols] \
         .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
 
-    highest_expected_points_df = highest_expected_points_df[[
-        'primary_key',
+    highest_expected_points_df = highest_expected_points_df[string_cols + int_cols + bool_cols + float_cols + [
         'period_qualifier',
-        'element',
         'event',
         'position',
         'multiplier',
         'is_captain',
         'is_vice_captain',
-        'first_name',
-        'second_name',
         'element_name',
-        'element_type',
-        'ep_this',
-        'ep_next',
-        'cost',
-        'event_points',
         'timestamp'
     ]]
     highest_expected_points_df['ep_this'] = highest_expected_points_df['ep_this'].astype(float)
@@ -382,8 +279,7 @@ def set_team(
         url: str,
         headers: dict,
         players: pd.DataFrame,
-        table: str,
-        game_week: int):
+        table: str):
 
     try:
         team = requests.get(url, headers=headers)
@@ -391,17 +287,23 @@ def set_team(
         sys.exit("Failed to get team points data.")
 
     team_json = team.json()
+    if team_json == 'The game is being updated.':
+        return
+
     team_df = pd.DataFrame(team_json['picks'])
+    team_df = pd.merge(players, team_df, left_on='id', right_on='element', how='left')
 
-    team_df['element_name'] = team_df.element.map(players.set_index('id').element_name)
-    team_df['first_name'] = team_df.element.map(players.set_index('id').first_name)
-    team_df['second_name'] = team_df.element.map(players.set_index('id').second_name)
-    team_df['cost'] = team_df.element.map(players.set_index('id').cost)
-    team_df['event_points'] = team_df.element.map(players.set_index('id').event_points)
-    team_df['event'] = game_week
-    team_df['timestamp'] = pd.to_datetime('now')
+    for col in float_cols:
+        team_df[col] = team_df[col].astype('float64')
+    for col in int_cols:
+        team_df[col] = team_df[col].astype('float64')
+    for col in string_cols:
+        team_df[col] = team_df[col].astype(str)
+    for col in bool_cols:
+        team_df[col] = team_df[col].astype('bool')
 
-    primary_key_cols = ['element', 'event']
+    print(team_df.dtypes)
+    primary_key_cols = ['id', 'event']
     team_df['primary_key'] = team_df[primary_key_cols] \
         .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
 
@@ -495,8 +397,8 @@ def update_players_set_teams():
     url_points_team = 'https://fantasy.premierleague.com/api/entry/5626217/event/' + str(game_week) + '/picks/'
     url_selected_team = 'https://fantasy.premierleague.com/api/my-team/5626217/'
 
-    set_team(url_selected_team, headers, elements_df, 'selected_team', game_week)
-    set_team(url_points_team, {}, elements_df, 'picked_team', game_week)
+    set_team(url_selected_team, headers, elements_df, 'selected_team')
+    set_team(url_points_team, {}, elements_df, 'picked_team')
     set_highest_expected_points_team(
         data_json['elements'],
         element_types_df,
@@ -562,3 +464,87 @@ def update_fixtures():
         print(ex)
     else:
         print(table_name + " table created successfully.")
+
+
+float_cols = [
+    'ep_this',
+    'ep_next',
+    'points_per_game',
+    'selected_by_percent',
+    'value_form',
+    'value_season',
+    'threat',
+    'influence',
+    'creativity',
+    'ict_index',
+    'form_to_cost',
+    'bonus_to_cost',
+    'cost',
+    'now_cost',
+    'form',
+    'chance_of_playing_this_round',
+    'chance_of_playing_next_round',
+    'cost_change_event',
+    'cost_change_event_fall',
+    'cost_change_start',
+    'cost_change_start_fall',
+]
+
+int_cols = [
+    'id',
+    'code',
+    'dreamteam_count',
+    'element_type',
+    'event_points',
+    'squad_number',
+    'team',
+    'team_code',
+    'total_points',
+    'transfers_in',
+    'transfers_in_event',
+    'transfers_out',
+    'transfers_out_event',
+    'minutes',
+    'goals_scored',
+    'assists',
+    'clean_sheets',
+    'goals_conceded',
+    'own_goals',
+    'penalties_saved',
+    'penalties_missed',
+    'yellow_cards',
+    'red_cards',
+    'saves',
+    'bonus',
+    'bps',
+    'influence_rank',
+    'influence_rank_type',
+    'creativity_rank',
+    'creativity_rank_type',
+    'threat_rank',
+    'threat_rank_type',
+    'ict_index_rank',
+    'ict_index_rank_type',
+    'corners_and_indirect_freekicks_order',
+    'direct_freekicks_order',
+    'penalties_order',
+]
+string_cols = [
+    'primary_key',
+    'element_name',
+    'element_name_short',
+    'first_name',
+    'second_name',
+    'news',
+    'news_added',
+    'photo',
+    'status',
+    'web_name',
+    'corners_and_indirect_freekicks_text',
+    'direct_freekicks_text',
+    'penalties_text',
+]
+bool_cols = [
+    'in_dreamteam',
+    'special',
+]

@@ -49,7 +49,7 @@ class PlayerType(Timestamp_Column, Base):
     element_count = Column(Integer, nullable=True)
 
 
-class Player_Columns(Timestamp_Column):
+class PlayerColumns(Timestamp_Column):
 
     primary_key = Column(String(50), primary_key=True, nullable=False)
     id = Column(Integer, index=True)
@@ -127,28 +127,21 @@ class Player_Columns(Timestamp_Column):
     bonus_to_cost = Column(Float, nullable=True)
 
 
-class Player(Player_Columns, Base):
+class Player(PlayerColumns, Base):
     __tablename__ = "elements"
 
 
-class PlayerLatest(Player_Columns, Base):
+class PlayerLatest(PlayerColumns, Base):
     __tablename__ = "latest_elements"
 
 
-class TeamOfPlayers(Timestamp_Column):
+class TeamOfPlayers(PlayerColumns):
 
-    primary_key = Column(String(50), primary_key=True)
-    element = Column(Integer)
-    event = Column(Integer)
     position = Column(Integer)
     multiplier = Column(Integer)
     is_captain = Column(Boolean)
     is_vice_captain = Column(Boolean)
-    first_name = Column(String(50))
-    second_name = Column(String(50))
     element_name = Column(String(50))
-    cost = Column(Float)
-    event_points = Column(Integer)
 
 
 class PickedTeam(TeamOfPlayers, Base):
@@ -163,9 +156,6 @@ class HighestTeam(TeamOfPlayers, Base):
     __tablename__ = "highest_expected_points"
 
     period_qualifier = Column(String, nullable=True)
-    element_type = Column(Integer, nullable=True)
-    ep_next = Column(Float, nullable=True)
-    ep_this = Column(Float, nullable=True)
 
 
 class Team(Base):
