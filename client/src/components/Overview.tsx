@@ -156,10 +156,7 @@ export class Overview extends React.PureComponent<OverviewProps, OverviewState> 
           position={Position.LEFT}
           size={Drawer.SIZE_LARGE}
         >
-          <PlayerDetails
-            player_id={selectedPlayerDetails ? selectedPlayerDetails.id.toString() : ''}
-            gameweek={this.props.gameweekInfo}
-          />
+          <PlayerDetails player={selectedPlayerDetails} gameweek={this.props.gameweekInfo} />
         </Drawer>
         <div className='overview-tabs'> 
           <Tabs

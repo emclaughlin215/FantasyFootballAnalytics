@@ -5,6 +5,7 @@ export const constants = {
   loadPlayersLatest: "LOAD PLAYERS LATEST",
   loadTeams: "LOAD TEAMS",
   loadPlayerTypes: "LOAD PLAYER TYPES",
+  loadSelectedTeam: "LOAD SELECTED TEAM",
   filterPlayers: "FILTER PLAYERS",
   addPropertiesToGrpah: "ADD PROPERTY TO GRAPH",
 }

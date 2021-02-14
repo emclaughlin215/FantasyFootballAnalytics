@@ -96,14 +96,9 @@ async def expectedPointsSelected(db: Session = Depends(get_db)):
     return crud.get_selected_expected_points(db)
 
 
-@app.get("/expectedPoints/highest_this", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
-async def expectedPointsSelected(db: Session = Depends(get_db)):
-    return crud.get_highest_expected_points(db, 'ep_this')
-
-
-@app.get("/expectedPoints/highest_next", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
-async def expectedPointsSelected(db: Session = Depends(get_db)):
-    return crud.get_highest_expected_points(db, 'ep_next')
+@app.get("/expectedPoints/highest/{period_qualifier}", response_model=schemas.TeamExpectedPoints, status_code=status.HTTP_200_OK)
+async def expectedPointsSelected(period_qualifier: str, db: Session = Depends(get_db)):
+    return crud.get_highest_expected_points(db, period_qualifier)
 
 
 # -------- UPDATE PLAYERS AND TEAMS ---------

@@ -1,5 +1,5 @@
 import { constants } from '../constants';
-import { IPlayer } from '../index.d';
+import { IDisplayTeam, IPlayer } from '../index.d';
 import { IPlayerAction } from '../reducers/PlayerReducers';
 
 export const getPlayerLatestList = (
@@ -35,6 +35,28 @@ function getPlayer(players: IPlayer[]): IPlayerAction {
     payload: { "players": players },
   }
 }
+
+
+export const getSelectedTeam = (query: string) => {
+  return async (dispatch: Function) => {
+    const res: Response = await fetch(query);
+    const resJson: IDisplayTeam = await res.json();
+    dispatch(getSelected(resJson));
+  };
+};
+
+
+export const setSelectedTeam = (displayTeam: IDisplayTeam) => {
+  return async (dispatch: Function) => {return dispatch(getSelected(displayTeam))}
+}
+
+export function getSelected(displayTeam: IDisplayTeam): IPlayerAction {
+  return {
+    type: constants.loadSelectedTeam,
+    payload: { "selectedTeam": displayTeam },
+  }
+}
+
 
 export const setFilteredPlayerList = (filteredPlayersLatest: IPlayer[], filteredPlayers: IPlayer[]): IPlayerAction => {
   return {

@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, ClassVar, Dict
 
 from datetime import datetime
 from pydantic import BaseModel
@@ -150,7 +150,7 @@ class Player(PlayerBase):
         orm_mode = True
 
 
-class PickedTeam(Player):
+class PickedTeamPlayer(Player):
     period_qualifier: Optional[str]
     event: Optional[int]
     position: Optional[int]
@@ -158,6 +158,17 @@ class PickedTeam(Player):
     is_captain: Optional[bool]
     is_vice_captain: Optional[bool]
     element_name: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class TeamExpectedPoints(BaseModel):
+
+    expected_points: float
+    actual_points: float
+    cost: float
+    team: Dict[int, PickedTeamPlayer]
 
     class Config:
         orm_mode = True
@@ -188,17 +199,6 @@ class Team(TeamBase):
     strength_defence_home: Optional[int]
     strength_defence_away: Optional[int]
     pulse_id: Optional[int]
-
-    class Config:
-        orm_mode = True
-
-
-class TeamExpectedPoints(BaseModel):
-
-    expected_points: float
-    actual_points: float
-    cost: float
-    team: List[PickedTeam]
 
     class Config:
         orm_mode = True

@@ -124,19 +124,25 @@ def get_most_selected(db: Session):
 
 
 def get_picked_team(db: Session):
-    return db \
+
+    picked_team = db \
         .query(models.PickedTeam) \
         .order_by(models.PickedTeam.event.desc(), models.PickedTeam.position.asc()) \
         .limit(15) \
         .all()
 
+    return picked_team
+
 
 def get_selected_team(db: Session):
-    return db \
+
+    selected_team = db \
         .query(models.SelectedTeam) \
         .order_by(models.SelectedTeam.event.desc(), models.SelectedTeam.position.asc()) \
         .limit(15) \
-          .all()
+        .all()
+
+    return selected_team
 
 
 def get_highest_team(db: Session, period_qualifier: str):
@@ -149,10 +155,11 @@ def get_highest_team(db: Session, period_qualifier: str):
 
 
 def get_picked_expected_points(db: Session):
-    picked_team = [player.__dict__ for player in get_picked_team(db)]
+    picked_team = {player.__dict__['position']: player.__dict__ for player in get_picked_team(db)}
+    picked_team_list = [player.__dict__ for player in get_picked_team(db)]
     all_latest = [player.__dict__ for player in get_all_players_latest(db)]
 
-    pt = getExpectedPoints(picked_team, all_latest)
+    pt = getExpectedPoints(picked_team_list, all_latest, 'this')
     return {
         'team': picked_team,
         'cost': round(pt[0], 2),
@@ -162,10 +169,11 @@ def get_picked_expected_points(db: Session):
 
 
 def get_selected_expected_points(db: Session):
-    selected_team = [player.__dict__ for player in get_selected_team(db)]
+    selected_team = {player.__dict__['position']: player.__dict__ for player in get_selected_team(db)}
+    selected_team_list = [player.__dict__ for player in get_selected_team(db)]
     all_latest = [player.__dict__ for player in get_all_players_latest(db)]
 
-    st = getExpectedPoints(selected_team, all_latest)
+    st = getExpectedPoints(selected_team_list, all_latest, 'next')
     return {
         'team': selected_team,
         'cost': round(st[0], 2),
@@ -175,11 +183,12 @@ def get_selected_expected_points(db: Session):
 
 
 def get_highest_expected_points(db: Session, period_qualifier: str):
-    highest_team = [player.__dict__ for player in get_highest_team(db, period_qualifier)]
+    highest_team = {player.__dict__['position']: player.__dict__ for player in get_highest_team(db, 'ep_' + period_qualifier)}
+    highest_team_list = [player.__dict__ for player in get_highest_team(db, 'ep_' + period_qualifier)]
 
-    cost = sum(player['cost'] for player in highest_team)
-    expected_points = sum(player[period_qualifier] for player in highest_team)
-    actual_points = sum(player['event_points'] for player in highest_team)
+    cost = sum(player['cost'] for player in highest_team_list)
+    expected_points = sum(player['ep_' + period_qualifier] for player in highest_team_list)
+    actual_points = sum(player['event_points'] for player in highest_team_list)
     return {
         'team': highest_team,
         'cost': round(cost, 2),
@@ -189,9 +198,8 @@ def get_highest_expected_points(db: Session, period_qualifier: str):
 
 
 def get_suggested_transfers(db: Session) -> List[Change]:
-
-    pickedTeam = get_selected_expected_points(db)['team']
-    suggestedTeam = get_highest_expected_points(db, 'ep_next')['team']
+    pickedTeam = [player.__dict__ for player in get_selected_team(db)]
+    suggestedTeam = [player.__dict__ for player in get_highest_team(db, 'ep_next')]
 
     return suggestTransfers(pickedTeam, suggestedTeam)
 
@@ -224,19 +232,24 @@ def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_we
 
 
 def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFrame, table: str, game_week):
+
+    print('Getting ep this highest expected.')
     hep_this = getHighestExpectedPoints(players, 'ep_this')
     highest_expected_points_this_df = pd.DataFrame(hep_this)
     highest_expected_points_this_df['period_qualifier'] = 'ep_this'
 
+    print('Getting ep next highest expected.')
     hep_next = getHighestExpectedPoints(players, 'ep_next')
     highest_expected_points_next_df = pd.DataFrame(hep_next)
     highest_expected_points_next_df['period_qualifier'] = 'ep_next'
 
+    print('Concatenating highest expected tables.')
     highest_expected_points_df = pd.concat(
         [highest_expected_points_this_df, highest_expected_points_next_df],
         ignore_index=True
     )
 
+    print('handling highest expected elements')
     highest_expected_points_df = handle_elements(highest_expected_points_df, element_types_df, game_week)
     highest_expected_points_df['multiplier'] = 1
     highest_expected_points_df['is_captain'] = 0
@@ -246,6 +259,7 @@ def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFra
     highest_expected_points_df['primary_key'] = highest_expected_points_df[primary_key_cols] \
         .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
 
+    print('Selecting columns highest expected.')
     highest_expected_points_df = highest_expected_points_df[string_cols + int_cols + bool_cols + float_cols + [
         'period_qualifier',
         'event',
@@ -259,6 +273,7 @@ def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFra
     highest_expected_points_df['ep_this'] = highest_expected_points_df['ep_this'].astype(float)
     highest_expected_points_df['ep_next'] = highest_expected_points_df['ep_next'].astype(float)
 
+    print('Writing highest expected.')
     try:
         highest_expected_points_df.to_sql(
             name=table,
@@ -291,6 +306,7 @@ def set_team(
         return
 
     team_df = pd.DataFrame(team_json['picks'])
+    team_df['position'] = team_df['position'] - 1
     team_df = pd.merge(players, team_df, left_on='id', right_on='element', how='left')
 
     for col in float_cols:
@@ -302,7 +318,6 @@ def set_team(
     for col in bool_cols:
         team_df[col] = team_df[col].astype('bool')
 
-    print(team_df.dtypes)
     primary_key_cols = ['id', 'event']
     team_df['primary_key'] = team_df[primary_key_cols] \
         .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)

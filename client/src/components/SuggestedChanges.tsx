@@ -17,6 +17,8 @@ export class SuggestedChanges extends React.PureComponent<SuggestedChangesProps>
     }
 
     render() {
+
+        const { comparePlayersDrawerOpen } = this.props;
         return(
             <div className='transfer-list-container'>
                 <div className='transfer-list-header'>
@@ -30,7 +32,7 @@ export class SuggestedChanges extends React.PureComponent<SuggestedChangesProps>
                     {this.props.suggestedChanges.type === 'loaded' && this.props.suggestedChanges.value.map((change) => {
                         return (
                         <div className='transfer'>
-                            <Button className='transfer-compare-players-button' intent='primary' onClick={() => this.props.comparePlayersDrawerOpen(change.id_player_out, change.id_player_in)}> Compare Players </Button>
+                            <Button className='transfer-compare-players-button' intent='primary' onClick={() => comparePlayersDrawerOpen(undefined, undefined, change.id_player_out, change.id_player_in)}> Compare Players </Button>
                             <Text>{change.web_name_player_out}</Text>
                             <Text>{change.web_name_player_in}</Text>
                             <Tag large round intent={change.points_gain >= 4 ? Intent.SUCCESS : change.points_gain >= 0 ? Intent.PRIMARY : Intent.WARNING}>{change.points_gain}</Tag>

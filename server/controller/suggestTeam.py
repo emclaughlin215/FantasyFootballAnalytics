@@ -1,16 +1,18 @@
 import functools
 
 
-def getExpectedPoints(team, all_players_latest):
+def getExpectedPoints(team, all_players_latest, period_qualifier):
 
     keys_to_keep = ['id', 'multiplier']
     keys_to_ignore = ['_sa_instance_state']
     elements = {x['id']: {k: v for (k, v) in x.items() if k in keys_to_keep and k not in keys_to_ignore} for x in team}
     latest_elements = {x['id']: {k: v for (k, v) in x.items() if k not in keys_to_ignore} for x in all_players_latest if x['id'] in elements}
     latest_elements = {kv[0]: dict(kv[1], **elements[kv[0]]) for kv in latest_elements.items()}
+    for player in latest_elements.values():
+        print(player['web_name'], ' has ', player['event_points'], ' points @ ', player['timestamp'])
     return sum(player['cost'] for player in latest_elements.values()), \
         sum(player['event_points'] * player['multiplier'] for player in latest_elements.values()), \
-        sum(player['ep_this'] for player in latest_elements.values())
+        sum(player['ep_' + period_qualifier] for player in latest_elements.values())
 
 
 def getPositionHighestExpected(players, position, period_qualifier):
@@ -46,28 +48,34 @@ def getHighestExpectedPoints(all_players_latest, period_qualifier, max_players_o
     for player in players:
         team_count = add_team_players(player, team_count)
 
+    print('getting best team')
     teams_with_too_many_players = list(filter(lambda x: len(x[1]) > max_players_one_team, list(team_count.items())))
-    while len(teams_with_too_many_players) > 0:
-        for team_with_too_many_players in teams_with_too_many_players:
-            team_id = team_with_too_many_players[0]
-            team_proposed_changes = []
-            number_of_changes_to_make = len(team_with_too_many_players[1]) - max_players_one_team
-            team_players = list(filter(lambda x: x['team'] == team_id, players))
-            for team_player in team_players:
-                next_best_player, bank_of_players = getNextBestPlayer(team_player, team_id, bank_of_players)
-                team_proposed_changes = getRecommendedChanges(
-                    team_proposed_changes,
-                    number_of_changes_to_make,
-                    team_player,
-                    next_best_player,
-                    period_qualifier,
-                )
+    print('Teams with too many players ', len(teams_with_too_many_players))
+    # while len(teams_with_too_many_players) > 0:
+    for team_with_too_many_players in teams_with_too_many_players:
+        print('changing players when too many for one team')
+        team_id = team_with_too_many_players[0]
+        team_proposed_changes = []
+        number_of_changes_to_make = len(team_with_too_many_players[1]) - max_players_one_team
+        team_players = list(filter(lambda x: x['team'] == team_id, players))
+        for team_player in team_players:
+            print('swapping player ', team_player['web_name'])
+            next_best_player, bank_of_players = getNextBestPlayer(team_player, team_id, bank_of_players)
+            print('swapped ', team_player['web_name'], ' for ', next_best_player['web_name'])
+            team_proposed_changes = getRecommendedChanges(
+                team_proposed_changes,
+                number_of_changes_to_make,
+                team_player,
+                next_best_player,
+                period_qualifier,
+            )
 
-            for change in team_proposed_changes:
-                team_count = add_team_players(change[1], team_count)
-                team_count = remove_team_players(change[0], team_count)
+        for change in team_proposed_changes:
+            team_count = add_team_players(change[1], team_count)
+            team_count = remove_team_players(change[0], team_count)
 
-        teams_with_too_many_players = list(filter(lambda x: len(x[1]) > max_players_one_team, list(team_count.items())))
+    teams_with_too_many_players = list(filter(lambda x: len(x[1]) > max_players_one_team, list(team_count.items())))
+    print('Teams with too many players ', len(teams_with_too_many_players))
 
     highest_points_team = functools.reduce(lambda a, b: a + b, list(zip(*list(team_count.items())))[1])
 
@@ -109,11 +117,11 @@ def getRecommendedChanges(proposed_changes, number_of_changes_needed, player, ne
 
 
 def getNextBestPlayer(player, team, bank_of_players):
-    position = player['element_type']
+    next_best_player = player
 
-    next_best_player = bank_of_players[position].pop(0)
-    while next_best_player['team'] == team:
-        next_best_player = bank_of_players[position].pop(0)
+    position = player['element_type']
+    while next_best_player['team'] == team and len(bank_of_players[int(position)]) > 0:
+        next_best_player = bank_of_players[int(position)].pop(0)
 
     return next_best_player, bank_of_players
 

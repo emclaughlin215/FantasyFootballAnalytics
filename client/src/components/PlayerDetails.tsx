@@ -2,13 +2,13 @@ import './PlayerDetails.scss';
 
 import { Divider, Tab, TabId, Tabs, Tag } from '@blueprintjs/core';
 import React from 'react';
-import { IGameweekInfo, IPlayer, IPlayerFixture, IStringElementMap } from '../index.d';
+import { IDisplayPlayer, IGameweekInfo, IPlayer, IPlayerFixture, IStringElementMap } from '../index.d';
 import { loaded, loading, LoadState } from '../utils/LoadState';
 import { capitaliseSentence } from '../utils/String';
 
 
 interface PlayerDetailsProps {
-    player_id: string;
+    player: IPlayer | IDisplayPlayer | undefined;
     gameweek: LoadState<IGameweekInfo>;
 }
 
@@ -18,7 +18,7 @@ interface PlayerDetailsState {
     tabId: TabId
 }
 
-class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDetailsState> {
+class PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDetailsState> {
     constructor(props: PlayerDetailsProps) {
         super(props)
         this.state = {
@@ -29,18 +29,20 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
     }
 
     componentDidMount() {
-        this.updatePlayerAndFixtures()
-    }
-
-    componentDidUpdate(prevProps: PlayerDetailsProps) {
-
-        if (prevProps.player_id !== this.props.player_id) {
-            this.updatePlayerAndFixtures()
+        if (this.props.player !== undefined) {
+            this.updatePlayerAndFixtures(this.props.player)
         }
     }
 
-    async updatePlayerAndFixtures() {
-        const player: Response = await fetch('http://localhost:8000/players/all/' + this.props.player_id);
+    componentDidUpdate(prevProps: PlayerDetailsProps) {
+        if ((this.props.player !== undefined) && prevProps.player && (prevProps.player.id !== this.props.player.id)) {
+            this.updatePlayerAndFixtures(this.props.player)
+        }
+    }
+    // : <NonIdealState className="graph-non-ideal-state" title="Select a Player from the dropdown" description="..." />
+
+    async updatePlayerAndFixtures(playerDetails: IPlayer | IDisplayPlayer) {
+        const player: Response = await fetch('http://localhost:8000/players/all/' + playerDetails.id);
         const playerJson: IPlayer[] = await player.json();
         const playerFixtures: IPlayerFixture[] = await this.setPlayersFixtures(playerJson[0]);
         this.setState({
@@ -166,6 +168,8 @@ class   PlayerDetails extends React.PureComponent<PlayerDetailsProps, PlayerDeta
                         {this.playerListStaticElement('ep_this', 'Expected Points (this gameweek)')}
                         {this.playerListStaticElement('ep_next', 'Expected Points (next gameweek)')}
                         {this.playerListStaticElement('cost')}
+                        {this.playerListStaticElement('chance_of_playing_this_round', 'Chance of playing (This Gameweek)')}
+                        {this.playerListStaticElement('chance_of_playing_next_round', 'Chance of playing (Next Gameweek)')}
                         <Tabs
                             animate={true}
                             renderActiveTabPanelOnly={true}

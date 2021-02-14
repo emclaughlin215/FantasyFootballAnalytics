@@ -129,7 +129,7 @@ export interface ITeam {
 }
 
 export interface IDisplayTeam {
-  team: IDisplayPlayer[]
+  team: {[key: number]: IDisplayPlayer}
   cost: number
   expected_points: number
   actual_points: number

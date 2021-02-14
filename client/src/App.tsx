@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 
 import { getPlayerTypeList, getTeamList } from './actions/GlobalActions';
-import { getPlayerLatestList, getPlayerList } from './actions/PlayerActions';
+import { getPlayerLatestList, getPlayerList, getSelectedTeam } from './actions/PlayerActions';
 import  MyTeam  from './components/MyTeam';
 import Overview from './components/Overview';
 import PlayerAnalysis from './components/PlayerAnalysis';
@@ -32,7 +32,6 @@ export interface IAppState {
   topOut: LoadState<IPlayer[]>;
   topSelected: LoadState<IPlayer[]>;
   pickedTeam: LoadState<IDisplayTeam>;
-  selectedTeam: LoadState<IDisplayTeam>;
   highestTeamThis: LoadState<IDisplayTeam>;
   highestTeamNext: LoadState<IDisplayTeam>;
   gameweekInfo: LoadState<IGameweekInfo>;
@@ -45,6 +44,7 @@ export interface IAppProps extends RouteComponentProps<RouterProps> {
   getPlayerTypeList: typeof getPlayerTypeList,
   getTeamList: typeof getTeamList,
   getPlayerList: typeof getPlayerList,
+  getSelectedTeam: typeof getSelectedTeam,
  }
 
 export class App extends React.PureComponent<IAppProps, IAppState> {
@@ -59,7 +59,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       topOut: loading(),
       topSelected: loading(),
       pickedTeam: loading(),
-      selectedTeam: loading(),
       highestTeamThis: loading(),
       highestTeamNext: loading(),
       gameweekInfo: loading(),
@@ -77,11 +76,9 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const resSelectedJson: IPlayer[] = await resSelected.json();
     const resPickedTeam: Response = await fetch("http://localhost:8000/expectedPoints/picked");
     const resPickedTeamJson: IDisplayTeam = await resPickedTeam.json();
-    const resSelectedTeam: Response = await fetch("http://localhost:8000/expectedPoints/selected");
-    const resSelectedTeamJson: IDisplayTeam = await resSelectedTeam.json();
-    const resHighestTeamThis: Response = await fetch("http://localhost:8000/expectedPoints/highest_this");
+    const resHighestTeamThis: Response = await fetch("http://localhost:8000/expectedPoints/highest/this");
     const resHighestTeamThisJson: IDisplayTeam = await resHighestTeamThis.json();
-    const resHighestTeamNext: Response = await fetch("http://localhost:8000/expectedPoints/highest_next");
+    const resHighestTeamNext: Response = await fetch("http://localhost:8000/expectedPoints/highest/next");
     const resHighestTeamNextJson: IDisplayTeam = await resHighestTeamNext.json();
     const gameweekInfo: Response = await fetch("http://localhost:8000/gameweek");
     const gameweekInfoJson: IGameweekInfo = await gameweekInfo.json();
@@ -91,17 +88,17 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       topOut: loaded(resOutJson),
       topSelected: loaded(resSelectedJson),
       pickedTeam: loaded(resPickedTeamJson),
-      selectedTeam: loaded(resSelectedTeamJson),
       highestTeamThis: loaded(resHighestTeamThisJson),
       highestTeamNext: loaded(resHighestTeamNextJson),
       gameweekInfo: loaded(gameweekInfoJson),
     })
     
-    const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList} = this.props;
+    const { getPlayerLatestList, getPlayerList, getPlayerTypeList, getTeamList, getSelectedTeam } = this.props;
     getPlayerLatestList("http://localhost:8000/players/latest/all");
     getPlayerList("http://localhost:8000/players/all");
     getPlayerTypeList("http://localhost:8000/players/types");
     getTeamList("http://localhost:8000/teams/all");
+    getSelectedTeam("http://localhost:8000/expectedPoints/selected");
   }
 
   componentDidMount() {
@@ -146,7 +143,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       "playerAnalysis": <PlayerAnalysis />,
       "myTeam": <MyTeam
         pickedTeam={this.state.pickedTeam}
-        selectedTeam={this.state.selectedTeam}
         highestTeamThis={this.state.highestTeamThis}
         highestTeamNext={this.state.highestTeamNext}
         gameweekInfo={this.state.gameweekInfo}
@@ -237,6 +233,7 @@ const mapDispatchToProps = (dispatch: any) => {
       getPlayerTypeList,
       getPlayerList,
       getTeamList,
+      getSelectedTeam,
     },
     dispatch,
   );
