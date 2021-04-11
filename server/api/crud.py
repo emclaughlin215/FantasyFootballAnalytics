@@ -6,9 +6,10 @@ from sqlalchemy import func, literal
 from sqlalchemy.orm import Session, aliased
 
 import pandas as pd
+import json
 from datetime import datetime as dt
 from server.api import models, database
-from server.api.schemas import Change
+from server.api.schemas import Change, SubmitTeam, SubmitTransfers
 from server.controller.suggestTeam import getExpectedPoints, getHighestExpectedPoints
 from server.controller.suggestTransfers import suggestTransfers
 
@@ -233,23 +234,19 @@ def handle_elements(elements: pd.DataFrame, element_types: pd.DataFrame, game_we
 
 def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFrame, table: str, game_week):
 
-    print('Getting ep this highest expected.')
     hep_this = getHighestExpectedPoints(players, 'ep_this')
     highest_expected_points_this_df = pd.DataFrame(hep_this)
     highest_expected_points_this_df['period_qualifier'] = 'ep_this'
 
-    print('Getting ep next highest expected.')
     hep_next = getHighestExpectedPoints(players, 'ep_next')
     highest_expected_points_next_df = pd.DataFrame(hep_next)
     highest_expected_points_next_df['period_qualifier'] = 'ep_next'
 
-    print('Concatenating highest expected tables.')
     highest_expected_points_df = pd.concat(
         [highest_expected_points_this_df, highest_expected_points_next_df],
         ignore_index=True
     )
 
-    print('handling highest expected elements')
     highest_expected_points_df = handle_elements(highest_expected_points_df, element_types_df, game_week)
     highest_expected_points_df['multiplier'] = 1
     highest_expected_points_df['is_captain'] = 0
@@ -259,7 +256,6 @@ def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFra
     highest_expected_points_df['primary_key'] = highest_expected_points_df[primary_key_cols] \
         .apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
 
-    print('Selecting columns highest expected.')
     highest_expected_points_df = highest_expected_points_df[string_cols + int_cols + bool_cols + float_cols + [
         'period_qualifier',
         'event',
@@ -273,7 +269,6 @@ def set_highest_expected_points_team(players: dict, element_types_df: pd.DataFra
     highest_expected_points_df['ep_this'] = highest_expected_points_df['ep_this'].astype(float)
     highest_expected_points_df['ep_next'] = highest_expected_points_df['ep_next'].astype(float)
 
-    print('Writing highest expected.')
     try:
         highest_expected_points_df.to_sql(
             name=table,
@@ -306,7 +301,6 @@ def set_team(
         return
 
     team_df = pd.DataFrame(team_json['picks'])
-    team_df['position'] = team_df['position'] - 1
     team_df = pd.merge(players, team_df, left_on='id', right_on='element', how='left')
 
     for col in float_cols:
@@ -403,16 +397,10 @@ def update_players_set_teams():
     element_types_df = pd.DataFrame(data_json['element_types'])
     elements_df = handle_elements(elements_df, element_types_df, game_week)
 
-    headers = {"Cookie": 'pl_profile=""eyJzIjogIld6SXNNemt5TlRRME9GMDoxa1dKRXI6c2VKVmN6bXpPellyR05JS0FNbmp0UF95NTBZ'
-                         'IiwgInUiOiB7ImlkIjogMzkyNTQ0OCwgImZuIjogIkVkd2FyZCIsICJsbiI6ICJNY2xhdWdobGluIiwgImZjIjogMT'
-                         'R9fQ==""; csrftoken=0kcum42jQOMSGw6OtDjHtdW85c3crJ73MI68b9se45Vpa0UNpVN9FgDviFOeL8Xl;'
-                         'sessionid=.eJyrVopPLC3JiC8tTi2Kz0xRslIytjQyNTGxUNJBlklKTM5OzQNJF-SkFeTogWT0AnxCgXLFwcH-'
-                         'jkAuqoaMxOIMoGpLQxPLxLRUc2Mjs5SUVPMUQ2PDVDNjUwtDS7NkA8NUQwMLE4vUNENLpVoAXDgrvg:1kWJEs:'
-                         '12mlMhGcJj_p23Lmq-psC4Lur2k"'}
     url_points_team = 'https://fantasy.premierleague.com/api/entry/5626217/event/' + str(game_week) + '/picks/'
     url_selected_team = 'https://fantasy.premierleague.com/api/my-team/5626217/'
 
-    set_team(url_selected_team, headers, elements_df, 'selected_team')
+    set_team(url_selected_team, HEADERS, elements_df, 'selected_team')
     set_team(url_points_team, {}, elements_df, 'picked_team')
     set_highest_expected_points_team(
         data_json['elements'],
@@ -424,6 +412,60 @@ def update_players_set_teams():
     set_events(events_df, 'events')
 
     return 'Successfully updated players and teams'
+
+
+def submit_team(team_to_submit: SubmitTeam):
+
+    try:
+        response = requests.post(
+            'https://fantasy.premierleague.com/api/my-team/5626217/',
+            headers=HEADERS,
+            json=json.loads(team_to_submit.json()),
+        )
+    except ConnectionError:
+        sys.exit("Failed to get data from the FPL API")
+
+    if response.status_code == 200:
+        return 'Successfully'
+    else:
+        return 'Unsuccessful: Error Code ' + str(response.status_code) + ' - ' + str(response.json())
+
+
+def submit_transfers(transfers_to_submit: SubmitTransfers):
+
+    transfers_to_submit.entry = 5626217
+
+    print(transfers_to_submit)
+
+    try:
+        response = requests.post(
+            'https://fantasy.premierleague.com/api/transfers/',
+            headers=HEADERS,
+            json=json.loads(transfers_to_submit.json()),
+        )
+    except ConnectionError:
+        sys.exit("Failed to get data from the FPL API")
+
+    if response.status_code == 200:
+        return 'Successfully'
+    else:
+        return 'Unsuccessful: Error Code ' + str(response.status_code) + ' - ' + str(response.json())
+
+
+def get_metdata():
+
+    url_selected_team = 'https://fantasy.premierleague.com/api/my-team/5626217/'
+
+    try:
+        team = requests.get(url_selected_team, headers=HEADERS)
+    except ConnectionError:
+        sys.exit("Failed to get team points data.")
+
+    team_json = team.json()
+    if team_json == 'The game is being updated.':
+        return
+
+    return {key: team_json[key] for key in ['chips', 'transfers']}
 
 
 def update_fixtures():
@@ -480,6 +522,13 @@ def update_fixtures():
     else:
         print(table_name + " table created successfully.")
 
+
+HEADERS = {"Cookie": 'pl_profile=""eyJzIjogIld6SXNNemt5TlRRME9GMDoxa1dKRXI6c2VKVmN6bXpPellyR05JS0FNbmp0UF95NTBZ'
+                     'IiwgInUiOiB7ImlkIjogMzkyNTQ0OCwgImZuIjogIkVkd2FyZCIsICJsbiI6ICJNY2xhdWdobGluIiwgImZjIjogMT'
+                     'R9fQ==""; csrftoken=0kcum42jQOMSGw6OtDjHtdW85c3crJ73MI68b9se45Vpa0UNpVN9FgDviFOeL8Xl;'
+                     'sessionid=.eJyrVopPLC3JiC8tTi2Kz0xRslIytjQyNTGxUNJBlklKTM5OzQNJF-SkFeTogWT0AnxCgXLFwcH-'
+                     'jkAuqoaMxOIMoGpLQxPLxLRUc2Mjs5SUVPMUQ2PDVDNjUwtDS7NkA8NUQwMLE4vUNENLpVoAXDgrvg:1kWJEs:'
+                     '12mlMhGcJj_p23Lmq-psC4Lur2k"'}
 
 float_cols = [
     'ep_this',

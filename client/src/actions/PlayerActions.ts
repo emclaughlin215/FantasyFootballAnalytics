@@ -41,18 +41,13 @@ export const getSelectedTeam = (query: string) => {
   return async (dispatch: Function) => {
     const res: Response = await fetch(query);
     const resJson: IDisplayTeam = await res.json();
-    dispatch(getSelected(resJson));
-  };
-};
-
-
-export const setSelectedTeam = (displayTeam: IDisplayTeam) => {
-  return async (dispatch: Function) => {return dispatch(getSelected(displayTeam))}
+    dispatch(setSelected(resJson, constants.loadSelectedTeam));
+  }
 }
 
-export function getSelected(displayTeam: IDisplayTeam): IPlayerAction {
+export function setSelected(displayTeam: IDisplayTeam, type: string): IPlayerAction {
   return {
-    type: constants.loadSelectedTeam,
+    type: type,
     payload: { "selectedTeam": displayTeam },
   }
 }

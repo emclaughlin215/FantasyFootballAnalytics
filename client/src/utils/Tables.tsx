@@ -17,16 +17,16 @@ abstract class AbstractSortableColumn implements ISortableColumn<IPlayer> {
 
   public getColumn(getCellData: ICellLookup, sortColumn: ISortCallback) {
     const cellRenderer = (rowIndex: number) => (
-        <Cell>{getCellData(rowIndex, this.stat)}</Cell>
-      );
-      const columnHeaderCellRenderer = () => <ColumnHeaderCell name={this.name} menuRenderer={() => this.renderMenu(sortColumn)} />;
-      return (
-          <Column
-              cellRenderer={cellRenderer}
-              columnHeaderCellRenderer={columnHeaderCellRenderer}
-              name={this.name}
-          />
-      );
+      <Cell>{getCellData(rowIndex, this.stat)}</Cell>
+    );
+    const columnHeaderCellRenderer = () => <ColumnHeaderCell name={this.name} menuRenderer={() => this.renderMenu(sortColumn)} />;
+    return (
+        <Column
+            cellRenderer={cellRenderer}
+            columnHeaderCellRenderer={columnHeaderCellRenderer}
+            name={this.name}
+        />
+    );
   }
 
   protected abstract renderMenu(sortColumn: ISortCallback): JSX.Element;

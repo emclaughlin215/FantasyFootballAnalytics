@@ -59,16 +59,21 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
     })
   }
 
-  private comparePlayersDrawerOpen = (leftTeam?: LoadState<IDisplayTeam>, rightTeam?: LoadState<IDisplayTeam>, playerAId?: number, playerBId?: number): void => {
-    const { playerState } = this.props;
+  private getPlayerOrFirstOnTeamSheet(playerListLatest: LoadState<IPlayer[]>, team: LoadState<IDisplayTeam>, playerId: number): IDisplayPlayer | undefined {
+    if (playerListLatest.type === 'loaded') {
+      return playerListLatest.value.filter(player => player.id === playerId)[0];
+    } else if (team.type === 'loaded') {
+      return team.value.team[0];
+    } else {
+      return undefined;
+    }
+  }
 
-    const playerA: IDisplayPlayer | undefined = (playerAId && playerState.playerListLatest.type === 'loaded')
-      ? playerState.playerListLatest.value.filter(player => player.id === playerAId)[0]
-      : (leftTeam && leftTeam.type === 'loaded') ? leftTeam.value.team[0] : undefined;
+  private comparePlayersDrawerOpen = (leftTeam: LoadState<IDisplayTeam>, rightTeam: LoadState<IDisplayTeam>, playerAId: number=0, playerBId: number=0): void => {
+    const { playerListLatest } = this.props.playerState;
 
-    const playerB: IDisplayPlayer | undefined = (playerBId && playerState.playerListLatest.type === 'loaded')
-      ? playerState.playerListLatest.value.filter(player => player.id === playerBId)[0]
-      : (rightTeam && rightTeam.type === 'loaded') ? rightTeam.value.team[0] : undefined;
+    const playerA: IDisplayPlayer | undefined = this.getPlayerOrFirstOnTeamSheet(playerListLatest, leftTeam, playerAId);
+    const playerB: IDisplayPlayer | undefined = this.getPlayerOrFirstOnTeamSheet(playerListLatest, rightTeam, playerBId);
 
     this.setState({ comparePlayerSelectedLeft: playerA, comparePlayerSelectedRight: playerB, comparePlayersDrawerIsOpen: true})
   }
@@ -88,47 +93,51 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
   private handleNavbarTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
 
   render() {
-    const { playerState, pickedTeam, highestTeamThis, highestTeamNext, gameweekInfo} = this.props;
+    const { pickedTeam, highestTeamThis, highestTeamNext, gameweekInfo} = this.props;
     const { selectedPlayerDetails, playerDetailsDrawerSide, suggestedTransfers, comparePlayerSelectedLeft, comparePlayerSelectedRight } = this.state;
-    const { playerListLatest, selectedTeam } = this.props.playerState;
+    const { playerListLatest, selectedTeam, playerList } = this.props.playerState;
 
     const PlayerSuggest = Suggest.ofType<IDisplayPlayer>();
 
     const playersToCompared: LoadState<IPlayer[][]> = loaded([]);
-    [comparePlayerSelectedLeft, comparePlayerSelectedRight].map(player => {
-        if (player !== undefined && playerListLatest.type === 'loaded') {
-            const playerToCompare: IPlayer[] = playerListLatest.value.filter(pl => pl.id === player.id);
+    [comparePlayerSelectedLeft, comparePlayerSelectedRight].forEach(player => {
+        if (player !== undefined && playerList.type === 'loaded') {
+            const playerToCompare: IPlayer[] = playerList.value.filter(pl => pl.id === player.id);
             playersToCompared.value.push(playerToCompare)
         }
     })
     const playersBeingCompared: LoadState<IPlayer[]> = loaded(playersToCompared.value.flat(2))
 
-    const playerSelected: IPlayer | undefined | false = playerState.playerListLatest.type === 'loaded' && selectedPlayerDetails && 
-      playerState.playerListLatest.value.filter((player) => player.id === selectedPlayerDetails.id)[0];
+    const playerSelected: IPlayer | undefined | false = playerListLatest.type === 'loaded' && selectedPlayerDetails && 
+      playerListLatest.value.filter((player) => player.id === selectedPlayerDetails.id)[0];
 
     const tabIdToComponentMap: IStringElementMap = {
-      "current": <CompareTeams
-        myTeam={pickedTeam}
-        highestTeam={highestTeamThis}
-        pointsType={"event_points"}
-        comparePlayersDrawerIsOpen={this.state.comparePlayersDrawerIsOpen}
-        comparePlayerSelectedLeft={this.state.comparePlayerSelectedLeft}
-        comparePlayerSelectedRight={this.state.comparePlayerSelectedRight}
-        gameweekInfo={gameweekInfo}
-        comparePlayersDrawerOpenCallback={this.comparePlayersDrawerOpen}
-        setSelectedPlayerCallback={this.setSelectedPlayer}
-      />,
-      "next": <CompareTeams
-        myTeam={selectedTeam}
-        highestTeam={highestTeamNext}
-        pointsType={'cost'}
-        gameweekInfo={gameweekInfo}
-        comparePlayersDrawerIsOpen={this.state.comparePlayersDrawerIsOpen}
-        comparePlayerSelectedLeft={this.state.comparePlayerSelectedLeft}
-        comparePlayerSelectedRight={this.state.comparePlayerSelectedRight}
-        comparePlayersDrawerOpenCallback={this.comparePlayersDrawerOpen}
-        setSelectedPlayerCallback={this.setSelectedPlayer}
-      />,
+      "current": pickedTeam.type === 'loaded' && highestTeamThis.type === 'loaded' ? 
+        <CompareTeams
+          myTeam={pickedTeam.value}
+          highestTeam={highestTeamThis.value}
+          pointsType={"event_points"}
+          comparePlayersDrawerIsOpen={this.state.comparePlayersDrawerIsOpen}
+          comparePlayerSelectedLeft={this.state.comparePlayerSelectedLeft}
+          comparePlayerSelectedRight={this.state.comparePlayerSelectedRight}
+          gameweekInfo={gameweekInfo}
+          comparePlayersDrawerOpenCallback={this.comparePlayersDrawerOpen}
+          setSelectedPlayerCallback={this.setSelectedPlayer}
+        />
+        : <NonIdealState className="graph-non-ideal-state" title="Loading Teams..." description="Getting your teams!" />,
+      "next": selectedTeam.type === 'loaded' && highestTeamNext.type === 'loaded' ? 
+        <CompareTeams
+          myTeam={selectedTeam.value}
+          highestTeam={highestTeamNext.value}
+          pointsType={'cost'}
+          gameweekInfo={gameweekInfo}
+          comparePlayersDrawerIsOpen={this.state.comparePlayersDrawerIsOpen}
+          comparePlayerSelectedLeft={this.state.comparePlayerSelectedLeft}
+          comparePlayerSelectedRight={this.state.comparePlayerSelectedRight}
+          comparePlayersDrawerOpenCallback={this.comparePlayersDrawerOpen}
+          setSelectedPlayerCallback={this.setSelectedPlayer}
+        />
+        : <NonIdealState className="graph-non-ideal-state" title="Loading Teams..." description="Getting your teams!" />,
     }
 
     return (
@@ -202,7 +211,7 @@ export class MyTeam extends React.PureComponent<MyTeamProps, MyTeamState> {
           <Tab id="next" title="Next Game Week" />
         </Tabs>
         <div className='tab-container'>
-          {pickedTeam.type === 'loaded' ? tabIdToComponentMap[this.state.navbarTabId.toString()] : <NonIdealState className="graph-non-ideal-state" title="Loading Teams..." description="Getting your teams!" />}
+          {tabIdToComponentMap[this.state.navbarTabId.toString()]}
         </div>
         <SuggestedChanges comparePlayersDrawerOpen={this.comparePlayersDrawerOpen} suggestedChanges={suggestedTransfers}/>
       </div>

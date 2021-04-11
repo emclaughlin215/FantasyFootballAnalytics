@@ -62,7 +62,7 @@ export const PlayerReducer = (state = defaultState, action: IPlayerAction) => {
     case constants.loadSelectedTeam: {
       return {
         ...state,
-        selectedTeam: loaded(action.payload['selectedTeam']),
+        selectedTeam: loaded({...action.payload['selectedTeam']}),
       }
     }
     default:

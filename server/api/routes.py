@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from fastapi import FastAPI, status, Depends
@@ -83,6 +84,14 @@ async def playersTopTenSelected(db: Session = Depends(get_db)):
     return crud.get_most_selected(db)
 
 
+# --------------- GET METADATA -------------
+
+
+@app.get("/metadata", response_model=schemas.Metadata, status_code=status.HTTP_200_OK)
+async def getMetadata():
+    return crud.get_metdata()
+
+
 # ---------- GET TEAMS AND POINTS ----------
 
 
@@ -107,6 +116,17 @@ async def expectedPointsSelected(period_qualifier: str, db: Session = Depends(ge
 async def expectedPointsHighest():
     return crud.update_players_set_teams()
 
+
+# --------- SUBMIT TEAMS AND TRANSFERS -----------
+
+@app.post("/set/teams", response_model=str, status_code=status.HTTP_200_OK)
+async def submitSelectedTeam(submitTeamTeam: schemas.SubmitTeam):
+    return crud.submit_team(submitTeamTeam)
+
+
+@app.post("/set/transfers", response_model=str, status_code=status.HTTP_200_OK)
+async def submitTransfers(submitTransfers: schemas.SubmitTransfers):
+    return crud.submit_transfers(submitTransfers)
 
 # ---------- EVENTS AND GAMEWEEK ------------
 

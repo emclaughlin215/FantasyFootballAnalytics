@@ -198,3 +198,54 @@ export interface IChange {
   ep_next_player_in: float
   ep_next_player_out: float
 }
+
+export interface ISubmitPlayer {
+	element: number,
+  position: number,
+  is_captain: boolean,
+  is_vice_captain: boolean,
+}
+
+export interface ISubmitTeam {
+  chip: string | null = null,
+  picks: ISubmitPlayer[],
+}
+
+
+export interface ISubmitTransfer {
+  element_in: number,
+  element_out: number,
+  purchase_price: number,
+  selling_price: number,
+}
+
+export interface ISubmitTransfers {
+  chip: string | null = null,
+  event: number,
+  entry: null,
+  transfers: ISubmitTransfer[],
+}
+
+export interface IChipsMetadata {
+  status_for_entry: ('played' | 'available')
+  played_by_entry: number[]
+  name: ('wildcard' | '3xc' | 'bboost' | 'freehit')
+  number: number
+  start_event: number
+  stop_event: number
+  chip_type: ('transfer' | 'team')
+}
+
+export interface ITransfersMetadata {
+  cost: number
+  status: string
+  limit: number
+  made: number
+  bank: number
+  value: number
+}
+
+export interface IMetadata {
+  chips: IChipsMetadata[],
+  transfers: ITransfersMetadata,
+}

@@ -6,6 +6,7 @@ export const constants = {
   loadTeams: "LOAD TEAMS",
   loadPlayerTypes: "LOAD PLAYER TYPES",
   loadSelectedTeam: "LOAD SELECTED TEAM",
+  editSelectedTeam: "EDIT SELECTED TEAM",
   filterPlayers: "FILTER PLAYERS",
   addPropertiesToGrpah: "ADD PROPERTY TO GRAPH",
 }
@@ -15,4 +16,3 @@ export const COLOURS = [Colors.RED3, Colors.ROSE3, Colors.BLUE3, Colors.COBALT3,
   Colors.ORANGE3, Colors.VIOLET3, Colors.RED1, Colors.ROSE1, Colors.BLUE1, Colors.COBALT1, Colors.TURQUOISE1, Colors.GREEN1,
   Colors.LIME1, Colors.FOREST1, Colors.GOLD1, Colors.INDIGO1, Colors.DARK_GRAY3, Colors.VERMILION1, Colors.SEPIA1,
   Colors.INDIGO1];
-  

@@ -1,4 +1,4 @@
-from typing import Optional, List, ClassVar, Dict
+from typing import Optional, List, Dict
 
 from datetime import datetime
 from pydantic import BaseModel
@@ -232,6 +232,72 @@ class Change(BaseModel):
     cost_player_out: Optional[float]
     ep_next_player_in: Optional[float]
     ep_next_player_out: Optional[float]
+
+    class Config:
+        orm_mode = True
+
+
+class SubmitPlayer(BaseModel):
+
+    element: int
+    position: int
+    is_captain: bool
+    is_vice_captain: bool
+
+
+class SubmitTeam(BaseModel):
+
+    chip: Optional[str]
+    picks: List[SubmitPlayer]
+
+    class Config:
+        orm_mode = True
+
+
+class SubmitTransfer(BaseModel):
+
+    element_in: int
+    element_out: int
+    purchase_price: int
+    selling_price: int
+
+
+class SubmitTransfers(BaseModel):
+
+    chip: Optional[str]
+    entry: Optional[int]
+    event: Optional[int]
+    transfers: List[SubmitTransfer]
+
+    class Config:
+        orm_mode = True
+
+
+class ChipsMetadata(BaseModel):
+
+    status_for_entry: str
+    played_by_entry: List[int]
+    name: str
+    number: int
+    start_event: int
+    stop_event: int
+    chip_type: str
+
+
+class TransfersMetadata(BaseModel):
+
+    cost: int
+    status: str
+    limit: int
+    made: int
+    bank: int
+    value: int
+
+
+class Metadata(BaseModel):
+
+    chips: Optional[List[ChipsMetadata]]
+    transfers: Optional[TransfersMetadata]
 
     class Config:
         orm_mode = True

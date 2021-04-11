@@ -24,7 +24,6 @@ import { loaded, loading, LoadState } from './utils/LoadState';
 import { getDateDiffUnix, formatDateDiffFromUnix, getCountdownIntent } from './utils/Date';
 
 export interface IAppState {
-  activePanelOnly: boolean;
   animate: boolean;
   navbarTabId: TabId;
   vertical: boolean;
@@ -51,7 +50,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props)  
     this.state = {
-      activePanelOnly: true,
       animate: true,
       navbarTabId: '',
       vertical: false,
@@ -173,24 +171,25 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
                 <div className='nav-bar'>
                   <div className='app-title'>Fantasy Premier League Analytics</div>
                   <div className={currentGameweek === '' ? 'bp3-skeleton' : 'render-intent-primary'}>{currentGameweek}</div>
-                  <div className={currentGameweek === '' ? 'bp3-skeleton' : nextGameweekCountdownIntent}>{'Next Gameweek Deadline: ' + nextGameweekCountdown}</div>
+                  <div className={currentGameweek === '' ? 'bp3-skeleton' : nextGameweekCountdownIntent}>{'Deadline: ' + nextGameweekCountdown}</div>
                 </div>
               </Navbar.Heading>
           </Navbar.Group> 
           <Navbar.Group align={Alignment.RIGHT}>
             <Tabs
               animate={this.state.animate}
-              renderActiveTabPanelOnly={this.state.activePanelOnly}
+              renderActiveTabPanelOnly={true}
               id="MainTabs"
               large={true}
               onChange={this.handleNavbarTabChange}
               selectedTabId={navbarTabId}
               vertical={false}>
-                  {Object.entries(this.tabTitles).map((t) => {
+                  {Object.entries(this.tabTitles).map((t, idx) => {
                     const urlPath: string = t[0];
                     const tabTitle: string = t[1]['title'];
                     return <Tab
                       id={t[0]}
+                      key={idx}
                       title={<Link to={`/home/${urlPath}`}>{tabTitle}</Link>}
                     />
                   })}

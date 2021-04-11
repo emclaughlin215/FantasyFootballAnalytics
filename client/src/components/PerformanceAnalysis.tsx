@@ -11,6 +11,7 @@ import { ICombinedReducers } from '../reducers/Reducers';
 import { ISortableColumn, NumberSortableColumn, StringSortableColumn } from '../utils/Tables';
 import { prop } from '../utils/TypeScript';
 import { NonIdealState } from '@blueprintjs/core';
+import { round } from 'lodash';
 
 export interface IPerformanceAnalysisProps { 
   globalState: IGlobalReducer,
@@ -27,6 +28,7 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
     this.state = { 
       sortedPlayerIndex: [],
       columns: [
+        new StringSortableColumn('Name', "web_name"),
         new StringSortableColumn('First Name', "first_name"),
         new StringSortableColumn('Second Name', "second_name"),
         new NumberSortableColumn('Price', "cost"),
@@ -35,6 +37,7 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
         new NumberSortableColumn('Goals Scored', "goals_scored"),
         new NumberSortableColumn('Assists', "assists"),
         new NumberSortableColumn('Clean Sheets', "clean_sheets"),
+        new NumberSortableColumn('Bonus System', "bps"),
         new NumberSortableColumn('Bonus Points', "bonus"),
         new NumberSortableColumn('Form / Cost', "form_to_cost"),
         new NumberSortableColumn('Bonus / Cost', "bonus_to_cost"),
@@ -71,7 +74,13 @@ export class PerformanceAnalysis extends React.PureComponent<IPerformanceAnalysi
     if ((sortedRowIndex !== null) && (sortedRowIndex !== undefined)) {
         rowIndex = sortedRowIndex;
     }
-      return prop(filteredPlayerLatest.value[rowIndex], stat);
+    const propToDisplay = prop(filteredPlayerLatest.value[rowIndex], stat);
+
+    if (typeof propToDisplay === 'number') {
+      return round(propToDisplay, 2);
+    } else {
+      return propToDisplay;
+    }
   };
   
   render() {

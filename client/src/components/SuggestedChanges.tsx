@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Intent, Text, Button, Tag } from "@blueprintjs/core"
+import { Text, Button } from "@blueprintjs/core"
 
 import { LoadState } from "../utils/LoadState"
 import { IChange } from "../index.d"
@@ -29,14 +29,14 @@ export class SuggestedChanges extends React.PureComponent<SuggestedChangesProps>
                     <Text>Transfer Cost</Text>
                 </div>
                 <div className='transfer-list'>
-                    {this.props.suggestedChanges.type === 'loaded' && this.props.suggestedChanges.value.map((change) => {
+                    {this.props.suggestedChanges.type === 'loaded' && this.props.suggestedChanges.value.map((change, idx) => {
                         return (
-                        <div className='transfer'>
+                        <div className='transfer' key={idx}>
                             <Button className='transfer-compare-players-button' intent='primary' onClick={() => comparePlayersDrawerOpen(undefined, undefined, change.id_player_out, change.id_player_in)}> Compare Players </Button>
                             <Text>{change.web_name_player_out}</Text>
                             <Text>{change.web_name_player_in}</Text>
-                            <Tag large round intent={change.points_gain >= 4 ? Intent.SUCCESS : change.points_gain >= 0 ? Intent.PRIMARY : Intent.WARNING}>{change.points_gain}</Tag>
-                            <Tag large round intent={change.transfer_cost <= 0 ? Intent.SUCCESS : change.points_gain <= 0.5 ? Intent.PRIMARY : Intent.WARNING}>{change.transfer_cost}</Tag>
+                            <Text>{change.points_gain}</Text>
+                            <Text>{change.transfer_cost}</Text>
                         </div>
                     )
                     })}
